@@ -1,0 +1,15 @@
+/* XPM */
+static char *wall_south_xpm[] = {
+"8 8 3 1",
+"  c #000000",    /*  space = black border  */
+". c #A35414",    /*  dot   = dark brown    */
+"X c #D28A4A",    /*  X     = light brown   */
+"XXXXXXXX",
+"X......X",
+"X.XXXX.X",
+"X.X..X.X",
+"X.X..X.X",
+"X.XXXX.X",
+"X......X",
+"XXXXXXXX"
+};

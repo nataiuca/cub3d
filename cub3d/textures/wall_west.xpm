@@ -1,0 +1,15 @@
+/* XPM */
+static char *wall_west_xpm[] = {
+"8 8 3 1",
+"  c #000000",    /*  space = black border  */
+". c #004488",    /*  dot   = dark blue     */
+"X c #66AAFF",    /*  X     = light blue    */
+"XXXXXXXX",
+"X......X",
+"X.XXXX.X",
+"X.X..X.X",
+"X.X..X.X",
+"X.XXXX.X",
+"X......X",
+"XXXXXXXX"
+};
