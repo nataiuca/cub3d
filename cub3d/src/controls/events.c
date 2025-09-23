@@ -98,45 +98,55 @@ void	move_player(t_game *game, int direction)
 }
 
 /*
-** Función para manejar teclas presionadas
-** - Mapea cada tecla a una acción específica
-** - Devuelve 0 para continuar el programa
+** Función para manejar teclas presionadas con renderizado directo
 */
 int	handle_keypress(int keycode, t_game *game)
 {
+	static int movements = 0;
+	
 	if (keycode == KEY_ESC)
 	{
-		printf("👋 Saliendo del juego...\n");
+		printf("Saliendo del juego...\n");
 		cleanup_game(game);
 		exit(0);
 	}
 	else if (keycode == KEY_W)
 	{
-		move_player(game, 1);  /* Adelante */
+		move_player(game, 1);
+		movements++;
 	}
 	else if (keycode == KEY_S)
 	{
-		move_player(game, -1); /* Atrás */
+		move_player(game, -1);
+		movements++;
 	}
 	else if (keycode == KEY_A)
 	{
-		move_player(game, -2); /* Izquierda */
+		move_player(game, -2);
+		movements++;
 	}
 	else if (keycode == KEY_D)
 	{
-		move_player(game, 2);  /* Derecha */
+		move_player(game, 2);
+		movements++;
 	}
 	else if (keycode == KEY_LEFT)
 	{
-		rotate_player(game, -1); /* Girar izquierda */
+		rotate_player(game, -1);
+		movements++;
 	}
 	else if (keycode == KEY_RIGHT)
 	{
-		rotate_player(game, 1);  /* Girar derecha */
+		rotate_player(game, 1);
+		movements++;
 	}
 	
-	/* Redibujar después de cualquier movimiento */
-	render_frame(game);
+	/* Redibujar con renderizado directo */
+	if (movements > 0 && movements < 50) /* Limitar redibujados para evitar lentitud */
+	{
+		printf("Redibujando escena (movimiento %d)...\n", movements);
+		cast_rays_direct(game);
+	}
 	
 	return (0);
 }
@@ -155,62 +165,104 @@ int	handle_close(t_game *game)
 }
 
 /*
-** Función principal de renderizado
-** - Se llama constantemente para mantener la pantalla actualizada
-** - Ejecuta el raycasting y dibuja el frame
+** Función para renderizar usando mlx_pixel_put directo (compatible con Mac)
 */
-int	render_frame(t_game *game)
+void	draw_direct_line(t_game *game, int x)
 {
-	static int test_done = 0;
+	int		y;
+	int		wall_color;
 	
-	/* TEST: Usar MLX directo para verificar si el problema es nuestra función */
-	if (!test_done)
+	/* Determinar color según la dirección de la pared */
+	if (game->ray->side == 0) /* Lado vertical (Norte/Sur) */
 	{
-		printf("🧪 Probando dibujo directo con MLX...\n");
-		
-		/* Probar dibujar píxeles directamente en la ventana */
-		for (int i = 0; i < 200; i++)
-		{
-			for (int j = 0; j < 200; j++)
-			{
-				mlx_pixel_put(game->mlx, game->window, i, j, 0xFF0000); /* Rojo */
-			}
-		}
-		
-		for (int i = 200; i < 400; i++)
-		{
-			for (int j = 200; j < 400; j++)
-			{
-				mlx_pixel_put(game->mlx, game->window, i, j, 0x00FF00); /* Verde */
-			}
-		}
-		
-		printf("✅ Dibujado directo completado\n");
-		test_done = 1;
-		return (0);
+		if (game->ray->step_x > 0)
+			wall_color = 0xFF0000; /* Rojo para Este */
+		else
+			wall_color = 0x0000FF; /* Azul para Oeste */
+	}
+	else /* Lado horizontal (Este/Oeste) */
+	{
+		if (game->ray->step_y > 0)
+			wall_color = 0x00FF00; /* Verde para Sur */
+		else
+			wall_color = 0xFFFFFF; /* Blanco para Norte */
 	}
 	
-	/* Limpiar pantalla con color negro */
-	int	x = 0;
-	int	y;
+	/* Oscurecer paredes horizontales */
+	if (game->ray->side == 1)
+		wall_color = (wall_color >> 1) & 8355711;
 	
+	/* Dibujar la columna píxel por píxel directamente */
+	y = 0;
+	while (y < WINDOW_HEIGHT)
+	{
+		if (y < game->ray->draw_start)
+		{
+			/* Techo */
+			mlx_pixel_put(game->mlx, game->window, x, y, game->map->ceiling_color);
+		}
+		else if (y >= game->ray->draw_start && y <= game->ray->draw_end)
+		{
+			/* Pared */
+			mlx_pixel_put(game->mlx, game->window, x, y, wall_color);
+		}
+		else
+		{
+			/* Suelo */
+			mlx_pixel_put(game->mlx, game->window, x, y, game->map->floor_color);
+		}
+		y++;
+	}
+}
+
+/*
+** Raycasting directo para Mac (sin buffer de imagen)
+*/
+void	cast_rays_direct(t_game *game)
+{
+	int	x;
+	static int debug_count = 0;
+	
+	debug_count++;
+	if (debug_count == 1)
+		printf("Ejecutando raycasting directo (compatible Mac)\n");
+	
+	x = 0;
 	while (x < WINDOW_WIDTH)
 	{
-		y = 0;
-		while (y < WINDOW_HEIGHT)
-		{
-			my_mlx_pixel_put(game->screen, x, y, BLACK);
-			y++;
-		}
+		/* Calcular rayo */
+		calculate_ray(game, x);
+		calculate_step_and_side_dist(game);
+		perform_dda(game);
+		calculate_wall_distance(game);
+		
+		/* Dibujar directamente en ventana */
+		draw_direct_line(game, x);
+		
 		x++;
 	}
 	
-	/* Ejecutar raycasting para dibujar el mundo 3D */
-	cast_rays_simple(game);
+	if (debug_count == 1)
+		printf("Raycasting completado - deberías ver el mundo 3D\n");
+}
+
+/*
+** Función principal de renderizado adaptada para Mac
+*/
+int	render_frame(t_game *game)
+{
+	static int rendered = 0;
 	
-	/* Mostrar imagen en pantalla */
-	mlx_put_image_to_window(game->mlx, game->window, game->screen->img, 0, 0);
+	/* Solo renderizar una vez inicialmente */
+	if (rendered)
+		return (0);
 	
+	printf("Renderizando mundo 3D (modo directo para Mac)...\n");
+	
+	/* Ejecutar raycasting directo */
+	cast_rays_direct(game);
+	
+	rendered = 1;
 	return (0);
 }
 

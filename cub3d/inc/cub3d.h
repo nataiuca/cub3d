@@ -139,6 +139,7 @@ int		render_frame(t_game *game);
 void	move_player(t_game *game, int direction);
 void	rotate_player(t_game *game, int direction);
 void	print_debug_info(t_game *game);
+void	cast_rays_direct(t_game *game);
 
 /* utils/cleanup.c */
 void	cleanup_game(t_game *game);

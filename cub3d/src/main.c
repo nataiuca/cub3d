@@ -123,6 +123,9 @@ int	main(int argc, char **argv)
 	/* Renderizar el primer frame */
 	render_frame(&game);
 	
+	/* Configurar el loop_hook para que mlx_loop no crashee */
+	mlx_loop_hook(game.mlx, render_frame, &game);
+	
 	/* Paso 5: Iniciar el loop principal del juego */
 	mlx_loop(game.mlx);
 	

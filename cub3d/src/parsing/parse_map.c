@@ -153,8 +153,12 @@ static int	read_map_data(char *filename, t_game *game)
 		return (0);
 	
 	/* Inicializar todas las posiciones a NULL */
-	for (int j = 0; j <= game->map->height; j++)
+	int j = 0;
+	while (j <= game->map->height)
+	{
 		game->map->grid[j] = NULL;
+		j++;
+	}
 	
 	/* Abrir archivo nuevamente */
 	fd = open(filename, O_RDONLY);
@@ -192,7 +196,7 @@ static int	read_map_data(char *filename, t_game *game)
 			line[len - 1] = '\0';
 			
 		/* Validar caracteres de la línea */
-		int j = 0;
+		j = 0;
 		while (line[j])
 		{
 			if (!is_valid_char(line[j]))

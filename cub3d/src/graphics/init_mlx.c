@@ -206,8 +206,8 @@ int	init_graphics(t_game *game)
 	mlx_hook(game->window, 2, 1L<<0, handle_keypress, game);    /* Tecla presionada */
 	mlx_hook(game->window, 17, 1L<<17, handle_close, game);     /* Cerrar ventana */
 	
-	/* Configurar loop de render */
-	mlx_loop_hook(game->mlx, render_frame, game);
+	/* NO configurar loop de render automático por ahora */
+	/* mlx_loop_hook(game->mlx, render_frame, game); */
 	
 	printf("✅ Sistema gráfico inicializado correctamente\n");
 	return (1);
@@ -256,7 +256,18 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 	/* Escribir color según el formato de bits por píxel */
 	if (img->bits_per_pixel == 32)
 	{
-		*(unsigned int*)dst = color;
+		/* En Mac, a veces necesita formato BGRA */
+		if (img->endian == 0)  /* Little endian */
+		{
+			dst[0] = (color) & 0xFF;        /* Blue */
+			dst[1] = (color >> 8) & 0xFF;   /* Green */
+			dst[2] = (color >> 16) & 0xFF;  /* Red */
+			dst[3] = 0;                     /* Alpha */
+		}
+		else  /* Big endian */
+		{
+			*(unsigned int*)dst = color;
+		}
 	}
 	else if (img->bits_per_pixel == 24)
 	{
