@@ -1,4 +1,3 @@
-
 # Program name
 NAME = cub3D
 
@@ -7,16 +6,19 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 MATHFLAGS = -lm
 
-# MLX flags (different for Mac/Linux)
-UNAME = $(shell uname)
+# Detect OS
+UNAME := $(shell uname)
+
 ifeq ($(UNAME), Darwin)
-	# Mac OS
-	MLX_FLAGS = -lmlx -framework OpenGL -framework AppKit
+	# macOS
 	MLX_DIR = minilibx
+	MLX_FLAGS = -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit
+	MLX_MAKE = make -C $(MLX_DIR)
 else
 	# Linux
-	MLX_FLAGS = -lmlx -lX11 -lXext
 	MLX_DIR = minilibx_linux
+	MLX_FLAGS = -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
+	MLX_MAKE = make -C $(MLX_DIR)
 endif
 
 # Directories
@@ -63,8 +65,10 @@ COMPILED = 0
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJECTS)
+	@echo "$(BLUE)🔨 Compiling MLX in $(MLX_DIR)...$(RESET)"
+	@$(MLX_MAKE)
 	@echo "$(BLUE)🔗 Linking $(NAME)...$(RESET)"
-	@$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT) -L$(MLX_DIR) $(MLX_FLAGS) $(MATHFLAGS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 	@echo "$(GREEN)✅ $(NAME) compiled successfully!$(RESET)"
 	@echo "$(YELLOW)📋 Usage: ./$(NAME) <map.cub>$(RESET)"
 
@@ -79,7 +83,6 @@ $(LIBFT):
 	@echo "$(BLUE)📚 Compiling libft...$(RESET)"
 	@make -C $(LIBFT_DIR) --no-print-directory
 	@echo "$(GREEN)✅ libft compiled$(RESET)"
-
 
 # Create example map and textures
 setup: $(NAME)
@@ -109,6 +112,7 @@ clean:
 	@echo "$(RED)🧹 Cleaning object files...$(RESET)"
 	@rm -rf $(OBJDIR)
 	@make -C $(LIBFT_DIR) clean --no-print-directory
+	@$(MLX_MAKE) clean || true
 
 fclean: clean
 	@echo "$(RED)🗑️  Cleaning executable...$(RESET)"
@@ -135,17 +139,17 @@ check:
 	@test -d $(MLX_DIR) && echo "$(GREEN)✅ MLX directory found$(RESET)" || echo "$(RED)❌ MLX directory missing$(RESET)"
 	@echo "Checking for required source files..."
 	@for src in $(SRCS); do \
-		if [ -f $src ]; then \
-			echo "$(GREEN)✅ $src$(RESET)"; \
+		if [ -f $${src} ]; then \
+			echo "$(GREEN)✅ $${src}$(RESET)"; \
 		else \
-			echo "$(RED)❌ $src missing$(RESET)"; \
+			echo "$(RED)❌ $${src} missing$(RESET)"; \
 		fi; \
 	done
 
 # Test compilation without linking (useful for checking syntax)
 test-compile:
 	@echo "$(BLUE)🧪 Testing compilation without linking...$(RESET)"
-	@$(CC) $(CFLAGS) $(INC) -c $(SRCS)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $(SRCS)
 	@echo "$(GREEN)✅ All files compile without errors$(RESET)"
 	@rm -f *.o
 
@@ -172,7 +176,7 @@ help:
 	@echo ""
 	@echo "$(YELLOW)Required files:$(RESET)"
 	@echo "  - libft/ directory with your libft"
-	@echo "  - minilibx/ directory (Mac) or mlx_linux/ directory (Linux)"
+	@echo "  - minilibx/ directory (Mac) or minilibx_linux/ directory (Linux)"
 	@echo "  - .xpm texture files in textures/"
 
 # Show project structure
