@@ -318,9 +318,9 @@ int	find_player(t_game *game)
 		game->player->plane_y = -0.66;
 	}
 	
-	/* Configurar velocidades */
-	game->player->move_speed = 0.05;
-	game->player->rot_speed = 0.03;
+	/* Configurar velocidades más rápidas */
+	game->player->move_speed = 0.1;  /* Aumentado de 0.05 */
+	game->player->rot_speed = 0.08;  /* Aumentado de 0.03 */
 	
 	return (1);
 }

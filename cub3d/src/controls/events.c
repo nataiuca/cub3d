@@ -165,57 +165,6 @@ int	handle_close(t_game *game)
 }
 
 /*
-** Función para renderizar usando mlx_pixel_put directo (compatible con Mac)
-*/
-void	draw_direct_line(t_game *game, int x)
-{
-	int		y;
-	int		wall_color;
-	
-	/* Determinar color según la dirección de la pared */
-	if (game->ray->side == 0) /* Lado vertical (Norte/Sur) */
-	{
-		if (game->ray->step_x > 0)
-			wall_color = 0xFF0000; /* Rojo para Este */
-		else
-			wall_color = 0x0000FF; /* Azul para Oeste */
-	}
-	else /* Lado horizontal (Este/Oeste) */
-	{
-		if (game->ray->step_y > 0)
-			wall_color = 0x00FF00; /* Verde para Sur */
-		else
-			wall_color = 0xFFFFFF; /* Blanco para Norte */
-	}
-	
-	/* Oscurecer paredes horizontales */
-	if (game->ray->side == 1)
-		wall_color = (wall_color >> 1) & 8355711;
-	
-	/* Dibujar la columna píxel por píxel directamente */
-	y = 0;
-	while (y < WINDOW_HEIGHT)
-	{
-		if (y < game->ray->draw_start)
-		{
-			/* Techo */
-			mlx_pixel_put(game->mlx, game->window, x, y, game->map->ceiling_color);
-		}
-		else if (y >= game->ray->draw_start && y <= game->ray->draw_end)
-		{
-			/* Pared */
-			mlx_pixel_put(game->mlx, game->window, x, y, wall_color);
-		}
-		else
-		{
-			/* Suelo */
-			mlx_pixel_put(game->mlx, game->window, x, y, game->map->floor_color);
-		}
-		y++;
-	}
-}
-
-/*
 ** Raycasting directo para Mac (sin buffer de imagen)
 */
 void	cast_rays_direct(t_game *game)

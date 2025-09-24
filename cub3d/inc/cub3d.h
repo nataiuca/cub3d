@@ -7,22 +7,39 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <math.h>
-# include "libft.h"
-# include <mlx.h>
+# include "../libft/libft.h"
+# include "../minilibx/mlx.h"
 
 /* Constantes para la ventana y el juego */
 # define WINDOW_WIDTH 1024
 # define WINDOW_HEIGHT 768
 # define TEXTURE_SIZE 64
 
-/* Códigos de teclas (pueden variar según el sistema) */
-# define KEY_W 13
-# define KEY_A 0
-# define KEY_S 1
-# define KEY_D 2
-# define KEY_LEFT 123
-# define KEY_RIGHT 124
-# define KEY_ESC 53
+/* Códigos de teclas multiplataforma */
+#ifdef __APPLE__
+	/* macOS */
+	# define KEY_W 13
+	# define KEY_A 0
+	# define KEY_S 1
+	# define KEY_D 2
+	# define KEY_LEFT 123
+	# define KEY_RIGHT 124
+	# define KEY_ESC 53
+#else
+	/* Linux */
+	# define KEY_W 119
+	# define KEY_A 97
+	# define KEY_S 115
+	# define KEY_D 100
+	# define KEY_LEFT 65361
+	# define KEY_RIGHT 65363
+	# define KEY_ESC 65307
+	/* Teclas alternativas para Linux */
+	# define KEY_W_ALT 87   /* W mayúscula */
+	# define KEY_A_ALT 65   /* A mayúscula */
+	# define KEY_S_ALT 83   /* S mayúscula */
+	# define KEY_D_ALT 68   /* D mayúscula */
+#endif
 
 /* Colores por defecto */
 # define BLACK 0x000000
@@ -124,13 +141,14 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color);
 void	cast_rays(t_game *game);
 void	cast_rays_simple(t_game *game);
 void	calculate_ray(t_game *game, int x);
+void	calculate_step_and_side_dist(t_game *game);
 void	perform_dda(t_game *game);
 void	calculate_wall_distance(t_game *game);
-void	calculate_step_and_side_dist(t_game *game);
 
-/* graphics/draw.c */
-void	draw_frame(t_game *game);
-void	draw_vertical_line(t_game *game, int x);
+/* graphics/simple_draw.c */
+void	cast_rays_simple(t_game *game);
+void	cast_rays_direct(t_game *game);
+void	draw_direct_line(t_game *game, int x);
 
 /* controls/events.c */
 int		handle_keypress(int keycode, t_game *game);
@@ -139,7 +157,6 @@ int		render_frame(t_game *game);
 void	move_player(t_game *game, int direction);
 void	rotate_player(t_game *game, int direction);
 void	print_debug_info(t_game *game);
-void	cast_rays_direct(t_game *game);
 
 /* utils/cleanup.c */
 void	cleanup_game(t_game *game);
