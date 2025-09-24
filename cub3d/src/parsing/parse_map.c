@@ -247,10 +247,10 @@ int	find_player(t_game *game)
 	int		j;
 	int		player_count;
 	char	player_char;
-	
+
 	player_count = 0;
 	player_char = '\0';
-	
+
 	/* Buscar jugador en todo el mapa */
 	i = 0;
 	while (i < game->map->height)
@@ -263,19 +263,22 @@ int	find_player(t_game *game)
 			{
 				player_count++;
 				player_char = game->map->grid[i][j];
-				
+
 				/* Guardar posición del jugador */
 				game->player->pos_x = j + 0.5; /* Centro de la casilla */
 				game->player->pos_y = i + 0.5;
-				
-				printf("👤 Jugador encontrado en (%d, %d) mirando %c\n", 
+
+				printf("👤 Jugador encontrado en (%d, %d) mirando %c\n",
 					   j, i, player_char);
+
+				/* 👉 REEMPLAZAR el carácter del jugador por '0' para que sea espacio libre */
+				game->map->grid[i][j] = '0';
 			}
 			j++;
 		}
 		i++;
 	}
-	
+
 	/* Validar que hay exactamente un jugador */
 	if (player_count == 0)
 	{
@@ -287,7 +290,7 @@ int	find_player(t_game *game)
 		printf("❌ Hay más de un jugador en el mapa (%d)\n", player_count);
 		return (0);
 	}
-	
+
 	/* Configurar dirección inicial según orientación */
 	if (player_char == 'N')
 	{
@@ -317,11 +320,11 @@ int	find_player(t_game *game)
 		game->player->plane_x = 0;
 		game->player->plane_y = -0.66;
 	}
-	
+
 	/* Configurar velocidades más rápidas */
 	game->player->move_speed = 0.1;  /* Aumentado de 0.05 */
 	game->player->rot_speed = 0.08;  /* Aumentado de 0.03 */
-	
+
 	return (1);
 }
 

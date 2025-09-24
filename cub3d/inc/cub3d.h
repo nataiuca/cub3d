@@ -8,7 +8,7 @@
 # include <fcntl.h>
 # include <math.h>
 # include "../libft/libft.h"
-# include "../minilibx/mlx.h"
+# include "mlx.h"
 
 /* Constantes para la ventana y el juego */
 # define WINDOW_WIDTH 1024

@@ -38,19 +38,25 @@ void	rotate_player(t_game *game, int direction)
 */
 static int	is_valid_position(t_game *game, double x, double y)
 {
-	int	map_x;
-	int	map_y;
+	int	map_x = (int)x;
+	int	map_y = (int)y;
+
+	printf("🔍 Verificando posición (%.2f, %.2f) → (%d, %d)\n", x, y, map_x, map_y);
 	
-	map_x = (int)x;
-	map_y = (int)y;
-	
-	/* Verificar límites del mapa */
 	if (map_x < 0 || map_x >= game->map->width || 
 		map_y < 0 || map_y >= game->map->height)
+	{
+		printf("❌ Fuera de los límites del mapa\n");
 		return (0);
-		
-	/* Verificar que no sea una pared */
-	return (game->map->grid[map_y][map_x] == '0');
+	}
+
+	if (game->map->grid[map_y][map_x] != '0')
+	{
+		printf("🧱 Colisión con pared: '%c' en el mapa\n", game->map->grid[map_y][map_x]);
+		return (0);
+	}
+
+	return (1);
 }
 
 /*
@@ -63,11 +69,11 @@ void	move_player(t_game *game, int direction)
 	double	new_x;
 	double	new_y;
 	double	move_speed;
-	
+
 	move_speed = game->player->move_speed;
 	new_x = game->player->pos_x;
 	new_y = game->player->pos_y;
-	
+
 	/* Calcular nueva posición según dirección */
 	if (direction == 1) /* Adelante (W) */
 	{
@@ -81,7 +87,7 @@ void	move_player(t_game *game, int direction)
 	}
 	else if (direction == 2) /* Derecha (D) - perpendicular a la dirección */
 	{
-		new_x += game->player->dir_y * move_speed;  /* Perpendicular */
+		new_x += game->player->dir_y * move_speed;
 		new_y -= game->player->dir_x * move_speed;
 	}
 	else if (direction == -2) /* Izquierda (A) */
@@ -89,67 +95,94 @@ void	move_player(t_game *game, int direction)
 		new_x -= game->player->dir_y * move_speed;
 		new_y += game->player->dir_x * move_speed;
 	}
-	
+
 	/* Verificar colisiones y mover */
 	if (is_valid_position(game, new_x, game->player->pos_y))
 		game->player->pos_x = new_x;
 	if (is_valid_position(game, game->player->pos_x, new_y))
 		game->player->pos_y = new_y;
+
+	/* Mostrar nueva posición del jugador */
+	printf("🧍 Nueva posición del jugador: (%.2f, %.2f)\n",
+		   game->player->pos_x, game->player->pos_y);
 }
+
 
 /*
 ** Función para manejar teclas presionadas con renderizado directo
 */
 int	handle_keypress(int keycode, t_game *game)
 {
-	static int movements = 0;
+	printf("🔑 Keycode presionado: %d\n", keycode);  // 👈 Verás esto en terminal
 	
 	if (keycode == KEY_ESC)
 	{
-		printf("Saliendo del juego...\n");
+		printf("🟥 Tecla ESC: saliendo del juego...\n");
 		cleanup_game(game);
 		exit(0);
 	}
-	else if (keycode == KEY_W)
+#if defined(__APPLE__)
+	// Keycodes para macOS
+	if (keycode == KEY_W)
 	{
+		printf("⬆️  Movimiento adelante (W)\n");
 		move_player(game, 1);
-		movements++;
 	}
 	else if (keycode == KEY_S)
 	{
+		printf("⬇️  Movimiento atrás (S)\n");
 		move_player(game, -1);
-		movements++;
 	}
 	else if (keycode == KEY_A)
 	{
+		printf("⬅️  Movimiento izquierda (A)\n");
 		move_player(game, -2);
-		movements++;
 	}
 	else if (keycode == KEY_D)
 	{
+		printf("➡️  Movimiento derecha (D)\n");
 		move_player(game, 2);
-		movements++;
 	}
+#else
+	// Keycodes para Linux (soporta minúsculas y mayúsculas)
+	if (keycode == 119 || keycode == 87) // w o W
+	{
+		printf("⬆️  Movimiento adelante (W)\n");
+		move_player(game, 1);
+	}
+	else if (keycode == 115 || keycode == 83) // s o S
+	{
+		printf("⬇️  Movimiento atrás (S)\n");
+		move_player(game, -1);
+	}
+	else if (keycode == 97 || keycode == 65) // a o A
+	{
+		printf("⬅️  Movimiento izquierda (A)\n");
+		move_player(game, -2);
+	}
+	else if (keycode == 100 || keycode == 68) // d o D
+	{
+		printf("➡️  Movimiento derecha (D)\n");
+		move_player(game, 2);
+	}
+#endif
 	else if (keycode == KEY_LEFT)
 	{
+		printf("🔄 Rotación izquierda (flecha ←)\n");
 		rotate_player(game, -1);
-		movements++;
 	}
 	else if (keycode == KEY_RIGHT)
 	{
+		printf("🔄 Rotación derecha (flecha →)\n");
 		rotate_player(game, 1);
-		movements++;
 	}
-	
-	/* Redibujar con renderizado directo */
-	if (movements > 0 && movements < 50) /* Limitar redibujados para evitar lentitud */
-	{
-		printf("Redibujando escena (movimiento %d)...\n", movements);
-		cast_rays_direct(game);
-	}
+
+	/* Redibujar escena (esto podría optimizarse) */
+	cast_rays_direct(game);
 	
 	return (0);
 }
+
 
 /*
 ** Función para manejar el cierre de la ventana
