@@ -87,13 +87,13 @@ void	move_player(t_game *game, int direction)
 	}
 	else if (direction == 2) /* Derecha (D) - perpendicular a la dirección */
 	{
-		new_x += game->player->dir_y * move_speed;
-		new_y -= game->player->dir_x * move_speed;
+		new_x -= game->player->dir_y * move_speed;
+		new_y += game->player->dir_x * move_speed;
 	}
 	else if (direction == -2) /* Izquierda (A) */
 	{
-		new_x -= game->player->dir_y * move_speed;
-		new_y += game->player->dir_x * move_speed;
+		new_x += game->player->dir_y * move_speed;
+		new_y -= game->player->dir_x * move_speed;
 	}
 
 	/* Verificar colisiones y mover */
