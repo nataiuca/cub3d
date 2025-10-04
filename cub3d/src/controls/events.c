@@ -178,7 +178,8 @@ int	handle_keypress(int keycode, t_game *game)
 	if (movements > 0 && movements < 50) /* Limitar redibujados para evitar lentitud */
 	{
 		printf("Redibujando escena (movimiento %d)...\n", movements);
-		cast_rays_direct(game);
+		cast_rays(game);
+		mlx_put_image_to_window(game->mlx, game->window, game->screen->img, 0, 0);
 	}
 	
 	return (0);
@@ -242,7 +243,8 @@ int	render_frame(t_game *game)
 	printf("Renderizando mundo 3D (modo directo para Mac)...\n");
 	
 	/* Ejecutar raycasting directo */
-	cast_rays(game); //cambiar cuando sea mac a cast_rays_direct
+	cast_rays(game);
+	mlx_put_image_to_window(game->mlx, game->window, game->screen->img, 0, 0);
 	
 	rendered = 1;
 	return (0);
