@@ -50,18 +50,32 @@ static t_img	*create_image(void *mlx, int width, int height)
 static t_img	*load_texture(void *mlx, char *path)
 {
 	t_img	*texture;
+	int		fd;
 	
 	printf("🎨 Cargando textura: %s\n", path);
 	
+	/* Verificación del archivo */
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+	{
+		printf("❌ Error: No se puede abrir el archivo '%s'\n", path);
+		printf("   errno: %d (%s)\n", errno, strerror(errno));
+		return (NULL);
+	}
+	close(fd);
+	
 	texture = malloc(sizeof(t_img));
 	if (!texture)
+	{
+		printf("❌ Error: malloc falló\n");
 		return (NULL);
+	}
 		
 	/* Cargar imagen desde archivo */
 	texture->img = mlx_xpm_file_to_image(mlx, path, &texture->width, &texture->height);
 	if (!texture->img)
 	{
-		printf("❌ Error cargando textura: %s\n", path);
+		printf("❌ Error: mlx_xpm_file_to_image falló para '%s'\n", path);
 		free(texture);
 		return (NULL);
 	}
@@ -71,12 +85,25 @@ static t_img	*load_texture(void *mlx, char *path)
 									 &texture->line_length, &texture->endian);
 	if (!texture->addr)
 	{
+		printf("❌ Error: mlx_get_data_addr falló\n");
 		mlx_destroy_image(mlx, texture->img);
 		free(texture);
 		return (NULL);
 	}
 	
-	printf("✅ Textura cargada: %dx%d píxeles\n", texture->width, texture->height);
+	/* AÑADIDO: Información detallada de la textura */
+	printf("✅ Textura cargada correctamente:\n");
+	printf("   Dimensiones: %dx%d píxeles\n", texture->width, texture->height);
+	printf("   Bits por píxel: %d\n", texture->bits_per_pixel);
+	printf("   Line length: %d bytes\n", texture->line_length);
+	printf("   Endian: %d\n", texture->endian);
+	
+	/* Verificar si las dimensiones son potencia de 2 */
+	if ((texture->width & (texture->width - 1)) != 0)
+		printf("   ℹ️  Ancho no es potencia de 2 (está OK con las correcciones)\n");
+	if ((texture->height & (texture->height - 1)) != 0)
+		printf("   ℹ️  Alto no es potencia de 2 (está OK con las correcciones)\n");
+	
 	return (texture);
 }
 
@@ -221,14 +248,34 @@ int	init_graphics(t_game *game)
 int	get_texture_color(t_img *texture, int x, int y)
 {
 	char	*dst;
+	static int debug_count = 0;
 	
 	/* Verificar que la textura existe */
 	if (!texture || !texture->addr)
+	{
+		if (debug_count < 5)
+		{
+			printf("❌ Textura nula en get_texture_color\n");
+			debug_count++;
+		}
 		return (0xFF00FF); /* Rosa magenta para debug */
+	}
 		
-	/* Verificar límites */
+	/* Verificar límites - MEJORADO */
 	if (x < 0 || x >= texture->width || y < 0 || y >= texture->height)
-		return (0);
+	{
+		if (debug_count < 5)
+		{
+			printf("⚠️  Coordenadas fuera de límites: (%d,%d) max:(%d,%d)\n",
+			       x, y, texture->width, texture->height);
+			debug_count++;
+		}
+		/* Hacer clamp en lugar de devolver 0 */
+		if (x < 0) x = 0;
+		if (x >= texture->width) x = texture->width - 1;
+		if (y < 0) y = 0;
+		if (y >= texture->height) y = texture->height - 1;
+	}
 		
 	/* Calcular posición en memoria */
 	dst = texture->addr + (y * texture->line_length + x * (texture->bits_per_pixel / 8));

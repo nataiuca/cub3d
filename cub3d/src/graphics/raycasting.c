@@ -181,9 +181,30 @@ static void	draw_textured_line(t_game *game, int x)
 	double	step;
 	double	tex_pos;
 	int		color;
+	t_img	*texture;
 	
 	/* Determinar qué textura usar */
 	tex_index = get_texture_index(game);
+	texture = game->textures[tex_index];
+	
+	/* Verificar que la textura existe */
+	if (!texture || !texture->addr)
+	{
+		printf("⚠️  Textura %d no disponible, usando colores sólidos\n", tex_index);
+		/* Dibujar con colores sólidos como fallback */
+		y = 0;
+		while (y < WINDOW_HEIGHT)
+		{
+			if (y < game->ray->draw_start)
+				my_mlx_pixel_put(game->screen, x, y, game->map->ceiling_color);
+			else if (y <= game->ray->draw_end)
+				my_mlx_pixel_put(game->screen, x, y, 0xFF0000); /* Rojo para debug */
+			else
+				my_mlx_pixel_put(game->screen, x, y, game->map->floor_color);
+			y++;
+		}
+		return;
+	}
 	
 	/* Calcular dónde exactamente golpeó la pared */
 	if (game->ray->side == 0)
@@ -193,14 +214,23 @@ static void	draw_textured_line(t_game *game, int x)
 	wall_x -= floor(wall_x); /* Obtener solo la parte decimal */
 	
 	/* Convertir a coordenada x de textura */
-	tex_x = (int)(wall_x * game->textures[tex_index]->width);
+	tex_x = (int)(wall_x * (double)texture->width);
+	
+	/* Ajustar para orientación correcta */
 	if ((game->ray->side == 0 && game->ray->ray_dir_x > 0) ||
 		(game->ray->side == 1 && game->ray->ray_dir_y < 0))
-		tex_x = game->textures[tex_index]->width - tex_x - 1;
+		tex_x = texture->width - tex_x - 1;
+	
+	/* IMPORTANTE: Asegurar que tex_x está dentro de límites */
+	if (tex_x < 0)
+		tex_x = 0;
+	if (tex_x >= texture->width)
+		tex_x = texture->width - 1;
 	
 	/* Calcular paso y posición inicial para la textura */
-	step = 1.0 * game->textures[tex_index]->height / game->ray->line_height;
-	tex_pos = (game->ray->draw_start - WINDOW_HEIGHT / 2 + game->ray->line_height / 2) * step;
+	step = (double)texture->height / (double)game->ray->line_height;
+	tex_pos = (game->ray->draw_start - WINDOW_HEIGHT / 2.0 + 
+	           game->ray->line_height / 2.0) * step;
 	
 	/* Dibujar la columna píxel por píxel */
 	y = 0;
@@ -214,15 +244,38 @@ static void	draw_textured_line(t_game *game, int x)
 		else if (y >= game->ray->draw_start && y <= game->ray->draw_end)
 		{
 			/* Dibujar pared con textura */
-			tex_y = (int)tex_pos & (game->textures[tex_index]->height - 1);
+			
+			/* CORRECCIÓN PRINCIPAL: Usar (int) en lugar de bitwise AND */
+			/* Esto funciona con texturas de cualquier tamaño, no solo potencias de 2 */
+			tex_y = (int)tex_pos;
+			
+			/* Asegurar que tex_y está dentro de límites */
+			if (tex_y < 0)
+				tex_y = 0;
+			if (tex_y >= texture->height)
+				tex_y = texture->height - 1;
+			
 			tex_pos += step;
 			
 			/* Obtener color de la textura */
-			color = get_texture_color(game->textures[tex_index], tex_x, tex_y);
+			color = get_texture_color(texture, tex_x, tex_y);
 			
-			/* Oscurecer paredes horizontales para dar efecto de profundidad */
+			/* Oscurecer paredes horizontales - MÉTODO MEJORADO */
 			if (game->ray->side == 1)
-				color = (color >> 1) & 8355711; /* Dividir RGB por 2 */
+			{
+				/* Separar componentes RGB */
+				int r = (color >> 16) & 0xFF;
+				int g = (color >> 8) & 0xFF;
+				int b = color & 0xFF;
+				
+				/* Reducir cada componente un 25% */
+				r = (r * 3) / 4;
+				g = (g * 3) / 4;
+				b = (b * 3) / 4;
+				
+				/* Recomponer el color */
+				color = (r << 16) | (g << 8) | b;
+			}
 			
 			my_mlx_pixel_put(game->screen, x, y, color);
 		}
@@ -243,32 +296,36 @@ static void	draw_textured_line(t_game *game, int x)
 void	cast_rays(t_game *game)
 {
 	int	x;
-	static int first_time = 1;
+	static int debug_count = 0;
 	
-	if (first_time)
+	// DEBUG: Verificar texturas en el primer frame
+	if (debug_count == 0)
 	{
-		printf("🎯 Iniciando raycasting...\n");
-		first_time = 0;
+		printf("\n🔍 DEBUG TEXTURAS:\n");
+		for (int i = 0; i < 4; i++)
+		{
+			printf("Textura %d: ", i);
+			if (game->textures[i] == NULL)
+				printf("❌ ES NULL\n");
+			else if (game->textures[i]->addr == NULL)
+				printf("⚠️  imagen existe pero addr es NULL\n");
+			else
+				printf("✅ OK (img=%p, addr=%p)\n", 
+					game->textures[i]->img, 
+					game->textures[i]->addr);
+		}
+		printf("\n");
+		debug_count = 1;
 	}
 	
 	x = 0;
 	while (x < WINDOW_WIDTH)
 	{
-		/* Paso 1: Calcular dirección del rayo */
 		calculate_ray(game, x);
-		
-		/* Paso 2: Calcular paso y distancia inicial */
 		calculate_step_and_side_dist(game);
-		
-		/* Paso 3: Ejecutar DDA */
 		perform_dda(game);
-		
-		/* Paso 4: Calcular distancia a la pared */
 		calculate_wall_distance(game);
-		
-		/* Paso 5: Dibujar la columna */
-		draw_textured_line(game, x);
-		
+		draw_textured_line(game, x);  // <-- aquí está fallando
 		x++;
 	}
 }

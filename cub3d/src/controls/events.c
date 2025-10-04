@@ -35,45 +35,69 @@ void	rotate_player(t_game *game, int direction)
 ** Función para verificar si una posición es válida (no es una pared)
 ** - Convierte coordenadas del mundo a coordenadas del mapa
 ** - Verifica que la casilla sea '0' (espacio vacío)
+** - Añade un margen de seguridad para evitar atravesar paredes en las esquinas
 */
 static int	is_valid_position(t_game *game, double x, double y)
 {
-	int	map_x = (int)x;
-	int	map_y = (int)y;
-
-	printf("🔍 Verificando posición (%.2f, %.2f) → (%d, %d)\n", x, y, map_x, map_y);
+	int		map_x;
+	int		map_y;
+	double	margin;
 	
+	margin = 0.3; /* Margen de seguridad para el jugador */
+	
+	/* Verificar la posición central */
+	map_x = (int)x;
+	map_y = (int)y;
+	
+	/* Verificar límites del mapa */
 	if (map_x < 0 || map_x >= game->map->width || 
 		map_y < 0 || map_y >= game->map->height)
-	{
-		printf("❌ Fuera de los límites del mapa\n");
 		return (0);
-	}
-
-	if (game->map->grid[map_y][map_x] != '0')
-	{
-		printf("🧱 Colisión con pared: '%c' en el mapa\n", game->map->grid[map_y][map_x]);
+		
+	/* Verificar que la casilla central no sea pared */
+	if (game->map->grid[map_y][map_x] != '0' && 
+		game->map->grid[map_y][map_x] != 'N' &&
+		game->map->grid[map_y][map_x] != 'S' &&
+		game->map->grid[map_y][map_x] != 'E' &&
+		game->map->grid[map_y][map_x] != 'W')
 		return (0);
-	}
-
+	
+	/* Verificar esquinas del jugador para evitar atravesar en diagonal */
+	/* Esquina superior izquierda */
+	if (game->map->grid[(int)(y - margin)][(int)(x - margin)] == '1')
+		return (0);
+	
+	/* Esquina superior derecha */
+	if (game->map->grid[(int)(y - margin)][(int)(x + margin)] == '1')
+		return (0);
+	
+	/* Esquina inferior izquierda */
+	if (game->map->grid[(int)(y + margin)][(int)(x - margin)] == '1')
+		return (0);
+	
+	/* Esquina inferior derecha */
+	if (game->map->grid[(int)(y + margin)][(int)(x + margin)] == '1')
+		return (0);
+	
 	return (1);
 }
 
 /*
-** Función para mover al jugador
+** Función para mover al jugador con detección de colisiones mejorada
 ** - direction: 1 = adelante, -1 = atrás, 2 = derecha, -2 = izquierda
 ** - Verifica colisiones antes de mover
+** - Permite "deslizarse" por las paredes (sliding)
 */
 void	move_player(t_game *game, int direction)
 {
 	double	new_x;
 	double	new_y;
 	double	move_speed;
-
+	
 	move_speed = game->player->move_speed;
 	new_x = game->player->pos_x;
 	new_y = game->player->pos_y;
-
+	
 	/* Calcular nueva posición según dirección */
 	if (direction == 1) /* Adelante (W) */
 	{
@@ -85,7 +109,7 @@ void	move_player(t_game *game, int direction)
 		new_x -= game->player->dir_x * move_speed;
 		new_y -= game->player->dir_y * move_speed;
 	}
-	else if (direction == 2) /* Derecha (D) - perpendicular a la dirección */
+	else if (direction == 2) /* Derecha (D) */
 	{
 		new_x -= game->player->dir_y * move_speed;
 		new_y += game->player->dir_x * move_speed;
@@ -95,94 +119,70 @@ void	move_player(t_game *game, int direction)
 		new_x += game->player->dir_y * move_speed;
 		new_y -= game->player->dir_x * move_speed;
 	}
-
-	/* Verificar colisiones y mover */
+	
+	/* Verificar colisiones en X y Y por separado para permitir "sliding" */
+	/* Intentar mover en X */
 	if (is_valid_position(game, new_x, game->player->pos_y))
 		game->player->pos_x = new_x;
+	
+	/* Intentar mover en Y */
 	if (is_valid_position(game, game->player->pos_x, new_y))
 		game->player->pos_y = new_y;
-
-	/* Mostrar nueva posición del jugador */
-	printf("🧍 Nueva posición del jugador: (%.2f, %.2f)\n",
-		   game->player->pos_x, game->player->pos_y);
 }
-
 
 /*
 ** Función para manejar teclas presionadas con renderizado directo
 */
 int	handle_keypress(int keycode, t_game *game)
 {
-	printf("🔑 Keycode presionado: %d\n", keycode);  // 👈 Verás esto en terminal
+	static int movements = 0;
 	
 	if (keycode == KEY_ESC)
 	{
-		printf("🟥 Tecla ESC: saliendo del juego...\n");
+		printf("Saliendo del juego...\n");
 		cleanup_game(game);
 		exit(0);
 	}
-#if defined(__APPLE__)
-	// Keycodes para macOS
-	if (keycode == KEY_W)
+	else if (keycode == KEY_W)
 	{
-		printf("⬆️  Movimiento adelante (W)\n");
 		move_player(game, 1);
+		movements++;
 	}
 	else if (keycode == KEY_S)
 	{
-		printf("⬇️  Movimiento atrás (S)\n");
 		move_player(game, -1);
+		movements++;
 	}
 	else if (keycode == KEY_A)
 	{
-		printf("⬅️  Movimiento izquierda (A)\n");
 		move_player(game, -2);
+		movements++;
 	}
 	else if (keycode == KEY_D)
 	{
-		printf("➡️  Movimiento derecha (D)\n");
 		move_player(game, 2);
+		movements++;
 	}
-#else
-	// Keycodes para Linux (soporta minúsculas y mayúsculas)
-	if (keycode == 119 || keycode == 87) // w o W
-	{
-		printf("⬆️  Movimiento adelante (W)\n");
-		move_player(game, 1);
-	}
-	else if (keycode == 115 || keycode == 83) // s o S
-	{
-		printf("⬇️  Movimiento atrás (S)\n");
-		move_player(game, -1);
-	}
-	else if (keycode == 97 || keycode == 65) // a o A
-	{
-		printf("⬅️  Movimiento izquierda (A)\n");
-		move_player(game, -2);
-	}
-	else if (keycode == 100 || keycode == 68) // d o D
-	{
-		printf("➡️  Movimiento derecha (D)\n");
-		move_player(game, 2);
-	}
-#endif
 	else if (keycode == KEY_LEFT)
 	{
-		printf("🔄 Rotación izquierda (flecha ←)\n");
 		rotate_player(game, -1);
+		movements++;
 	}
 	else if (keycode == KEY_RIGHT)
 	{
-		printf("🔄 Rotación derecha (flecha →)\n");
 		rotate_player(game, 1);
+		movements++;
 	}
-
-	/* Redibujar escena (esto podría optimizarse) */
-	cast_rays_direct(game);
+	
+	/* Redibujar con renderizado directo */
+	if (movements > 0 && movements < 50) /* Limitar redibujados para evitar lentitud */
+	{
+		printf("Redibujando escena (movimiento %d)...\n", movements);
+		cast_rays_direct(game);
+	}
 	
 	return (0);
 }
-
 
 /*
 ** Función para manejar el cierre de la ventana
@@ -242,7 +242,7 @@ int	render_frame(t_game *game)
 	printf("Renderizando mundo 3D (modo directo para Mac)...\n");
 	
 	/* Ejecutar raycasting directo */
-	cast_rays_direct(game);
+	cast_rays(game); //cambiar cuando sea mac a cast_rays_direct
 	
 	rendered = 1;
 	return (0);
