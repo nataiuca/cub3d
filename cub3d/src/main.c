@@ -1,30 +1,25 @@
 
 #include "../inc/cub3d.h"
 
+/* ========================================================================== */
+/* ⚠️  INICIO: CÓDIGO COMPATIBLE MAC/LINUX - OK PARA DESARROLLO              */
+/* ========================================================================== */
+
 /*
-** Función para inicializar todas las estructuras del juego
-** - Reserva memoria para cada estructura
-** - Pone valores por defecto
+** Inicializa estructuras del juego
+** Reserva memoria y pone valores por defecto
 */
-static int	init_game(t_game *game)
+static int	init_structs(t_game *game)
 {
-	/* Inicializar todo a NULL por seguridad */
-	game->mlx = NULL;
-	game->window = NULL;
-	game->screen = NULL;
-	
-	/* Reservar memoria para cada estructura */
 	game->map = malloc(sizeof(t_map));
 	if (!game->map)
 		return (0);
-		
 	game->player = malloc(sizeof(t_player));
 	if (!game->player)
 	{
 		free(game->map);
 		return (0);
 	}
-	
 	game->ray = malloc(sizeof(t_ray));
 	if (!game->ray)
 	{
@@ -32,104 +27,135 @@ static int	init_game(t_game *game)
 		free(game->player);
 		return (0);
 	}
-	
-	/* Inicializar texturas a NULL */
-	game->textures[0] = NULL; /* Norte */
-	game->textures[1] = NULL; /* Sur */
-	game->textures[2] = NULL; /* Este */
-	game->textures[3] = NULL; /* Oeste */
-	
-	/* Inicializar valores por defecto del mapa */
-	init_map(game->map);
-	
-	printf("✅ Estructuras del juego inicializadas\n");
 	return (1);
 }
 
 /*
-** Función para validar los argumentos de entrada
-** - Debe haber exactamente 2 argumentos (programa + archivo.cub)
-** - El archivo debe terminar en .cub
+** Inicializa el juego completo
+** Pone todo a NULL por seguridad antes de reservar memoria
+*/
+static int	init_game(t_game *game)
+{
+	game->mlx = NULL;
+	game->window = NULL;
+	game->screen = NULL;
+	game->textures[0] = NULL;
+	game->textures[1] = NULL;
+	game->textures[2] = NULL;
+	game->textures[3] = NULL;
+	if (!init_structs(game))
+		return (0);
+	init_map(game->map);
+	return (1);
+}
+
+/*
+** Valida argumentos de entrada
+** Debe haber exactamente 2 argumentos y el archivo debe terminar en .cub
 */
 static int	validate_args(int argc, char **argv)
 {
 	char	*extension;
-	
+
 	if (argc != 2)
 	{
-		printf("❌ Error: Uso correcto: ./cub3d <mapa.cub>\n");
+		write(2, "Error\n", 6);
+		write(2, "Usage: ./cub3D <map.cub>\n", 25);
 		return (0);
 	}
-	
-	/* Buscar la extensión del archivo */
 	extension = ft_strrchr(argv[1], '.');
 	if (!extension || ft_strcmp(extension, ".cub") != 0)
 	{
-		printf("❌ Error: El archivo debe tener extensión .cub\n");
+		write(2, "Error\n", 6);
+		write(2, "File must have .cub extension\n", 31);
 		return (0);
 	}
-	
-	printf("✅ Argumentos válidos: %s\n", argv[1]);
 	return (1);
 }
 
+/* ========================================================================== */
+/* ⚠️  SECCIÓN MAC: SOLO PARA DESARROLLO - ELIMINAR PARA ENTREGA            */
+/* ========================================================================== */
+
+#ifdef __APPLE__
 /*
-** Función principal del programa
-** 1. Valida argumentos
-** 2. Inicializa estructuras
-** 3. Parsea el archivo .cub
-** 4. Inicializa gráficos
-** 5. Inicia el juego
+** MENSAJE DE DEBUG PARA MAC
+** Esta función solo existe en la versión de desarrollo para Mac
+** Te avisa que estás usando la versión de Mac
+*/
+static void	print_mac_warning(void)
+{
+	write(1, "\n", 1);
+	write(1, "🍎 RUNNING ON MAC - DEVELOPMENT VERSION\n", 41);
+	write(1, "⚠️  Remember to remove Mac code before submission!\n", 54);
+	write(1, "\n", 1);
+}
+
+/*
+** MAIN PARA MAC - VERSIÓN DE DESARROLLO
+** Incluye mensaje de advertencia y configuración específica de Mac
 */
 int	main(int argc, char **argv)
 {
 	t_game	game;
-	
-	printf("🎮 Iniciando cub3D...\n");
-	
-	/* Paso 1: Validar argumentos */
+
+	print_mac_warning();
 	if (!validate_args(argc, argv))
 		return (1);
-	
-	/* Paso 2: Inicializar estructuras del juego */
 	if (!init_game(&game))
-	{
-		printf("❌ Error: No se pudo inicializar el juego\n");
-		return (1);
-	}
-	
-	/* Paso 3: Parsear el archivo .cub */
+		error_exit("Failed to initialize game");
 	if (!parse_file(argv[1], &game))
-	{
-		printf("❌ Error: No se pudo parsear el archivo\n");
-		cleanup_game(&game);
-		return (1);
-	}
-	
-	/* Paso 4: Inicializar gráficos (MLX) */
+		error_cleanup_exit("Failed to parse file", &game);
 	if (!init_graphics(&game))
-	{
-		printf("❌ Error: No se pudo inicializar MLX\n");
-		cleanup_game(&game);
-		return (1);
-	}
-	
-	printf("🚀 ¡Juego iniciado correctamente!\n");
-	printf("Controles:\n");
-	printf("  WASD - Moverse\n");
-	printf("  ←→ - Girar cámara\n");
-	printf("  ESC - Salir\n");
-	
-	/* Renderizar el primer frame */
-	render_frame(&game);
-	
-	/* Configurar el loop_hook para que mlx_loop no crashee */
-	mlx_loop_hook(game.mlx, render_frame, &game);
-	
-	/* Paso 5: Iniciar el loop principal del juego */
+		error_cleanup_exit("Failed to initialize graphics", &game);
+	write(1, "✅ Game initialized successfully!\n", 37);
+	write(1, "Controls: WASD=move, Arrows=rotate, ESC=exit\n", 46);
+	render_game(&game);
+	mlx_hook(game.window, 2, 1L << 0, handle_keypress, &game);
+	mlx_hook(game.window, 17, 0, handle_close, &game);
 	mlx_loop(game.mlx);
-	
-	/* Limpiar memoria al salir */
 	cleanup_game(&game);
 	return (0);
 }
+
+#else
+
+/* ========================================================================== */
+/* ✅ SECCIÓN LINUX: VERSIÓN FINAL PARA ENTREGA                              */
+/* ========================================================================== */
+
+/*
+** MAIN PARA LINUX - VERSIÓN FINAL
+** Esta es la versión que debes entregar en el campus
+** Sin mensajes específicos de Mac
+*/
+int	main(int argc, char **argv)
+{
+	t_game	game;
+
+	if (!validate_args(argc, argv))
+		return (1);
+	if (!init_game(&game))
+		error_exit("Failed to initialize game");
+	if (!parse_file(argv[1], &game))
+		error_cleanup_exit("Failed to parse file", &game);
+	if (!init_graphics(&game))
+		error_cleanup_exit("Failed to initialize graphics", &game);
+	render_game(&game);
+	mlx_hook(game.window, 2, 1L << 0, handle_keypress, &game);
+	mlx_hook(game.window, 17, 0, handle_close, &game);
+	mlx_loop(game.mlx);
+	cleanup_game(&game);
+	return (0);
+}
+
+#endif
+
+/* ========================================================================== */
+/* 📝 INSTRUCCIONES PARA ENTREGA:                                            */
+/*                                                                            */
+/* OPCIÓN 1 (Recomendada): ELIMINAR TODO DESDE #ifdef __APPLE__ hasta #else */
+/* y eliminar el #endif final. Dejar solo la versión de Linux.               */
+/*                                                                            */
+/* OPCIÓN 2: Reemplazar TODO el archivo por la versión siguiente:            */
+/* ========================================================================== */

@@ -1,82 +1,108 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/10/07 00:00:00 by natferna          #+#    #+#              #
+#    Updated: 2025/10/07 23:48:57 by natferna         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 # Program name
-NAME = cub3D
+NAME		= cub3D
 
 # Compiler and flags
-CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
-MATHFLAGS = -lm
+CC			= cc
+CFLAGS		= -Wall -Wextra -Werror -O3
+MATHFLAGS	= -lm
 
+# ============================================================================ #
+# ⚠️  ELIMINAR PARA ENTREGA: Detección de sistema operativo
+# ============================================================================ #
 # Detect OS
-UNAME := $(shell uname)
+UNAME		:= $(shell uname)
 
 ifeq ($(UNAME), Darwin)
-	# macOS
-	MLX_DIR = minilibx
-	MLX_FLAGS = -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit
-	MLX_MAKE = make -C $(MLX_DIR)
+	# macOS - SOLO PARA DESARROLLO
+	MLX_DIR		= minilibx
+	MLX_FLAGS	= -L$(MLX_DIR) -lmlx -framework OpenGL -framework AppKit
+	MLX_MAKE	= make -C $(MLX_DIR)
 else
-	# Linux
-	MLX_DIR = minilibx_linux
-	MLX_FLAGS = -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
-	MLX_MAKE = make -C $(MLX_DIR)
+	# Linux - VERSIÓN PARA CAMPUS
+	MLX_DIR		= minilibx_linux
+	MLX_FLAGS	= -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
+	MLX_MAKE	= make -C $(MLX_DIR)
 endif
+# ============================================================================ #
+# ⬆️  REEMPLAZAR TODO EL BLOQUE DE ARRIBA POR ESTAS 3 LÍNEAS PARA ENTREGA:
+# MLX_DIR		= minilibx_linux
+# MLX_FLAGS	= -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
+# MLX_MAKE	= make -C $(MLX_DIR)
+# ============================================================================ #
 
 # Directories
-SRCDIR = src
-OBJDIR = obj
-INCDIR = inc
-LIBFT_DIR = libft
+SRCDIR		= src
+OBJDIR		= obj
+INCDIR		= inc
+LIBFT_DIR	= libft
 
-# Source files
-SOURCES = main.c \
-          parsing/parse_file.c \
-          parsing/parse_map.c \
-          graphics/init_mlx.c \
-          graphics/raycasting.c \
-		  graphics/simple_draw.c \
-          controls/events.c \
-          utils/cleanup.c \
-          utils/error.c
+# Source files - VERSIÓN OPTIMIZADA
+SOURCES		= main.c \
+			  parsing/parse_file.c \
+			  parsing/parse_map.c \
+			  graphics/init_mlx.c \
+			  graphics/render.c \
+			  graphics/raycasting.c \
+			  graphics/draw.c \
+			  controls/events.c \
+			  controls/movement.c \
+			  utils/cleanup.c \
+			  utils/error.c
 
-# Add src/ prefix to all source files
-SRCS = $(addprefix $(SRCDIR)/, $(SOURCES))
+# Add src/ prefix
+SRCS		= $(addprefix $(SRCDIR)/, $(SOURCES))
 
 # Object files
-OBJECTS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+OBJECTS		= $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 # Header files
-INCLUDES = -I $(INCDIR) -I $(LIBFT_DIR) -I $(MLX_DIR)
+INCLUDES	= -I $(INCDIR) -I $(LIBFT_DIR) -I $(MLX_DIR)
 
 # Libraries
-LIBFT = $(LIBFT_DIR)/libft.a
+LIBFT		= $(LIBFT_DIR)/libft.a
 
-# Colors for pretty output
-GREEN = \033[0;32m
-RED = \033[0;31m
-BLUE = \033[0;34m
-YELLOW = \033[0;33m
-RESET = \033[0m
+# Colors
+GREEN		= \033[0;32m
+RED			= \033[0;31m
+BLUE		= \033[0;34m
+YELLOW		= \033[0;33m
+RESET		= \033[0m
 
-# Progress tracking
-TOTAL_FILES = $(words $(SOURCES))
-COMPILED = 0
+# Progress
+TOTAL		= $(words $(SOURCES))
+CURRENT		= 0
 
-# Rules
+# ============================================================================ #
+# RULES
+# ============================================================================ #
+
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJECTS)
 	@echo "$(BLUE)🔨 Compiling MLX in $(MLX_DIR)...$(RESET)"
-	@$(MLX_MAKE)
+	@$(MLX_MAKE) 2>/dev/null || true
 	@echo "$(BLUE)🔗 Linking $(NAME)...$(RESET)"
 	@$(CC) $(CFLAGS) $(OBJECTS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 	@echo "$(GREEN)✅ $(NAME) compiled successfully!$(RESET)"
+	@echo "$(GREEN)⚡ Optimized for maximum performance$(RESET)"
 	@echo "$(YELLOW)📋 Usage: ./$(NAME) <map.cub>$(RESET)"
 
-# Compile object files with progress
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(dir $@)
-	@$(eval COMPILED=$(shell echo $(($(COMPILED)+1))))
-	@echo "$(BLUE)📦 [$(COMPILED)/$(TOTAL_FILES)] Compiling $<...$(RESET)"
+	@$(eval CURRENT=$(shell echo $$(($(CURRENT)+1))))
+	@printf "$(BLUE)[%2d/%2d] Compiling %-40s$(RESET)\n" $(CURRENT) $(TOTAL) "$<"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):
@@ -84,127 +110,119 @@ $(LIBFT):
 	@make -C $(LIBFT_DIR) --no-print-directory
 	@echo "$(GREEN)✅ libft compiled$(RESET)"
 
-# Create example map and textures
-setup: $(NAME)
-	@echo "$(BLUE)🗂️  Creating example files...$(RESET)"
-	@mkdir -p maps textures
-	@echo "Creating simple test map..."
-	@echo "NO ./textures/wall_north.xpm" > maps/simple.cub
-	@echo "SO ./textures/wall_south.xpm" >> maps/simple.cub
-	@echo "WE ./textures/wall_west.xpm" >> maps/simple.cub
-	@echo "EA ./textures/wall_east.xpm" >> maps/simple.cub
-	@echo "" >> maps/simple.cub
-	@echo "F 220,100,0" >> maps/simple.cub
-	@echo "C 225,30,0" >> maps/simple.cub
-	@echo "" >> maps/simple.cub
-	@echo "1111111111" >> maps/simple.cub
-	@echo "1000000001" >> maps/simple.cub
-	@echo "1010000101" >> maps/simple.cub
-	@echo "1000N00001" >> maps/simple.cub
-	@echo "1010000101" >> maps/simple.cub
-	@echo "1000000001" >> maps/simple.cub
-	@echo "1111111111" >> maps/simple.cub
-	@echo "$(GREEN)✅ Created maps/simple.cub$(RESET)"
-	@echo "$(YELLOW)⚠️  Don't forget to add your .xpm texture files to textures/$(RESET)"
-	@echo "$(YELLOW)📋 Test with: ./$(NAME) maps/simple.cub$(RESET)"
-
 clean:
 	@echo "$(RED)🧹 Cleaning object files...$(RESET)"
 	@rm -rf $(OBJDIR)
 	@make -C $(LIBFT_DIR) clean --no-print-directory
-	@$(MLX_MAKE) clean || true
+	@$(MLX_MAKE) clean 2>/dev/null || true
 
 fclean: clean
-	@echo "$(RED)🗑️  Cleaning executable...$(RESET)"
+	@echo "$(RED)🗑️  Removing executable...$(RESET)"
 	@rm -f $(NAME)
 	@make -C $(LIBFT_DIR) fclean --no-print-directory
 
 re: fclean all
 
-# Bonus rule (if you add bonus features later)
-bonus: CFLAGS += -DBONUS
-bonus: $(NAME)
+# Norminette check
+norm:
+	@echo "$(BLUE)📏 Checking norminette...$(RESET)"
+	@norminette $(SRCDIR) $(INCDIR) $(LIBFT_DIR) | grep -v "OK!" || true
+	@echo "$(GREEN)✅ Norminette check complete$(RESET)"
 
-# Debug compilation with extra flags
-debug: CFLAGS += -fsanitize=address -g3
+# Debug version with sanitizer
+debug: CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 debug: re
-	@echo "$(YELLOW)🐛 Debug version compiled with AddressSanitizer$(RESET)"
+	@echo "$(YELLOW)🐛 Debug version with AddressSanitizer$(RESET)"
 
-# Check for common issues
-check:
-	@echo "$(BLUE)🔍 Running basic checks...$(RESET)"
-	@echo "Checking for libft..."
-	@test -d $(LIBFT_DIR) && echo "$(GREEN)✅ libft directory found$(RESET)" || echo "$(RED)❌ libft directory missing$(RESET)"
-	@echo "Checking for MLX..."
-	@test -d $(MLX_DIR) && echo "$(GREEN)✅ MLX directory found$(RESET)" || echo "$(RED)❌ MLX directory missing$(RESET)"
-	@echo "Checking for required source files..."
-	@for src in $(SRCS); do \
-		if [ -f $${src} ]; then \
-			echo "$(GREEN)✅ $${src}$(RESET)"; \
-		else \
-			echo "$(RED)❌ $${src} missing$(RESET)"; \
-		fi; \
-	done
+# Fast version (maximum optimization)
+fast: CFLAGS = -Wall -Wextra -Werror -O3 -march=native
+fast: re
+	@echo "$(GREEN)🚀 Ultra-fast version compiled$(RESET)"
 
-# Test compilation without linking (useful for checking syntax)
-test-compile:
-	@echo "$(BLUE)🧪 Testing compilation without linking...$(RESET)"
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $(SRCS)
-	@echo "$(GREEN)✅ All files compile without errors$(RESET)"
-	@rm -f *.o
+# Test map setup
+setup:
+	@echo "$(BLUE)🗂️  Creating test environment...$(RESET)"
+	@mkdir -p maps textures
+	@echo "NO ./textures/north.xpm" > maps/test.cub
+	@echo "SO ./textures/south.xpm" >> maps/test.cub
+	@echo "WE ./textures/west.xpm" >> maps/test.cub
+	@echo "EA ./textures/east.xpm" >> maps/test.cub
+	@echo "" >> maps/test.cub
+	@echo "F 220,100,0" >> maps/test.cub
+	@echo "C 135,206,235" >> maps/test.cub
+	@echo "" >> maps/test.cub
+	@echo "        1111111111111111111111111" >> maps/test.cub
+	@echo "        1000000000110000000000001" >> maps/test.cub
+	@echo "        1011000001110000000000001" >> maps/test.cub
+	@echo "        1001000000000000000000001" >> maps/test.cub
+	@echo "111111111011000001110000000000001" >> maps/test.cub
+	@echo "100000000011000001110111111111111" >> maps/test.cub
+	@echo "11110111111111011100000010001" >> maps/test.cub
+	@echo "11110111111111011101010010001" >> maps/test.cub
+	@echo "11000000110101011100000010001" >> maps/test.cub
+	@echo "10000000000000001100000010001" >> maps/test.cub
+	@echo "10000000000000001101010010001" >> maps/test.cub
+	@echo "11000001110101011111011110N0111" >> maps/test.cub
+	@echo "11110111 1110101 101111010001" >> maps/test.cub
+	@echo "11111111 1111111 111111111111" >> maps/test.cub
+	@echo "$(GREEN)✅ Test map created: maps/test.cub$(RESET)"
+	@echo "$(YELLOW)⚠️  Add your .xpm textures to textures/$(RESET)"
 
-# Show help
+# Performance test
+perf: $(NAME)
+	@echo "$(BLUE)⚡ Running performance test...$(RESET)"
+	@time ./$(NAME) maps/test.cub
+	@echo "$(GREEN)✅ Performance test complete$(RESET)"
+
+# Valgrind memory check (Linux only)
+valgrind: debug
+	@echo "$(BLUE)🔍 Running valgrind...$(RESET)"
+	@valgrind --leak-check=full --show-leak-kinds=all \
+		--track-origins=yes ./$(NAME) maps/test.cub
+
+# ============================================================================ #
+# PREPARACIÓN PARA ENTREGA
+# ============================================================================ #
+prepare-submission:
+	@echo "$(YELLOW)🚨 PREPARANDO PARA ENTREGA EN CAMPUS$(RESET)"
+	@echo ""
+	@echo "$(RED)⚠️  MANUAL CHECKLIST:$(RESET)"
+	@echo "1. Eliminar detección de OS en Makefile (líneas 26-41)"
+	@echo "2. Eliminar macros de Mac en inc/cub3d.h"
+	@echo "3. Verificar que MLX_DIR = minilibx_linux"
+	@echo "4. Ejecutar: make norm"
+	@echo "5. Ejecutar: make fclean && make"
+	@echo "6. Probar en ordenador del campus"
+	@echo ""
+	@echo "$(BLUE)📝 Verificando norminette...$(RESET)"
+	@norminette $(SRCDIR) $(INCDIR) 2>&1 | grep -E "Error|Warning" || \
+		echo "$(GREEN)✅ Norminette OK$(RESET)"
+	@echo ""
+	@echo "$(BLUE)🔍 Archivos que necesitan revisión manual:$(RESET)"
+	@echo "- $(YELLOW)Makefile$(RESET) (eliminar bloques marcados con ⚠️)"
+	@echo "- $(YELLOW)inc/cub3d.h$(RESET) (eliminar #ifdef __APPLE__)"
+
 help:
 	@echo "$(BLUE)🎮 cub3D Makefile Help$(RESET)"
 	@echo ""
-	@echo "$(YELLOW)Available targets:$(RESET)"
-	@echo "  $(GREEN)all$(RESET)          - Compile the project"
-	@echo "  $(GREEN)clean$(RESET)        - Remove object files"
-	@echo "  $(GREEN)fclean$(RESET)       - Remove object files and executable"
-	@echo "  $(GREEN)re$(RESET)           - Recompile everything"
-	@echo "  $(GREEN)bonus$(RESET)        - Compile with bonus features"
-	@echo "  $(GREEN)debug$(RESET)        - Compile with debug flags"
-	@echo "  $(GREEN)setup$(RESET)        - Create example map and directories"
-	@echo "  $(GREEN)check$(RESET)        - Check for required files"
-	@echo "  $(GREEN)test-compile$(RESET) - Test compilation without linking"
-	@echo "  $(GREEN)help$(RESET)         - Show this help"
+	@echo "$(YELLOW)Development (Mac):$(RESET)"
+	@echo "  $(GREEN)make$(RESET)              - Compile project"
+	@echo "  $(GREEN)make setup$(RESET)        - Create test map"
+	@echo "  $(GREEN)make debug$(RESET)        - Compile with sanitizer"
+	@echo "  $(GREEN)make fast$(RESET)         - Compile with max optimization"
 	@echo ""
-	@echo "$(YELLOW)Usage:$(RESET)"
-	@echo "  make setup    # First time setup"
-	@echo "  make          # Compile project" 
-	@echo "  ./cub3D maps/simple.cub"
+	@echo "$(YELLOW)Testing:$(RESET)"
+	@echo "  $(GREEN)make norm$(RESET)         - Check norminette"
+	@echo "  $(GREEN)make perf$(RESET)         - Performance test"
+	@echo "  $(GREEN)make valgrind$(RESET)     - Memory leak check (Linux)"
 	@echo ""
-	@echo "$(YELLOW)Required files:$(RESET)"
-	@echo "  - libft/ directory with your libft"
-	@echo "  - minilibx/ directory (Mac) or minilibx_linux/ directory (Linux)"
-	@echo "  - .xpm texture files in textures/"
+	@echo "$(YELLOW)Pre-submission:$(RESET)"
+	@echo "  $(GREEN)make prepare-submission$(RESET) - Checklist para entrega"
+	@echo ""
+	@echo "$(YELLOW)Cleaning:$(RESET)"
+	@echo "  $(GREEN)make clean$(RESET)        - Remove objects"
+	@echo "  $(GREEN)make fclean$(RESET)       - Remove objects + executable"
+	@echo "  $(GREEN)make re$(RESET)           - Recompile everything"
 
-# Show project structure
-structure:
-	@echo "$(BLUE)📁 Project Structure:$(RESET)"
-	@echo "cub3D/"
-	@echo "├── Makefile"
-	@echo "├── $(INCDIR)/"
-	@echo "│   └── cub3d.h"
-	@echo "├── $(SRCDIR)/"
-	@echo "│   ├── main.c"
-	@echo "│   ├── parsing/"
-	@echo "│   │   ├── parse_file.c"
-	@echo "│   │   └── parse_map.c"
-	@echo "│   ├── graphics/"
-	@echo "│   │   ├── init_mlx.c"
-	@echo "│   │   └── raycasting.c"
-	@echo "│   │   └── simple_draw.c"
-	@echo "│   ├── controls/"
-	@echo "│   │   └── events.c"
-	@echo "│   └── utils/"
-	@echo "│       ├── cleanup.c"
-	@echo "│       └── error.c"
-	@echo "├── $(LIBFT_DIR)/"
-	@echo "├── $(MLX_DIR)/"
-	@echo "├── maps/"
-	@echo "│   └── *.cub"
-	@echo "└── textures/"
-	@echo "    └── *.xpm"
-
-.PHONY: all clean fclean re bonus debug check test-compile help setup structure
+.PHONY: all clean fclean re norm debug fast setup perf valgrind \
+		prepare-submission help

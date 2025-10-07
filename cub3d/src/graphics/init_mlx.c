@@ -24,7 +24,7 @@ static t_img	*create_image(void *mlx, int width, int height)
 	
 	/* Obtener información de la imagen */
 	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel,
-								  &img->line_length, &img->endian);
+								  &img->line_len, &img->endian);
 	if (!img->addr)
 	{
 		mlx_destroy_image(mlx, img->img);
@@ -37,7 +37,7 @@ static t_img	*create_image(void *mlx, int width, int height)
 	
 	/* Debug: mostrar formato de la imagen */
 	printf("🖼️  Imagen creada: %dx%d, %d bits/pixel, line_length=%d, endian=%d\n", 
-		   width, height, img->bits_per_pixel, img->line_length, img->endian);
+		   width, height, img->bits_per_pixel, img->line_len, img->endian);
 	
 	return (img);
 }
@@ -82,7 +82,7 @@ static t_img	*load_texture(void *mlx, char *path)
 	
 	/* Obtener datos de la imagen */
 	texture->addr = mlx_get_data_addr(texture->img, &texture->bits_per_pixel,
-									 &texture->line_length, &texture->endian);
+									 &texture->line_len, &texture->endian);
 	if (!texture->addr)
 	{
 		printf("❌ Error: mlx_get_data_addr falló\n");
@@ -95,7 +95,7 @@ static t_img	*load_texture(void *mlx, char *path)
 	printf("✅ Textura cargada correctamente:\n");
 	printf("   Dimensiones: %dx%d píxeles\n", texture->width, texture->height);
 	printf("   Bits por píxel: %d\n", texture->bits_per_pixel);
-	printf("   Line length: %d bytes\n", texture->line_length);
+	printf("   Line length: %d bytes\n", texture->line_len);
 	printf("   Endian: %d\n", texture->endian);
 	
 	/* Verificar si las dimensiones son potencia de 2 */
@@ -278,7 +278,7 @@ int	get_texture_color(t_img *texture, int x, int y)
 	}
 		
 	/* Calcular posición en memoria */
-	dst = texture->addr + (y * texture->line_length + x * (texture->bits_per_pixel / 8));
+	dst = texture->addr + (y * texture->line_len + x * (texture->bits_per_pixel / 8));
 	
 	/* Devolver color como entero */
 	return (*(unsigned int*)dst);
@@ -298,7 +298,7 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 		return;
 	
 	/* Calcular posición en memoria */
-	dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
+	dst = img->addr + (y * img->line_len + x * (img->bits_per_pixel / 8));
 	
 	/* Escribir color según el formato de bits por píxel */
 	if (img->bits_per_pixel == 32)
