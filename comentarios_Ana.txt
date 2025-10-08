@@ -1,0 +1,16 @@
+Cosas a hacer:
+
+- cambiar estructura t_img por la t_img de la minilibx (+ adaptar código) (en el subject dice de usar images de la minilibx) ❌
+- añadir minimapa ❌
+
+
+PARSEO:
+- creo que el parseo tiene que aceptar espacios entre los valores de los colores ❌
+- el parseo tiene que aceptar líneas vacías entre las líneas de configuración ❌
+- creo que no deberia aceptar líneas vacías dentro del mapa ❌
+- cambiar mensajes de error -> sistematizados desde función msg_error + poner exit status (AHORA MISMO SIEMPRE SE SALE CON EXIT_FAILURE, DA IGUAL) ❌
+
+raycasting:
+
+
+
