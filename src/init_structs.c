@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 13:00:48 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 14:52:27 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static void	init_player(t_player *player)
 	player->py = 0;
 	player->dir = '\0';
 	player->angle = 0;
+
 	player->move_forward = false;
 	player->move_backward = false;
 	player->move_right = false;

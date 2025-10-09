@@ -1,8 +1,8 @@
-NO ./path_texture
+NO ./stone_wall.png
 Invalid line
-SO ./path_texture
-WE ./path_texture
-EA ./path_texture
+SO ./brick_wall.png
+WE ./tile_wall.png
+EA ./palisade.png
 F 220,100,0
 C 250,250,250
 

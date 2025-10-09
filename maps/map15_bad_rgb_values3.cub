@@ -1,8 +1,7 @@
-NO ./textures/wall_north.xpm
-SO ./textures/wall_south.xpm
-WE ./textures/wall_west.xpm
-EA ./textures/wall_east.xpm
-
+NO ./textures/wall_north.png
+SO ./textures/wall_south.png
+WE ./textures/wall_west.png
+EA ./textures/wall_east.png
 F 220,10,90,0
 C 250,250,250
 

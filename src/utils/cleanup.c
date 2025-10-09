@@ -62,22 +62,6 @@ void	free_map(t_map *map)
 }
 
 /*
-** Función para liberar una imagen de MLX
-** - Destruye la imagen en MLX si existe
-** - Libera la estructura
-*/
-static void	free_image(void *mlx, mlx_image_t *img)
-{
-	if (!img)
-		return;
-		
-	if (img && mlx)
-		mlx_delete_image(mlx, img);
-		//mlx_destroy_image(mlx, img->img);
-	free(img);
-}
-
-/*
 ** Función para limpiar todo el juego
 ** - Libera todas las texturas
 ** - Destruye la ventana
@@ -97,12 +81,16 @@ void	cleanup_game(t_game *game)
 	i = 0;
 	while (i < 4)
 	{
-		free_image(game->mlx, game->textures[i]);
+		if(game->textures[i])
+			mlx_delete_image(game->mlx, game->textures[i]);
 		i++;
 	}
+	printf("texturas borradas\n");
 	
 	/* Liberar imagen de pantalla */
-	free_image(game->mlx, game->img);
+	//free_image(game->mlx, game->img);
+	mlx_delete_image(game->mlx, game->img);
+	printf("img de pantalla borrada\n");
 	
 	/* Destruir ventana */
 	/*if (game->window && game->mlx)

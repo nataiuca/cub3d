@@ -88,17 +88,17 @@ static void	draw_simple_line(t_game *game, int x)
 		if (y < game->ray->draw_start)
 		{
 			/* Dibujar techo */
-			my_mlx_pixel_put(game->screen, x, y, game->map->ceiling_color);
+			mlx_put_pixel(game->screen, x, y, game->map->ceiling_color);
 		}
 		else if (y >= game->ray->draw_start && y <= game->ray->draw_end)
 		{
 			/* Dibujar pared con color sólido */
-			my_mlx_pixel_put(game->screen, x, y, wall_color);
+			mlx_put_pixel(game->screen, x, y, wall_color);
 		}
 		else
 		{
 			/* Dibujar suelo */
-			my_mlx_pixel_put(game->screen, x, y, game->map->floor_color);
+			mlx_put_pixel(game->screen, x, y, game->map->floor_color);
 		}
 		y++;
 	}

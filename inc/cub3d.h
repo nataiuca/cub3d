@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 12:09:22 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 15:49:18 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,16 @@
 # include "libft.h"
 # include <MLX42.h>
 
-/* Constantes */
-# define WINDOW_WIDTH 1024
-# define WINDOW_HEIGHT 768
+/* Constants */
+# define WIN_WIDTH 1024
+# define WIN_HEIGHT 768
+
 # define TEXTURE_SIZE 64
 
 # define PI 3.14159265358979323846
+
+# define RIGHT 1
+# define LEFT -1
 
 /* ========================================================================== */
 /* ⚠️  ELIMINAR PARA ENTREGA: Códigos de teclas para macOS                   */
@@ -46,14 +50,6 @@
 # else
 /* ========================================================================== */
 
-/* Linux keycodes - VERSIÓN FINAL PARA ENTREGA */
-#  define KEY_W 119
-#  define KEY_A 97
-#  define KEY_S 115
-#  define KEY_D 100
-#  define KEY_LEFT 65361
-#  define KEY_RIGHT 65363
-#  define KEY_ESC 65307
 
 /* ========================================================================== */
 # endif
@@ -66,13 +62,17 @@
 # define ERR_USAGE ": Usage: ./cub3d <map.dup>"
 # define ERR_FILE_EXT ": File must have .cub extension."
 
-# define ERR_INIT ": Faied to initialize game."
-# define ERR_LOAD_DATA ": Failed loading file data."
-# define ERR_PARSE ": Failed to parse file. "
+# define ERR_INIT ": Failed to initialize game."
+# define ERR_LOAD_DATA ": Failed to load file data."
+
+# define ERR_LOAD_TEX ": Failed to load texture :"
+# define ERR_TEX_TO_IMG ": Failed to convert texture to image"
+# define ERR_MLX_INIT ": mlx initialization failed"
+# define ERR_IMG_MINIMAP ": The minimap image could not be created"
+# define ERR_INIT_GRAPHS ": Failed to initialize graphics"
+
 
 # define ERR_MALLOC ": Malloc failed"
-
-# define ERR_MLX_INIT ": mlx initialization failed"
 
 //Parsing error
 
@@ -96,7 +96,11 @@
 # define ERR_NO_MAP ": Map is missing"
 # define ERR_AFTER_MAP ": Unexpected line after the map"
 
-# define ERR_IMG_MINIMAP ": The minimap image could not be created"
+# define ERR_PARSE ": Failed to parse file. "
+
+
+//Parsing error
+
 
 /* Colors for msgs */
 # define RED "\033[0;31m"
@@ -109,7 +113,7 @@
 /* Structures */
 
 /* Estructura para imágenes/texturas */
-typedef struct s_img
+/*typedef struct s_img
 {
 	void	*img;
 	char	*addr;
@@ -118,7 +122,7 @@ typedef struct s_img
 	int		endian;
 	int		width;
 	int		height;
-}	t_img;
+}	t_img;*/
 
 /* Estructura del jugador */
 typedef struct s_player
@@ -174,13 +178,22 @@ typedef struct s_map
 	char	**grid;
 	int		width;
 	int		height;
-	char	*north_texture;
-	char	*south_texture;
-	char	*east_texture;
-	char	*west_texture;
+	char	*no_texture;
+	char	*so_texture;
+	char	*ea_texture;
+	char	*we_texture;
 	int		floor_color;
 	int		ceiling_color;
 }	t_map;
+
+typedef struct s_minimap
+{
+	mlx_image_t	*img;
+	int			cell_size; //igual sobra, con escala a 1 se ve bien en los ejemplos que he probado
+	int			offset_x;
+	int			offset_y; //pos in window
+	
+}	t_minimap;
 
 typedef struct	s_mapinfo
 {
@@ -188,10 +201,10 @@ typedef struct	s_mapinfo
 	char	**file_raw_data;
 	char	**cursor;
 
-	char	*no_path;
+	/*char	*no_path;
 	char	*so_path;
 	char	*ea_path;
-	char	*we_path;
+	char	*we_path;*/
 
 	char	*f_color_raw;
 	char	*c_color_raw;
@@ -208,14 +221,13 @@ typedef struct	s_mapinfo
 /* Estructura principal del juego */
 typedef struct s_game
 {
-	void		*mlx;
-	void		*window;
-	t_img		*screen;
-	t_img		*textures[4];
-	t_map		*map;
-	t_player	*player;
-	t_ray		*ray;
-	t_mapinfo	*mapinfo;
+	void			*mlx;
+	mlx_image_t		*img;
+	mlx_image_t		*textures[4];
+	t_map			*map;
+	t_player		*player;
+	t_ray			*ray;
+	t_mapinfo		*mapinfo;
 }	t_game;
 
 /* main.c */
@@ -228,25 +240,16 @@ int	init_game(t_game *game);
 int		load_mapinfo(char *file, t_mapinfo *mapinfo);
 
 /* parsing/config_parser.c */
-int	parse_config(t_mapinfo *mapinfo);
+int	parse_config(t_game *game, t_mapinfo *mapinfo);
 
 /* parsing/map_parser.c */
 int	parse_map(t_mapinfo *mapinfo);
 
 /* parsing/config_validator.c */
-int	validate_config(t_mapinfo *mapinfo);
+int	validate_config(t_game *game);
 
 /* parsing/map_validator.c */
 int	validate_map(t_game *game, t_mapinfo *mapinfo, t_map *map);
-
-/* parsing/parse_file.c */
-//int		parse_file(char *filename, t_game *game);
-//void	init_map(t_map *map);
-
-/* parsing/parse_map.c */
-//int		validate_map_from_file(char *filename, t_game *game);
-//int		is_valid_char(char c);
-//int		find_player(t_game *game);
 
 /* parsing/parse_utils.c */
 int	skip_empty_lines(t_mapinfo *mapinfo);
@@ -268,19 +271,19 @@ int		load_textures(t_game *game);
 
 /* graphics/render.c - OPTIMIZADO */
 void	render_game(t_game *game);
-void	fast_pixel_put(t_img *img, int x, int y, int color);
-int		get_tex_color(t_img *tex, int x, int y);
+void	fast_pixel_put(mlx_image_t *img, int x, int y, int color);
+int		get_tex_color(mlx_image_t *tex, int x, int y);
 
 /* graphics/draw.c - OPTIMIZADO */
 void	draw_column(t_game *game, int x);
 int		get_texture_index(t_game *game);
-void	calc_texture_x(t_game *game, double *wall_x, int *tex_x, t_img *tex);
+void	calc_texture_x(t_game *game, double *wall_x, int *tex_x, mlx_image_t *tex);
 
 /* controls/events.c - OPTIMIZADO */
-int		handle_keypress(int keycode, t_game *game);
+void	handle_keypress(mlx_key_data_t data, void *param);
 int		handle_close(t_game *game);
-void	move_player(t_game *game, int direction);
-void	rotate_player(t_game *game, int direction);
+//void	move_player(t_game *game, int direction);
+
 
 /* controls/movement.c - OPTIMIZADO */
 int		is_valid_pos(t_game *game, double x, double y);
@@ -288,6 +291,7 @@ void	move_forward(t_game *game);
 void	move_backward(t_game *game);
 void	move_left(t_game *game);
 void	move_right(t_game *game);
+void	rotate_player(t_game *game, int direction);
 
 /* utils/cleanup.c */
 void	ft_free_str_array(char **array);

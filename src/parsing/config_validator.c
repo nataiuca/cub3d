@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 10:33:52 by root              #+#    #+#             */
-/*   Updated: 2025/10/09 12:53:37 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 15:58:09 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	validate_texture_path(char *path)
 		return(error_msg(ERR_TEXTURE_MISSING, NULL, 0));
 	//validar extensión (xml)
 	ext = ft_strrchr(path, '.');
-	if (!ext || ft_strcmp(ext, ".xpm") != 0 || ext[4] != '\0')
+	if (!ext || ft_strcmp(ext, ".png") != 0 || ext[4] != '\0')
 		return(error_msg(ERR_TEXTURE_FORMAT, path, 0));
 	//Intentar abrir archivo en modo lectura
 	fd = open(path, O_RDONLY);

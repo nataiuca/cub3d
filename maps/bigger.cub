@@ -1,9 +1,9 @@
-NO ./textures/stone_wall.xpm
-SO ./textures/wood_wall.xpm
-WE ./textures/palisade.xpm
+NO ./textures/stone_wall.png
+SO ./textures/tile_wall.png
+WE ./textures/palisade.png
 
 
-EA ./textures/brick_wall.xpm
+EA ./textures/brick_wall.png
 F 220,100,0
 C 135,206,235
 11111111

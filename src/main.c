@@ -61,6 +61,21 @@ static int	validate_args(int argc, char **argv)
 	return (1);
 }
 
+int	update_game(void *param)
+{
+	t_game	*game;
+
+	game = param;
+	update_player(game, game->player); //ACT POSICIÓN, TENIENDO EN CUENTA MOVES
+	//cast_all_rays(game); //cálculo de rayos
+	//draw_minimap(game);
+	/*if (mlx_image_to_window(game->mlx, game->minimap->img, game->minimap->offset_x, cub->minimap->offset_y) < 0)
+		return (error_msg(NULL, NULL, 1));*/
+	//draw_3d_view(cub);
+
+	return (0);
+}
+
 /* ========================================================================== */
 /* ⚠️  SECCIÓN MAC: SOLO PARA DESARROLLO - ELIMINAR PARA ENTREGA            */
 /* ========================================================================== */
@@ -130,11 +145,13 @@ int	main(int argc, char **argv)
 	if (!parse_validate_input(&game))
 		error_cleanup_exit(ERR_PARSE, &game);
 	if (!init_graphics(&game))
-		error_cleanup_exit("Failed to initialize graphics", &game);
-	/*render_game(&game);
-	mlx_key_hook(game.mlx, handle_keypress, &game);  
-	mlx_hook(game.mlx, handle_close, &game);
-	mlx_loop(game.mlx);*/
+		error_cleanup_exit(ERR_INIT_GRAPHS, &game);
+	//render_game(&game);
+	mlx_key_hook(game.mlx, handle_keypress, &game);
+	
+	mlx_loop_hook(game.mlx, (void *)update_game, &game);
+	//mlx_hook(game.mlx, handle_close, &game);
+	//mlx_loop(game.mlx);
 	cleanup_game(&game);
 	return (0);
 }

@@ -1,7 +1,7 @@
-NO ./textures/wall_north.xpm
-SO ./textures/wall_south.xpm
-WE ./textures/wall_west.xpm
-EA ./textures/wall_east.xpm
+NO ./textures/brick_wall.png
+SO ./textures/palisade.png
+WE ./textures/stone_wall.png
+EA ./textures/tile_wall.png
 
 F 220,100,0
 C 135,206,235

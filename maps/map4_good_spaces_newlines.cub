@@ -1,9 +1,9 @@
-NO     ./textures/stone_wall.xpm
+NO     ./textures/stone_wall.png
 
 
-SO ./textures/wood_wall.xpm     
-WE ./textures/brick_wall.xpm
-EA ./textures/palisade.xpm
+SO ./textures/wood_wall.png     
+WE ./textures/brick_wall.png
+EA ./textures/palisade.png
 
 
 

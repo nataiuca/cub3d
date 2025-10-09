@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 10:24:38 by root              #+#    #+#             */
-/*   Updated: 2025/10/09 12:59:15 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 15:13:33 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	clear_minimap(t_minimap *minimap)
 		x = 0;
 		while (x < minimap->img->width)
 		{
-			my_mlx_pixel_put(minimap->img, x, y, 0x00000000);
+			mlx_put_pixel(minimap->img, x, y, 0x00000000);
 			x ++;
 		}
 		y ++;
@@ -77,7 +77,7 @@ void	draw_line(t_minimap *minimap, t_ray ray, t_player *player)
 	while (i <= steps)
 	{
 		if (x >= 0 && y >= 0 && x < minimap->img->width && y < minimap->img->height)
-			my_mlx_pixel_put(minimap->img, (int)x, (int)y, 0x40E0D0FF);
+			mlx_put_pixel(minimap->img, (int)x, (int)y, 0x40E0D0FF);
 		x += x_inc;
 		y += y_inc;
 		i ++;
@@ -147,7 +147,7 @@ void	draw_player(t_minimap *minimap, t_player *player)
 			px = (int)(player->px + dx);
 			py = (int)(player->py + dy);
 			if (dx * dx + dy * dy <= radius * radius)
-				my_mlx_pixel_put(minimap->img, px, py, 0x00008BFF);
+				mlx_put_pixel(minimap->img, px, py, 0x00008BFF);
 			dx ++;
 		}
 		dy ++;
@@ -190,7 +190,7 @@ void	draw_square(t_minimap *minimap, int x, int y, int color)
 		{
 			px = x * minimap->cell_size + dx;
 			py = y * minimap->cell_size + dy;
-			my_mlx_pixel_put(minimap->img, px, py, color);
+			mlx_put_pixel(minimap->img, px, py, color);
 			dx ++;
 		}
 		dy ++;
