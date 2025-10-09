@@ -6,30 +6,19 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 14:52:27 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 17:58:39 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-/*static int	init_rays(t_cub *cub)
+static int	init_rays(t_game *game)
 {
-	int	i;
-
-	cub->rays = malloc(RAY_COUNT * sizeof(t_ray));
-	if (!cub->rays)
-		return (error_msg(ERR_MALLOC, NULL, 0, EXIT_FAILURE));
-	i = 0;
-	while (i < RAY_COUNT)
-	{
-		cub->rays[i].dist = 0;
-		cub->rays[i].hit_x = 0;
-		cub->rays[i].hit_y = 0;
-		cub->rays[i].cell_value = 0;
-		i++;
-	}
-	return (0);
-}*/
+	game->rays = malloc(WIN_WIDTH * sizeof(t_ray));
+	if (!game->rays)
+		return (error_msg(ERR_MALLOC, NULL, 0));
+	return (1);
+}
 
 static void	init_player(t_player *player)
 {
@@ -45,7 +34,7 @@ static void	init_player(t_player *player)
 	player->move_right = false;
 	player->move_left = false;
 	player->turn_right = false;
-	player->turn_right = false;
+	player->turn_left = false;
 }
 
 static void	init_mapinfo(t_mapinfo *mapinfo)
@@ -53,10 +42,6 @@ static void	init_mapinfo(t_mapinfo *mapinfo)
 	mapinfo->fd = -1;
 	mapinfo->file_raw_data = NULL;
 	mapinfo->cursor = NULL;
-	/*mapinfo->no_path = NULL;
-	mapinfo->so_path = NULL;
-	mapinfo->we_path = NULL;
-	mapinfo->ea_path = NULL;*/
 	mapinfo->f_color_raw = NULL;
 	mapinfo->c_color_raw = NULL;
 	mapinfo->f_color_set = false;
@@ -73,7 +58,6 @@ static void	init_map(t_map *map)
 {
 	if (!map)
 		return;
-		
 	map->grid = NULL;
 	map->width = 0;
 	map->height = 0;
@@ -103,8 +87,8 @@ static int	init_structs(t_game *game)
 		free(game->map);
 		return (0);
 	}
-	game->ray = malloc(sizeof(t_ray));
-	if (!game->ray)
+	game->rays = malloc(sizeof(t_ray));
+	if (!game->rays)
 	{
 		free(game->map);
 		free(game->player);
@@ -121,14 +105,16 @@ int	init_game(t_game *game)
 {
 	game->mlx = NULL;
 	game->img = NULL;
-	game->textures[0] = NULL;
-	game->textures[1] = NULL;
-	game->textures[2] = NULL;
-	game->textures[3] = NULL;
+	game->textures[TEX_NO] = NULL;
+	game->textures[TEX_SO] = NULL;
+	game->textures[TEX_EA] = NULL;
+	game->textures[TEX_WE] = NULL;
 	if (!init_structs(game))
 		return (0);
 	init_mapinfo(game->mapinfo);
 	init_map(game->map);
 	init_player(game->player);
+	if (!init_rays(game))
+		return (0);
 	return (1);
 }

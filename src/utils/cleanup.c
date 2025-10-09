@@ -74,10 +74,12 @@ void	cleanup_game(t_game *game)
 	
 	if (!game)
 		return;
-		
-	printf("🧹 Limpiando memoria del juego...\n");
-	
-	/* Liberar texturas */
+	free_mapinfo(game->mapinfo);
+	free_map(game->map);
+	if (game->player)
+		free(game->player);
+	if (game->rays)
+		free(game->rays);
 	i = 0;
 	while (i < 4)
 	{
@@ -85,34 +87,13 @@ void	cleanup_game(t_game *game)
 			mlx_delete_image(game->mlx, game->textures[i]);
 		i++;
 	}
-	printf("texturas borradas\n");
-	
-	/* Liberar imagen de pantalla */
-	//free_image(game->mlx, game->img);
 	mlx_delete_image(game->mlx, game->img);
-	printf("img de pantalla borrada\n");
-	
-	/* Destruir ventana */
-	/*if (game->window && game->mlx)
-		mlx_destroy_window(game->mlx, game->window);*/
-
-	/* Liberar estructuras */
-	free_map(game->map);
-	free_mapinfo(game->mapinfo);
-
-	if (game->player)
-		free(game->player);
-	if (game->ray)
-		free(game->ray);
-		
-	/* Cerrar MLX (en algunos sistemas) */
 	if (game->mlx)
 	{
 		/* En Linux: mlx_destroy_display(game->mlx); */
 		//free(game->mlx);
 		mlx_terminate(game->mlx);
 	}
-	
 	printf("✅ Memoria liberada correctamente\n");
 }
 

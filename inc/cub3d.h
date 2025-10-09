@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 15:49:18 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 17:43:40 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,20 @@
 # include <MLX42.h>
 
 /* Constants */
+/* Window/mlx values */
 # define WIN_WIDTH 1024
 # define WIN_HEIGHT 768
 
 # define TEXTURE_SIZE 64
 
-# define PI 3.14159265358979323846
+//# define PI 3.14159265358979323846
+
 
 # define RIGHT 1
 # define LEFT -1
+
+# define MOVE_SPEED 0.1
+# define ROT_SPEED 0.08
 
 /* ========================================================================== */
 /* ⚠️  ELIMINAR PARA ENTREGA: Códigos de teclas para macOS                   */
@@ -110,7 +115,17 @@
 # define BLACK 0x000000
 # define WHITE 0xFFFFFF
 
+
+
 /* Structures */
+
+typedef enum e_tex_index
+{
+	TEX_NO = 0,
+	TEX_SO = 1,
+	TEX_EA = 2,
+	TEX_WE = 3
+}	t_tex_index;
 
 /* Estructura para imágenes/texturas */
 /*typedef struct s_img
@@ -135,12 +150,13 @@ typedef struct s_player
 	int		dir; //dirección en int
 	double	dir_x; //dirección en x
 	double	dir_y; // dirección en y
-	float	angle; //ángulo de visión/orientación en radianes
-
 	double	plane_x;
 	double	plane_y;
-	double	move_speed;
-	double	rot_speed;
+
+	float	angle; //ángulo de visión/orientación en radianes
+	
+	//double	move_speed;
+	//double	rot_speed;
 
 	bool	move_forward;
 	bool	move_backward;
@@ -154,8 +170,8 @@ typedef struct s_player
 typedef struct s_ray
 {
 	double	camera_x;
-	double	ray_dir_x;
-	double	ray_dir_y;
+	double	dir_x;
+	double	dir_y;
 	int		map_x;
 	int		map_y;
 	double	side_dist_x;
@@ -226,7 +242,7 @@ typedef struct s_game
 	mlx_image_t		*textures[4];
 	t_map			*map;
 	t_player		*player;
-	t_ray			*ray;
+	t_ray			*rays;
 	t_mapinfo		*mapinfo;
 }	t_game;
 
@@ -259,25 +275,23 @@ int	is_map_start_line(const char *line);
 void	init_player_orientation(t_player *player);
 void	update_player(t_game *game, t_player *player);
 
-/* engine/raycasting.c - OPTIMIZADO */
-void	init_ray(t_game *game, int x);
-void	calc_step_dist(t_game *game);
-void	perform_dda(t_game *game);
-void	calc_wall_dist(t_game *game);
+/* engine/raycasting.c */
+void	cast_all_rays(t_game *game);
 
 /* graphics/init_mlx.c */
 int		init_graphics(t_game *game);
 int		load_textures(t_game *game);
 
 /* graphics/render.c - OPTIMIZADO */
-void	render_game(t_game *game);
+//void	render_game(t_game *game);
 void	fast_pixel_put(mlx_image_t *img, int x, int y, int color);
 int		get_tex_color(mlx_image_t *tex, int x, int y);
 
-/* graphics/draw.c - OPTIMIZADO */
-void	draw_column(t_game *game, int x);
-int		get_texture_index(t_game *game);
-void	calc_texture_x(t_game *game, double *wall_x, int *tex_x, mlx_image_t *tex);
+/* graphics/draw_3d.c - OPTIMIZADO */
+void	draw_3d_view(t_game *game);
+
+/* graphics/draw_minimap.c */
+
 
 /* controls/events.c - OPTIMIZADO */
 void	handle_keypress(mlx_key_data_t data, void *param);

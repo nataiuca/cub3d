@@ -46,16 +46,16 @@ static mlx_image_t	*load_texture(void *mlx, char *path)
 */
 int	load_textures(t_game *game)
 {
-	game->textures[0] = load_texture(game->mlx, game->map->no_texture);
+	game->textures[TEX_NO] = load_texture(game->mlx, game->map->no_texture);
 	if (!game->textures[0])
 		return (0);
-	game->textures[1] = load_texture(game->mlx, game->map->so_texture);
+	game->textures[TEX_SO] = load_texture(game->mlx, game->map->so_texture);
 	if (!game->textures[1])
 		return (0);
-	game->textures[2] = load_texture(game->mlx, game->map->ea_texture);
+	game->textures[TEX_EA] = load_texture(game->mlx, game->map->ea_texture);
 	if (!game->textures[2])
 		return (0);
-	game->textures[3] = load_texture(game->mlx, game->map->we_texture);
+	game->textures[TEX_WE] = load_texture(game->mlx, game->map->we_texture);
 	if (!game->textures[3])
 		return (0);
 	return (1);

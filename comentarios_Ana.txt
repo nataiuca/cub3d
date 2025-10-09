@@ -40,5 +40,9 @@ Siguientes paso:
 voy a ir poco a poco antes de displayear gráficos
 
 
+Cómo convertir xpm a xpm42?: python3 ../MLX42/tools/xpm3_conv.py wall_south.xpm 
 
-VALGRIND: valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./tu_programa
+
+VALGRIND: 
+
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./tu_programa

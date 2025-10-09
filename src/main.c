@@ -63,15 +63,18 @@ static int	validate_args(int argc, char **argv)
 
 int	update_game(void *param)
 {
+	printf("update_game\n");
 	t_game	*game;
 
 	game = param;
 	update_player(game, game->player); //ACT POSICIÓN, TENIENDO EN CUENTA MOVES
-	//cast_all_rays(game); //cálculo de rayos
+	cast_all_rays(game); //cálculo de rayos
 	//draw_minimap(game);
 	/*if (mlx_image_to_window(game->mlx, game->minimap->img, game->minimap->offset_x, cub->minimap->offset_y) < 0)
 		return (error_msg(NULL, NULL, 1));*/
-	//draw_3d_view(cub);
+	draw_3d_view(game);
+	if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)
+		return (error_msg(NULL, NULL, 1));
 
 	return (0);
 }
@@ -151,7 +154,8 @@ int	main(int argc, char **argv)
 	
 	mlx_loop_hook(game.mlx, (void *)update_game, &game);
 	//mlx_hook(game.mlx, handle_close, &game);
-	//mlx_loop(game.mlx);
+
+	mlx_loop(game.mlx);
 	cleanup_game(&game);
 	return (0);
 }

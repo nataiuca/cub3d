@@ -16,32 +16,21 @@ void	fast_pixel_put(t_img *img, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-/*
-** Obtiene color de textura con bounds checking
-** Clamp en lugar de return 0 para evitar artefactos
-*/
-int	get_tex_color(t_img *tex, int x, int y)
-{
-	char	*dst;
 
-	if (!tex || !tex->addr)
-		return (0xFF00FF);
-	if (x < 0)
-		x = 0;
-	if (x >= tex->width)
-		x = tex->width - 1;
-	if (y < 0)
-		y = 0;
-	if (y >= tex->height)
-		y = tex->height - 1;
-	dst = tex->addr + (y * tex->line_len + x * (tex->bits_per_pixel / 8));
-	return (*(unsigned int *)dst);
-}
 
 /*
 ** Función principal de renderizado
 ** Llama al raycasting para cada columna y presenta el resultado
 */
+/*SUSTITUIR RENDER GAME POR UPDATE_GAME() Y SEPARAR:
+- UPDATE PLAYER (YA IMPLEMENTADO)
+- RAYCASTING 
+- DRAW MINIMAP
+- DRAW 3D VIEW
+
+
+*/
+/**/
 void	render_game(t_game *game)
 {
 	int	x;
@@ -57,4 +46,4 @@ void	render_game(t_game *game)
 		x++;
 	}
 	mlx_put_image_to_window(game->mlx, game->window, game->screen->img, 0, 0);
-}
+}*/
