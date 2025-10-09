@@ -5,6 +5,25 @@
 /* ⚠️  INICIO: CÓDIGO COMPATIBLE MAC/LINUX - OK PARA DESARROLLO              */
 /* ========================================================================== */
 
+void	print_parsed_info(t_game *game)
+{
+	int	i;
+
+	printf("NO texture: %s\n", game->mapinfo->no_path);
+	printf("SO texture: %s\n", game->mapinfo->so_path);
+	printf("EA texture: %s\n", game->mapinfo->ea_path);
+	printf("WE texture: %s\n", game->mapinfo->we_path);
+	printf("Floor color: %d\n", game->map->floor_color);
+	printf("Ceiling color: %d\n", game->map->ceiling_color);
+	i = 0;
+	while (game->map->grid[i])
+	{
+		printf("%s", game->map->grid[i]);
+		printf("$\n");
+		i ++;
+	}
+}
+
 int	parse_validate_input(t_game *game)
 {
 
@@ -18,6 +37,8 @@ int	parse_validate_input(t_game *game)
 		return (0);
 	if (!validate_map(game, game->mapinfo, game->map))
 		return (0);
+	printf("File successfuly parsed and validated\n");
+	print_parsed_input(game);
 	return (1);
 }
 
@@ -108,15 +129,15 @@ int	main(int argc, char **argv)
 		error_cleanup_exit(ERR_LOAD_DATA, &game);
 	if (!parse_validate_input(&game))
 		error_cleanup_exit(ERR_PARSE, &game);
-
+	
 	/*if (!parse_file(argv[1], &game))
 		error_cleanup_exit("Failed to parse file", &game);*/
-	if (!init_graphics(&game))
+	/*if (!init_graphics(&game))
 		error_cleanup_exit("Failed to initialize graphics", &game);
 	render_game(&game);
 	mlx_hook(game.window, 2, 1L << 0, handle_keypress, &game);
 	mlx_hook(game.window, 17, 0, handle_close, &game);
-	mlx_loop(game.mlx);
+	mlx_loop(game.mlx);*/
 	cleanup_game(&game);
 	return (0);
 }

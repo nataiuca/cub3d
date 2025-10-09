@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 12:14:22 by root              #+#    #+#             */
-/*   Updated: 2025/10/08 17:23:19 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:02:46 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,12 @@ static int	read_file(t_mapinfo *mapinfo, int count_lines)
 
 int load_mapinfo(char *file, t_mapinfo *mapinfo)
 {
+	printf("DEBUG: load_mapinfo\n");
 	int		count_lines;
 
+	mapinfo->fd = open(file, O_RDONLY);
+	if (mapinfo->fd < 0) //errno ya está fijado por open
+		return (error_msg(NULL, NULL, 0));
 	count_lines = count_file_lines(file);
 	if (!count_lines)
 		return (0);
@@ -98,5 +102,6 @@ int load_mapinfo(char *file, t_mapinfo *mapinfo)
 		return (0);
 	}
 	mapinfo->cursor = mapinfo->file_raw_data;
+	printf("File succesfuly readed\n");
 	return (1);
 }

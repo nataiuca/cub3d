@@ -24,8 +24,6 @@ void	ft_free_str_array(char **array)
 */
 void	free_map(t_map *map)
 {
-	int	i;
-	
 	if (!map)
 		return;
 	ft_free_str_array(map->grid);
@@ -56,7 +54,8 @@ static void	free_image(void *mlx, t_img *img)
 		return;
 		
 	if (img->img && mlx)
-		mlx_destroy_image(mlx, img->img);
+		mlx_delete_image(mlx, img->img);
+		//mlx_destroy_image(mlx, img->img);
 	free(img);
 }
 
@@ -88,8 +87,10 @@ void	cleanup_game(t_game *game)
 	free_image(game->mlx, game->screen);
 	
 	/* Destruir ventana */
-	if (game->window && game->mlx)
-		mlx_destroy_window(game->mlx, game->window);
+	/*if (game->window && game->mlx)
+		mlx_destroy_window(game->mlx, game->window);*/
+	
+	
 		
 	/* Liberar estructuras */
 	free_map(game->map);
@@ -104,7 +105,8 @@ void	cleanup_game(t_game *game)
 	if (game->mlx)
 	{
 		/* En Linux: mlx_destroy_display(game->mlx); */
-		free(game->mlx);
+		//free(game->mlx);
+		mlx_terminate(game->mlx);
 	}
 	
 	printf("✅ Memoria liberada correctamente\n");

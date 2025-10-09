@@ -5,12 +5,40 @@ Cosas a hacer:
 
 
 PARSEO:
-- creo que el parseo tiene que aceptar espacios entre los valores de los colores ❌
-- el parseo tiene que aceptar líneas vacías entre las líneas de configuración ❌
-- creo que no deberia aceptar líneas vacías dentro del mapa ❌
-- cambiar mensajes de error -> sistematizados desde función msg_error + poner exit status (AHORA MISMO SIEMPRE SE SALE CON EXIT_FAILURE, DA IGUAL) ❌
+- creo que el parseo tiene que aceptar espacios entre los valores de los colores ✅ 
+- el parseo tiene que aceptar líneas vacías entre las líneas de configuración ✅ 
+- creo que no deberia aceptar líneas vacías dentro del mapa ✅ 
+- cambiar mensajes de error -> sistematizados desde función msg_error + poner exit status (AHORA MISMO SIEMPRE SE SALE CON EXIT_FAILURE, DA IGUAL) 
 
 raycasting:
+- separar bien responsabilidades: el cálculo de los rayos tiene que servir para el minimapa
+
+08.10.25 - 17.30h includes y srcs
+Esta versión no compila
+Tareas en marcha:
+- parseo (directorio parsing):
+* que acepte espacios y líneas entre las líneas de configuración de textura y colores y entre sus argumentos
+* no tiene que aceptar lineas vacías dentro del mapa
+* DÓNDE ESTAMOS: integrando parseo y validación del mapa (mía) con normalización (de natalia) -> puntos críticos: el spliteo de líneas que hago yo, que relleno os espacios de 0s... manejar! ✅ 
+* Atenta! A inicialización del player y su orientación... adaptar parseo a la lógica
+- cambio de mensajes error - EN PROCESO
+
+Cosas que hay que hacer no empezadas:
+- cambiar estructura t_img por la t_img de la minilibx
+- No sé si valdría la pena cambiarse a la mlx42
+- Entender el raycasting y separar bien responsabilidades: el cálculo de los rayos tiene que servir para el minimapa
+
+
+09.10.25 - 12h
+Esta versión compila pero no ejecuta gráficos:
+- normalización de natalia + mi parseo de mapa y configuración, integrado ✅ 
+Siguientes paso: 
+- integrar bien inicialización de player y su orientación con su uso en gráficos
+- sustituir funciones de minilibx por MLX42 + sustituir t_img(es más fácil y hay mucho manejo muy bajo y complicado de las imgs que creo que no hace falta; además se pide en el subject el empleo de imgs de la minilibx)
+- minimap: manejar la presencia de espacios
+
+voy a ir poco a poco antes de displayear gráficos
 
 
 
+VALGRIND: valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./tu_programa

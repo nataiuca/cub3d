@@ -1,7 +1,8 @@
-NO ./path_texture
-SO ./path_texture
-WE ./path_texture
-EA ./path_texture
+NO ./textures/wall_north.xpm
+SO ./textures/wall_south.xpm
+WE ./textures/wall_west.xpm
+EA ./textures/wall_east.xpm
+
 F 220,100,0
 C 250,250,250
 

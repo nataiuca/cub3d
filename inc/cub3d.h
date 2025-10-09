@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 10:24:48 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:48:25 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,9 @@
 
 # define ERR_IMG_MINIMAP ": The minimap image could not be created"
 
-//Error codes
-# define EXIT_SUCCESS 0
-# define EXIT_FAILURE 1 //error generico: malloc, open...
-# define EXIT_SYNTAX 2 //errores de sintaxis, formato, parsing... NECESITO OTRO NOMBRE PARA ESTO
+/* Colors for msgs */
+# define RED "\033[0;31m"
+# define RESET "\033[0m"
 
 /* Colors */
 # define BLACK 0x000000

@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:21:52 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/08 17:26:04 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 10:54:01 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	extract_texture_path(char *line, char **dst)
 
 int	handle_config_line(char *line, t_mapinfo *mapinfo, int configs_found)
 {
-	printf("DEBUF: handle_config_lines\n");
+	printf("DEBUG: handle_config_lines\n");
 	if (ft_strncmp(line, "NO ", 3) == 0 && !mapinfo->no_path)
 		return (extract_texture_path(line + 3, &mapinfo->no_path));
 	else if (ft_strncmp(line, "SO ", 3) == 0 && !mapinfo->so_path)
@@ -109,13 +109,14 @@ int	handle_config_line(char *line, t_mapinfo *mapinfo, int configs_found)
 
 int	parse_config(t_mapinfo *mapinfo)
 {
-	printf("DEBUF: parse_config\n");
+	printf("DEBUG: parse_config\n");
 	int		configs_found;
 	char	*line;
 
 	configs_found = 0;
 	while (*mapinfo->cursor && configs_found < 6)
 	{
+		printf("DEBUG: dentro del while\n");
 		if (!skip_empty_lines(mapinfo))
 			return (0);
 		line = ft_strtrim(*mapinfo->cursor, " \t\n"); //quitar espacios y tabs al inicio y final
@@ -126,7 +127,10 @@ int	parse_config(t_mapinfo *mapinfo)
 			if(handle_config_line(line, mapinfo, configs_found)) //si no es 0, todo va biien
 			    free(line);
 			else //si era 0, error, salimos con 0
+			{
+				free(line);
 				return (0);
+			}
 			configs_found ++;
 		}
 		mapinfo->cursor++;

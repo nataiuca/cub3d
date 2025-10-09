@@ -6,26 +6,23 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 10:33:52 by root              #+#    #+#             */
-/*   Updated: 2025/10/08 17:28:49 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:58:00 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "cub3d.h"
 
-/**
- * archivos texturas: tienen que ser .xml (es lo que 
- * se carga con mlx_xpm_file_to_image()...)
- * validar que:
- *  - existe el archivo
- * 	- es accesible para lectura
- * 	- es un archivo, no un directorio
- * 
- * Valores rgb
- * 
- */
 
-//validate_texture_path
+/*
+	- No pueden faltar configuration keys ✅ 
+	- Configuratio keys invalidas ✅ 
+	- Puede haber espacios y newlines ✅ 
+	- Puede haber espacios entre los args de los colores ✅ 
+	- Checkear valores de los args de los colores 0-255 y solo digitos ✅ 
+	- valores rgb solo pueden ser 3 dígitos ✅ 
 
+	- NO SE SI ES NECESARIO PASAR LOS RGB A INT PORK LUEGO IGUAL HAY QUE CONVERTIR A OTRA COSA
+*/
 
 int	validate_rgb_values(char **parts, int color[3])
 {
@@ -83,19 +80,18 @@ int	validate_texture_path(char *path)
 		return(error_msg(ERR_TEXTURE_MISSING, NULL, 0));
 	//validar extensión (xml)
 	ext = ft_strrchr(path, '.');
-	ft_printf("DEBUG: extensión del path: %s\n", ext);
-	if (!ext || ft_strcmp(ext, ".xmp") != 0 || ext[4] != '\0')
+	if (!ext || ft_strcmp(ext, ".xpm") != 0 || ext[4] != '\0')
 		return(error_msg(ERR_TEXTURE_FORMAT, path, 0));
 	//Intentar abrir archivo en modo lectura
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 		return(error_msg(NULL, path, 0));
-	return(0);
+	return(1);
 }
 
 int	validate_config(t_mapinfo *mapinfo)
 {
-	printf("DEBUF: validate_config\n");
+	printf("DEBUG: validate_config\n");
 
 	if(!validate_texture_path(mapinfo->no_path))
 		return (0);

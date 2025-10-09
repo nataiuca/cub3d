@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 11:13:09 by root              #+#    #+#             */
-/*   Updated: 2025/10/08 16:37:00 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:34:28 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 
 int	count_rows(char **array)
 {
+	printf("DEBUG: count_rows\n");
 	int	count;
 
 	count = 0;
@@ -52,6 +53,7 @@ int	parse_map(t_mapinfo *mapinfo)
 	int		i;
 
 	rows = count_rows(mapinfo->cursor); //el cursor ahora mismo queda al final del mapa
+	printf("DEBUG: num of rows: %d\n", rows);
 	mapinfo->map_raw = calloc(rows + 1, sizeof(char *));
 	if (!mapinfo->map_raw)
 		return (error_msg(ERR_MALLOC, NULL, 0));

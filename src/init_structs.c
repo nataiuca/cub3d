@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/08 16:01:18 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:36:14 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static void	init_mapinfo(t_mapinfo *mapinfo)
 	mapinfo->c_color_raw = NULL;
 	mapinfo->f_color_set = false;
 	mapinfo->c_color_set = false;
-
+	mapinfo->map_raw = NULL;
 }
 
 /*
@@ -82,8 +82,6 @@ static void	init_map(t_map *map)
 	map->west_texture = NULL;
 	map->floor_color = 0x654321;   /* Color marrón por defecto */
 	map->ceiling_color = 0x87CEEB; /* Color azul cielo por defecto */
-	
-	printf("🗺️  Mapa inicializado con valores por defecto\n");
 }
 
 /*

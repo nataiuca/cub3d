@@ -6,11 +6,35 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 19:37:05 by root              #+#    #+#             */
-/*   Updated: 2025/10/08 17:30:17 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:56:31 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+
+/* ✅❌
+
+	- El mapa tiene que ir después de las configuraciones de texturas y colores ✅
+	- No puede haber líneas vacías dentro del mapa  -> ESTA IMPLEMENTACIÓN
+	INTERPRETA LÍNEA VACÍA COMO FIN DE MAPA! ✅
+	- EL mapa debe parsearse con los espacios que tenga dentro 
+		- no sé cómo interpretar los espacios, si como chars inválidos o qué -> los interpreto como error,
+		porque no acepto que un char walkable esté tocando un espacio vacío (porque se considera
+		fuera del mapa) ✅
+		- los espacios al inicio o final de una linea del mapa también se conservan ✅
+	- El mapa tiene que estar rodeado de paredes (1) ✅
+	- Solo puede tener los caracteres 0, 1, N, S, E, W ✅
+	- Solo puede haber un player ✅
+	- Tiene que haber un player  ✅
+	- El mapa se normaliza a forma rectangular ✅
+	- No puede haber ninguna línea escrita más después del mapa ✅
+
+		1 - wall
+		0 - empty space
+		N, S, E, W - player start pos + orientation
+*/
+
 
 /**
  * @brief	
@@ -36,6 +60,34 @@ int	measure_map(t_mapinfo *mapinfo, t_map *map)
 		map->height ++; //y_size es el num de rows + 1 para terminacion NULL
 		i++;
 	}
+	return (1);
+}
+
+int	process_map_line(t_map *map, t_player *player, int row, char *line)
+{
+	int	i;
+
+	/*if (check_map_open(map, row, line))
+		return (error_msg(ERR_OPEN_MAP, NULL, 0));*/
+	i = 0;
+	while (line[i])
+	{
+		if (!ft_strchr("01NSEW ", line[i])) //si no es un caracter válido
+			return (error_msg(ERR_CHAR_MAP, &line[i], 0));
+		if (ft_strchr("NSEW", line[i])) //si hay más de un NSEW
+		{
+			if (player->dir != '\0')
+				return (error_msg(ERR_PLAYERS, NULL, 0));
+			player->dir = line[i];
+			player->pos_x = i;
+			player->pos_y = row;
+			init_player_orientation(player);
+		}
+		i ++;
+	}
+	map->grid[row] = ft_strdup(line);
+	if (!map->grid[row])
+		return (error_msg(ERR_MALLOC, NULL, 0));
 	return (1);
 }
 
@@ -77,7 +129,46 @@ static int	normalize_map(t_game *game)
 	return (1);
 }
 
-int	check_map_open(t_map *map, int row, char *line)
+/**
+ * @brief
+ * 			Recorre caracter a caracter todas las líneas del mapa (grid).
+ * 			Si es un caracter walkable (0NSEW)
+ * 				- si estamos en la primera o en la última línea o en la primera o última columna
+ * 					- error open map
+ * 				- si el caracter de encima o de abajo es espacio, o el caracter de la izq o la derecha
+ * 				es espacio
+ * 					- error open map
+ * 
+ * @param
+ * @return
+ */
+
+static int	is_map_closed(t_map *map)
+{
+	int	x;
+	int	y;
+
+	y = 0;
+	while (y < map->height)
+	{
+		x = 0;
+		while (x < map->width)
+		{
+			if(ft_strchr("0NSEW", map->grid[y][x])) //si es un char walkable
+			{
+				if (y == 0 || y == map->height - 1 || x == 0 || x == map->width - 1)
+					return(error_msg(ERR_OPEN_MAP, NULL, 0));
+				if (map->grid[y - 1][x] == ' ' || map->grid[y + 1][x] == ' ' || map->grid[y][x - 1] == ' ' || map->grid[y][x + 1] == ' ')
+					return(error_msg(ERR_OPEN_MAP, NULL, 0));
+			}
+			x ++;
+		}
+		y ++;
+	}
+	return (1);
+}
+
+/*int	check_map_open(t_map *map, int row, char *line)
 {
 	int	i;
 	int	len;
@@ -98,35 +189,8 @@ int	check_map_open(t_map *map, int row, char *line)
 			return (1);
 	}
 	return (0);
-}
+}*/
 
-int	process_map_line(t_map *map, t_player *player, int row, char *line)
-{
-	int	i;
-
-	if (check_map_open(map, row, line))
-		return (error_msg(ERR_OPEN_MAP, NULL, 0));
-	i = 0;
-	while (line[i])
-	{
-		if (!ft_strchr("01NSEW", line[i])) //si no es un caracter válido
-			return (error_msg(ERR_CHAR_MAP, NULL, 0));
-		if (ft_strchr("NSEW", line[i])) //si hay más de un NSEW
-		{
-			if (player->dir != '\0')
-				return (error_msg(ERR_PLAYERS, NULL, 0));
-			player->dir = line[i];
-			player->pos_x = i;
-			player->pos_y = row;
-			init_player_orientation(player);
-		}
-		i ++;
-	}
-	map->grid[row] = ft_strdup(line);
-	if (!map->grid[row])
-		return (error_msg(ERR_MALLOC, NULL, 0));
-	return (1);
-}
 
 int	check_trailing_rows(t_mapinfo *mapinfo, t_map *map)
 {
@@ -151,7 +215,6 @@ int	check_trailing_rows(t_mapinfo *mapinfo, t_map *map)
 
 int	validate_map(t_game *game, t_mapinfo *mapinfo, t_map *map)
 {
-	int	ret;
 	int	row;
 
 	measure_map(mapinfo, map); //validar forma y guardar info sobre tamaño
@@ -166,6 +229,8 @@ int	validate_map(t_game *game, t_mapinfo *mapinfo, t_map *map)
 		row ++;
 	}
 	if (!normalize_map(game))
+		return (0);
+	if (!is_map_closed(map))
 		return (0);
 	if (game->player->dir == '\0')
 		return (error_msg(ERR_NO_PLAYER, NULL, 0));
