@@ -16,6 +16,24 @@ void	ft_free_str_array(char **array)
 	free(array);
 }
 
+void	free_mapinfo(t_mapinfo *mapinfo)
+{
+	ft_printf("DEBUG: free_mapinfo\n");
+	if (!mapinfo)
+		return ;
+	ft_free_str_array(mapinfo->file_raw_data);
+	mapinfo->file_raw_data = NULL;
+	free(mapinfo->no_path);
+	free(mapinfo->so_path);
+	free(mapinfo->ea_path);
+	free(mapinfo->we_path);
+	free(mapinfo->f_color_raw);
+	free(mapinfo->c_color_raw);
+	ft_free_str_array(mapinfo->map_raw);
+
+	free(mapinfo);
+}
+
 /*
 ** Función para liberar el mapa
 ** - Libera cada línea del grid
@@ -89,15 +107,13 @@ void	cleanup_game(t_game *game)
 	/* Destruir ventana */
 	/*if (game->window && game->mlx)
 		mlx_destroy_window(game->mlx, game->window);*/
-	
-	
-		
+
 	/* Liberar estructuras */
 	free_map(game->map);
-	
+	free_mapinfo(game->mapinfo);
+
 	if (game->player)
 		free(game->player);
-		
 	if (game->ray)
 		free(game->ray);
 		

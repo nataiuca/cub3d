@@ -5,7 +5,7 @@
 /* ⚠️  INICIO: CÓDIGO COMPATIBLE MAC/LINUX - OK PARA DESARROLLO              */
 /* ========================================================================== */
 
-void	print_parsed_info(t_game *game)
+void	print_parsed_input(t_game *game)
 {
 	int	i;
 

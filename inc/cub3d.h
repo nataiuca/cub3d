@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 11:48:25 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 12:09:22 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,13 @@ typedef struct s_player
 	double	plane_y;
 	double	move_speed;
 	double	rot_speed;
+
+	bool	move_forward;
+	bool	move_backward;
+	bool	move_right;
+	bool	move_left;
+	bool	turn_right;
+	bool	turn_left;
 }	t_player;
 
 /* Estructura para raycasting */

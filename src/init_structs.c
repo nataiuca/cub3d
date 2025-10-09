@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 11:36:14 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 12:08:43 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@
 	return (0);
 }*/
 
-/*static void	init_player(t_player *player)
+static void	init_player(t_player *player)
 {
-	player->x = 0;
-	player->y = 0;
+	player->pos_x = 0;
+	player->pos_y = 0;
 	player->px = 0;
 	player->py = 0;
 	player->dir = '\0';
@@ -45,7 +45,7 @@
 	player->move_left = false;
 	player->turn_right = false;
 	player->turn_right = false;
-}*/
+}
 
 static void	init_mapinfo(t_mapinfo *mapinfo)
 {
@@ -129,5 +129,6 @@ int	init_game(t_game *game)
 		return (0);
 	init_mapinfo(game->mapinfo);
 	init_map(game->map);
+	init_player(game->player);
 	return (1);
 }
