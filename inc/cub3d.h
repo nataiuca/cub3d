@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
+/*   Updated: 2025/10/09 10:24:48 by amacarul         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
@@ -10,13 +21,15 @@
 # include <fcntl.h>
 # include <stdbool.h>
 # include <math.h>
-# include "../libft/libft.h"
-# include "../minilibx/mlx.h"
+# include "libft.h"
+# include <MLX42.h>
 
 /* Constantes */
 # define WINDOW_WIDTH 1024
 # define WINDOW_HEIGHT 768
 # define TEXTURE_SIZE 64
+
+# define PI 3.14159265358979323846
 
 /* ========================================================================== */
 /* ⚠️  ELIMINAR PARA ENTREGA: Códigos de teclas para macOS                   */
@@ -111,11 +124,16 @@ typedef struct s_img
 /* Estructura del jugador */
 typedef struct s_player
 {
-	int		dir;
-	double	pos_x;
+	double	pos_x; //coordenadas en celdas ?
 	double	pos_y;
-	double	dir_x;
-	double	dir_y;
+	float	px; //coordeandas en pixeles para minimap
+	float	py; //coordenadas en píxeles para minimap
+
+	int		dir; //dirección en int
+	double	dir_x; //dirección en x
+	double	dir_y; // dirección en y
+	float	angle; //ángulo de visión/orientación en radianes
+
 	double	plane_x;
 	double	plane_y;
 	double	move_speed;
@@ -166,8 +184,8 @@ typedef struct	s_mapinfo
 
 	char	*no_path;
 	char	*so_path;
-	char	*we_path;
 	char	*ea_path;
+	char	*we_path;
 
 	char	*f_color_raw;
 	char	*c_color_raw;
@@ -228,6 +246,16 @@ int	validate_map(t_game *game, t_mapinfo *mapinfo, t_map *map);
 int	skip_empty_lines(t_mapinfo *mapinfo);
 int	is_map_start_line(const char *line);
 
+/* engine/player */
+void	init_player_orientation(t_player *player);
+void	update_player(t_game *game, t_player *player);
+
+/* engine/raycasting.c - OPTIMIZADO */
+void	init_ray(t_game *game, int x);
+void	calc_step_dist(t_game *game);
+void	perform_dda(t_game *game);
+void	calc_wall_dist(t_game *game);
+
 /* graphics/init_mlx.c */
 int		init_graphics(t_game *game);
 int		load_textures(t_game *game);
@@ -236,12 +264,6 @@ int		load_textures(t_game *game);
 void	render_game(t_game *game);
 void	fast_pixel_put(t_img *img, int x, int y, int color);
 int		get_tex_color(t_img *tex, int x, int y);
-
-/* graphics/raycasting.c - OPTIMIZADO */
-void	init_ray(t_game *game, int x);
-void	calc_step_dist(t_game *game);
-void	perform_dda(t_game *game);
-void	calc_wall_dist(t_game *game);
 
 /* graphics/draw.c - OPTIMIZADO */
 void	draw_column(t_game *game, int x);
