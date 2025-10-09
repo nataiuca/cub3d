@@ -47,7 +47,7 @@ void	render_game(t_game *game)
 	int	x;
 
 	x = 0;
-	while (x < WINDOW_WIDTH)
+	while (x < WIN_WIDTH)
 	{
 		init_ray(game, x);
 		calc_step_dist(game);

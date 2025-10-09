@@ -7,7 +7,7 @@
 */
 void	init_ray(t_game *game, int x)
 {
-	game->ray->camera_x = 2 * x / (double)WINDOW_WIDTH - 1;
+	game->ray->camera_x = 2 * x / (double)WIN_WIDTH - 1;
 	game->ray->ray_dir_x = game->player->dir_x
 		+ game->player->plane_x * game->ray->camera_x;
 	game->ray->ray_dir_y = game->player->dir_y
@@ -108,14 +108,14 @@ void	calc_wall_dist(t_game *game)
 		game->ray->perp_wall_dist = (game->ray->map_y - game->player->pos_y
 				+ (1 - game->ray->step_y) / 2) / game->ray->ray_dir_y;
 	if (game->ray->perp_wall_dist == 0)
-		game->ray->line_height = WINDOW_HEIGHT;
+		game->ray->line_height = WIN_HEIGHT;
 	else
-		game->ray->line_height = (int)(WINDOW_HEIGHT
+		game->ray->line_height = (int)(WIN_HEIGHT
 				/ game->ray->perp_wall_dist);
-	game->ray->draw_start = -game->ray->line_height / 2 + WINDOW_HEIGHT / 2;
+	game->ray->draw_start = -game->ray->line_height / 2 + WIN_HEIGHT / 2;
 	if (game->ray->draw_start < 0)
 		game->ray->draw_start = 0;
-	game->ray->draw_end = game->ray->line_height / 2 + WINDOW_HEIGHT / 2;
-	if (game->ray->draw_end >= WINDOW_HEIGHT)
-		game->ray->draw_end = WINDOW_HEIGHT - 1;
+	game->ray->draw_end = game->ray->line_height / 2 + WIN_HEIGHT / 2;
+	if (game->ray->draw_end >= WIN_HEIGHT)
+		game->ray->draw_end = WIN_HEIGHT - 1;
 }

@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 10:24:38 by root              #+#    #+#             */
-/*   Updated: 2025/10/08 12:03:28 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 12:59:15 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	draw_rays(t_game *game) //CAMBIAR TODOOO
 	int		i;
 	
 	i = 0;
-	while (i < 120) //120: ray_count ... en esta versión tiene que corresponder al num de columnas dibujadas en el 3d -> WINDOW_WIDTH??
+	while (i < 120) //120: ray_count ... en esta versión tiene que corresponder al num de columnas dibujadas en el 3d -> WIN_WIDTH??
 	{
 		printf("wile de ray counts\n");
 		draw_line(game->minimap, game->ray[i], game->player);

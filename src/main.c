@@ -9,10 +9,10 @@ void	print_parsed_input(t_game *game)
 {
 	int	i;
 
-	printf("NO texture: %s\n", game->mapinfo->no_path);
-	printf("SO texture: %s\n", game->mapinfo->so_path);
-	printf("EA texture: %s\n", game->mapinfo->ea_path);
-	printf("WE texture: %s\n", game->mapinfo->we_path);
+	printf("NO texture: %s\n", game->map->no_texture);
+	printf("SO texture: %s\n", game->map->so_texture);
+	printf("EA texture: %s\n", game->map->ea_texture);
+	printf("WE texture: %s\n", game->map->we_texture);
 	printf("Floor color: %d\n", game->map->floor_color);
 	printf("Ceiling color: %d\n", game->map->ceiling_color);
 	i = 0;
@@ -27,9 +27,9 @@ void	print_parsed_input(t_game *game)
 int	parse_validate_input(t_game *game)
 {
 
-	if (!parse_config(game->mapinfo))
+	if (!parse_config(game, game->mapinfo))
 		return (0);
-	if(!validate_config(game->mapinfo))
+	if(!validate_config(game))
 		return (0);
 	if (!skip_empty_lines(game->mapinfo))
 		return (0);
@@ -129,14 +129,11 @@ int	main(int argc, char **argv)
 		error_cleanup_exit(ERR_LOAD_DATA, &game);
 	if (!parse_validate_input(&game))
 		error_cleanup_exit(ERR_PARSE, &game);
-	
-	/*if (!parse_file(argv[1], &game))
-		error_cleanup_exit("Failed to parse file", &game);*/
-	/*if (!init_graphics(&game))
+	if (!init_graphics(&game))
 		error_cleanup_exit("Failed to initialize graphics", &game);
-	render_game(&game);
-	mlx_hook(game.window, 2, 1L << 0, handle_keypress, &game);
-	mlx_hook(game.window, 17, 0, handle_close, &game);
+	/*render_game(&game);
+	mlx_key_hook(game.mlx, handle_keypress, &game);  
+	mlx_hook(game.mlx, handle_close, &game);
 	mlx_loop(game.mlx);*/
 	cleanup_game(&game);
 	return (0);

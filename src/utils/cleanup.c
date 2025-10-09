@@ -23,10 +23,10 @@ void	free_mapinfo(t_mapinfo *mapinfo)
 		return ;
 	ft_free_str_array(mapinfo->file_raw_data);
 	mapinfo->file_raw_data = NULL;
-	free(mapinfo->no_path);
+	/*free(mapinfo->no_path);
 	free(mapinfo->so_path);
 	free(mapinfo->ea_path);
-	free(mapinfo->we_path);
+	free(mapinfo->we_path);*/
 	free(mapinfo->f_color_raw);
 	free(mapinfo->c_color_raw);
 	ft_free_str_array(mapinfo->map_raw);
@@ -47,14 +47,14 @@ void	free_map(t_map *map)
 	ft_free_str_array(map->grid);
 	
 	/* Liberar rutas de texturas */
-	if (map->north_texture)
-		free(map->north_texture);
-	if (map->south_texture)
-		free(map->south_texture);
-	if (map->east_texture)
-		free(map->east_texture);
-	if (map->west_texture)
-		free(map->west_texture);
+	if (map->no_texture)
+		free(map->no_texture);
+	if (map->so_texture)
+		free(map->so_texture);
+	if (map->ea_texture)
+		free(map->ea_texture);
+	if (map->we_texture)
+		free(map->we_texture);
 		
 	/* Liberar la estructura del mapa */
 	free(map);
@@ -66,13 +66,13 @@ void	free_map(t_map *map)
 ** - Destruye la imagen en MLX si existe
 ** - Libera la estructura
 */
-static void	free_image(void *mlx, t_img *img)
+static void	free_image(void *mlx, mlx_image_t *img)
 {
 	if (!img)
 		return;
 		
-	if (img->img && mlx)
-		mlx_delete_image(mlx, img->img);
+	if (img && mlx)
+		mlx_delete_image(mlx, img);
 		//mlx_destroy_image(mlx, img->img);
 	free(img);
 }
@@ -102,7 +102,7 @@ void	cleanup_game(t_game *game)
 	}
 	
 	/* Liberar imagen de pantalla */
-	free_image(game->mlx, game->screen);
+	free_image(game->mlx, game->img);
 	
 	/* Destruir ventana */
 	/*if (game->window && game->mlx)

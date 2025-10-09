@@ -58,9 +58,9 @@ SOURCES		= main.c \
 			  engine/player.c \
 			  init_structs.c \
 			  utils/cleanup.c \
-			  utils/error.c 
-#			  graphics/init_mlx.c \
-			  graphics/render.c \
+			  utils/error.c \
+			  graphics/init_mlx.c
+#			  graphics/render.c \
 			  graphics/draw.c \
 			  controls/events.c \
 			  controls/movement.c \

@@ -31,7 +31,7 @@ void	draw_direct_line(t_game *game, int x)
 	
 	/* Dibujar la columna píxel por píxel directamente */
 	y = 0;
-	while (y < WINDOW_HEIGHT)
+	while (y < WIN_HEIGHT)
 	{
 		if (y < game->ray->draw_start)
 		{
@@ -83,7 +83,7 @@ static void	draw_simple_line(t_game *game, int x)
 	
 	/* Dibujar la columna píxel por píxel */
 	y = 0;
-	while (y < WINDOW_HEIGHT)
+	while (y < WIN_HEIGHT)
 	{
 		if (y < game->ray->draw_start)
 		{
@@ -118,7 +118,7 @@ void	cast_rays_simple(t_game *game)
 		printf("Raycasting con buffer frame %d\n", debug_count);
 	
 	x = 0;
-	while (x < WINDOW_WIDTH)
+	while (x < WIN_WIDTH)
 	{
 		/* Paso 1: Calcular dirección del rayo */
 		calculate_ray(game, x);

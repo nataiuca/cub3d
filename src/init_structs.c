@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 12:08:43 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 13:00:48 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ static void	init_mapinfo(t_mapinfo *mapinfo)
 	mapinfo->fd = -1;
 	mapinfo->file_raw_data = NULL;
 	mapinfo->cursor = NULL;
-	mapinfo->no_path = NULL;
+	/*mapinfo->no_path = NULL;
 	mapinfo->so_path = NULL;
 	mapinfo->we_path = NULL;
-	mapinfo->ea_path = NULL;
+	mapinfo->ea_path = NULL;*/
 	mapinfo->f_color_raw = NULL;
 	mapinfo->c_color_raw = NULL;
 	mapinfo->f_color_set = false;
@@ -76,10 +76,10 @@ static void	init_map(t_map *map)
 	map->grid = NULL;
 	map->width = 0;
 	map->height = 0;
-	map->north_texture = NULL;
-	map->south_texture = NULL;
-	map->east_texture = NULL;
-	map->west_texture = NULL;
+	map->no_texture = NULL;
+	map->so_texture = NULL;
+	map->ea_texture = NULL;
+	map->we_texture = NULL;
 	map->floor_color = 0x654321;   /* Color marrón por defecto */
 	map->ceiling_color = 0x87CEEB; /* Color azul cielo por defecto */
 }
@@ -119,8 +119,7 @@ static int	init_structs(t_game *game)
 int	init_game(t_game *game)
 {
 	game->mlx = NULL;
-	game->window = NULL;
-	game->screen = NULL;
+	game->img = NULL;
 	game->textures[0] = NULL;
 	game->textures[1] = NULL;
 	game->textures[2] = NULL;

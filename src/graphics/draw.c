@@ -80,7 +80,7 @@ static void	draw_floor_ceiling(t_game *game, int x)
 		y++;
 	}
 	y = game->ray->draw_end + 1;
-	while (y < WINDOW_HEIGHT)
+	while (y < WIN_HEIGHT)
 	{
 		fast_pixel_put(game->screen, x, y, game->map->floor_color);
 		y++;
@@ -99,7 +99,7 @@ static void	draw_textured_wall(t_game *game, int x, t_img *tex, int tex_x)
 	double	tex_pos;
 
 	step = (double)tex->height / (double)game->ray->line_height;
-	tex_pos = (game->ray->draw_start - WINDOW_HEIGHT / 2.0
+	tex_pos = (game->ray->draw_start - WIN_HEIGHT / 2.0
 			+ game->ray->line_height / 2.0) * step;
 	y = game->ray->draw_start;
 	while (y <= game->ray->draw_end)

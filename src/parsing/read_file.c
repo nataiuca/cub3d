@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 12:14:22 by root              #+#    #+#             */
-/*   Updated: 2025/10/09 11:02:46 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 13:05:21 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 
 static int	count_file_lines(char *file)
 {
+	printf("DEBUG: count file lines\n");
 	int		fd;
 	int		count;
 	char	*line;
@@ -60,6 +61,7 @@ static int	count_file_lines(char *file)
 
 static int	read_file(t_mapinfo *mapinfo, int count_lines)
 {
+	printf("DEBUG: read_file\n");
 	int		row;
 	char	*line;
 	ssize_t	len;
@@ -87,7 +89,6 @@ static int	read_file(t_mapinfo *mapinfo, int count_lines)
 
 int load_mapinfo(char *file, t_mapinfo *mapinfo)
 {
-	printf("DEBUG: load_mapinfo\n");
 	int		count_lines;
 
 	mapinfo->fd = open(file, O_RDONLY);

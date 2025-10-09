@@ -120,26 +120,26 @@ static int	parse_config_line(char *line, t_game *game)
 	/* Parsear según el identificador */
 	if (ft_strcmp(parts[0], "NO") == 0 && parts[1] && !parts[2])
 	{
-		game->map->north_texture = ft_strdup(parts[1]);
-		success = (game->map->north_texture != NULL);
+		game->map->no_texture = ft_strdup(parts[1]);
+		success = (game->map->no_texture != NULL);
 		printf("📍 Textura Norte: %s\n", parts[1]);
 	}
 	else if (ft_strcmp(parts[0], "SO") == 0 && parts[1] && !parts[2])
 	{
-		game->map->south_texture = ft_strdup(parts[1]);
-		success = (game->map->south_texture != NULL);
+		game->map->so_texture = ft_strdup(parts[1]);
+		success = (game->map->so_texture != NULL);
 		printf("📍 Textura Sur: %s\n", parts[1]);
 	}
 	else if (ft_strcmp(parts[0], "WE") == 0 && parts[1] && !parts[2])
 	{
-		game->map->west_texture = ft_strdup(parts[1]);
-		success = (game->map->west_texture != NULL);
+		game->map->we_texture = ft_strdup(parts[1]);
+		success = (game->map->we_texture != NULL);
 		printf("📍 Textura Oeste: %s\n", parts[1]);
 	}
 	else if (ft_strcmp(parts[0], "EA") == 0 && parts[1] && !parts[2])
 	{
-		game->map->east_texture = ft_strdup(parts[1]);
-		success = (game->map->east_texture != NULL);
+		game->map->ea_texture = ft_strdup(parts[1]);
+		success = (game->map->ea_texture != NULL);
 		printf("📍 Textura Este: %s\n", parts[1]);
 	}
 	else if (ft_strcmp(parts[0], "F") == 0 && parts[1] && !parts[2])
@@ -172,22 +172,22 @@ static int	parse_config_line(char *line, t_game *game)
 */
 static int	validate_config(t_game *game)
 {
-	if (!game->map->north_texture)
+	if (!game->map->no_texture)
 	{
 		printf("❌ Falta textura Norte (NO)\n");
 		return (0);
 	}
-	if (!game->map->south_texture)
+	if (!game->map->so_texture)
 	{
 		printf("❌ Falta textura Sur (SO)\n");
 		return (0);
 	}
-	if (!game->map->east_texture)
+	if (!game->map->ea_texture)
 	{
 		printf("❌ Falta textura Este (EA)\n");
 		return (0);
 	}
-	if (!game->map->west_texture)
+	if (!game->map->we_texture)
 	{
 		printf("❌ Falta textura Oeste (WE)\n");
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 10:33:52 by root              #+#    #+#             */
-/*   Updated: 2025/10/09 11:58:00 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/09 12:53:37 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,21 +89,25 @@ int	validate_texture_path(char *path)
 	return(1);
 }
 
-int	validate_config(t_mapinfo *mapinfo)
+/**HABRÁ QUE CAMBIAR COSAS PORK NO SE DONDE ACABARAN GUARDADOS LOS
+ * C_COLOR Y TAL
+ */
+
+int	validate_config(t_game *game)
 {
 	printf("DEBUG: validate_config\n");
 
-	if(!validate_texture_path(mapinfo->no_path))
+	if(!validate_texture_path(game->map->no_texture))
 		return (0);
-	if(!validate_texture_path(mapinfo->so_path))
+	if(!validate_texture_path(game->map->so_texture))
 		return (0);
-	if(!validate_texture_path(mapinfo->ea_path))
+	if(!validate_texture_path(game->map->ea_texture))
 		return (0);
-	if(!validate_texture_path(mapinfo->we_path))
+	if(!validate_texture_path(game->map->we_texture))
 		return (0);
-	if(!validate_color_str(mapinfo->c_color_raw, mapinfo->c_color))
+	if(!validate_color_str(game->mapinfo->c_color_raw, game->mapinfo->c_color))
 		return (0);
-	if(!validate_color_str(mapinfo->f_color_raw, mapinfo->f_color))
+	if(!validate_color_str(game->mapinfo->f_color_raw, game->mapinfo->f_color))
 		return (0);
 	return (1);
 }

@@ -47,17 +47,16 @@ static t_img	*create_image(void *mlx, int width, int height)
 ** - Carga una imagen .xpm usando MLX
 ** - Obtiene sus datos para poder leerla píxel por píxel
 */
-static t_img	*load_texture(void *mlx, char *path)
+static mlx_image_t	*load_texture(void *mlx, char *path)
 {
-	t_img	*texture;
-	int		fd;
-	
-	printf("🎨 Cargando textura: %s\n", path);
-	
+	mlx_image_t	*texture;
+	int			fd;
+
 	/* Verificación del archivo */
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
+		error_msg(NULL, NULL, 0);
 		printf("❌ Error: No se puede abrir el archivo '%s'\n", path);
 		printf("   errno: %d (%s)\n", errno, strerror(errno));
 		return (NULL);
@@ -114,29 +113,18 @@ static t_img	*load_texture(void *mlx, char *path)
 */
 int	load_textures(t_game *game)
 {
-	printf("🎨 Cargando texturas...\n");
-	
-	/* Cargar textura Norte (índice 0) */
-	game->textures[0] = load_texture(game->mlx, game->map->north_texture);
+	game->textures[0] = load_texture(game->mlx, game->map->no_texture);
 	if (!game->textures[0])
 		return (0);
-		
-	/* Cargar textura Sur (índice 1) */
-	game->textures[1] = load_texture(game->mlx, game->map->south_texture);
+	game->textures[1] = load_texture(game->mlx, game->map->so_texture);
 	if (!game->textures[1])
 		return (0);
-		
-	/* Cargar textura Este (índice 2) */
-	game->textures[2] = load_texture(game->mlx, game->map->east_texture);
+	game->textures[2] = load_texture(game->mlx, game->map->ea_texture);
 	if (!game->textures[2])
 		return (0);
-		
-	/* Cargar textura Oeste (índice 3) */
-	game->textures[3] = load_texture(game->mlx, game->map->west_texture);
+	game->textures[3] = load_texture(game->mlx, game->map->we_texture);
 	if (!game->textures[3])
 		return (0);
-	
-	printf("✅ Todas las texturas cargadas correctamente\n");
 	return (1);
 }
 
@@ -144,99 +132,43 @@ int	load_textures(t_game *game)
 ** Función para verificar que un archivo de textura existe
 ** - Intenta abrir el archivo
 ** - Útil para validar antes de cargar con MLX
+
+NO SE ESTÁ USANDO
 */
-static int	check_texture_file(char *path)
+/*static int	check_texture_file(char *path)
 {
 	int	fd;
 	
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
-	{
-		printf("❌ No se puede abrir archivo de textura: %s\n", path);
-		return (0);
-	}
+		return(error_msg(NULL, path, 0)); //errno ya sabe el mensaje
 	close(fd);
 	return (1);
-}
-
-/*
-** Función para validar todos los archivos de textura antes de cargarlos
-*/
-static int	validate_texture_files(t_game *game)
-{
-	printf("🔍 Verificando archivos de textura...\n");
-	
-	if (!check_texture_file(game->map->north_texture))
-		return (0);
-	if (!check_texture_file(game->map->south_texture))
-		return (0);
-	if (!check_texture_file(game->map->east_texture))
-		return (0);
-	if (!check_texture_file(game->map->west_texture))
-		return (0);
-		
-	printf("✅ Todos los archivos de textura son accesibles\n");
-	return (1);
-}
+}*/
 
 /*
 ** Función principal para inicializar los gráficos
-** - Inicializa MLX
-** - Crea la ventana
+** - Inicializa MLX (con la mlx42 ya se crea la ventana)
 ** - Carga texturas
 ** - Crea imagen para dibujar
 ** - Configura eventos
 */
 int	init_graphics(t_game *game)
 {
-	printf("🖥️  Inicializando sistema gráfico...\n");
-	
-	/* Validar archivos de textura primero */
-	if (!validate_texture_files(game))
-		return (0);
-	
-	/* Inicializar MLX */
-	game->mlx = mlx_init();
+	game->mlx = mlx_init(WIN_WIDTH, WIN_HEIGHT, "cub3D", false);
 	if (!game->mlx)
-	{
-		error_msg(ERR_MLX_INIT, NULL);
-		return (0);
-	}
-	printf("✅ MLX inicializado\n");
-	
-	/* Crear ventana */
-	game->window = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
-	if (!game->window)
-	{
-		printf("❌ Error creando ventana\n");
-		return (0);
-	}
-	printf("✅ Ventana creada: %dx%d píxeles\n", WINDOW_WIDTH, WINDOW_HEIGHT);
-	
-	/* Crear imagen para dibujar en pantalla */
-	game->screen = create_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-	if (!game->screen)
-	{
-		printf("❌ Error creando imagen de pantalla\n");
-		return (0);
-	}
-	printf("✅ Buffer de pantalla creado\n");
-	
-	/* Cargar todas las texturas */
+		return(error_msg(ERR_MLX_INIT, NULL, 0));
+	game->img = mlx_new_image(game->mlx, WIN_WIDTH, WIN_HEIGHT);
+	if (!game->img)
+		return(error_msg(NULL, NULL, 0)); //creo que si falla mlx_new_img ya establece su propio error -> COMPROBAR
 	if (!load_textures(game))
-	{
-		printf("❌ Error cargando texturas\n");
-		return (0);
-	}
-	
-	/* Configurar eventos de teclado y ventana */
-	mlx_hook(game->window, 2, 1L<<0, handle_keypress, game);    /* Tecla presionada */
-	mlx_hook(game->window, 17, 1L<<17, handle_close, game);     /* Cerrar ventana */
+		return(error_msg(ERR_LOAD_TEX, NULL, 0));
+	mlx_key_hook(game->mlx, handle_keypress, game); //NO SE SI ES MEJOR QUE ESTAS FUNCIONES VAYAN AQUÍ O EN EL MAIN
+	mlx_hook(game->mlx, handle_close, game); 
 	
 	/* NO configurar loop de render automático por ahora */
 	/* mlx_loop_hook(game->mlx, render_frame, game); */
-	
-	printf("✅ Sistema gráfico inicializado correctamente\n");
+
 	return (1);
 }
 
@@ -244,44 +176,52 @@ int	init_graphics(t_game *game)
 ** Función para obtener el color de un píxel de una textura
 ** - Convierte coordenadas de textura a color
 ** - Útil para el raycasting
+
+mlx_image_t->pixels: buffer de la imagen (cada pixel 4 bytes de rgba)
+el buffer pixel tiene todos los píxeles en formato rgba
+cada pixel son 4 uint8_t: r, g, b, a
+el pixel (x,y) está en la posición index = (y * width + x) * 4
+
 */
-int	get_texture_color(t_img *texture, int x, int y)
+int	get_texture_color(mlx_image_t *texture, int x, int y)
 {
-	char	*dst;
-	static int debug_count = 0;
+	uint8_t		*pixels;
+	uint8_t		r;
+	uint8_t		g;
+	uint8_t		b;
+	uint8_t		a;
+	uint32_t	index;
+	int			debug_count;
+
+	debug_count = 0;
 	
-	/* Verificar que la textura existe */
-	if (!texture || !texture->addr)
+	if (!texture || !texture->pixels)
 	{
-		if (debug_count < 5)
-		{
+		if (debug_count++ < 5)
 			printf("❌ Textura nula en get_texture_color\n");
-			debug_count++;
-		}
 		return (0xFF00FF); /* Rosa magenta para debug */
 	}
 		
 	/* Verificar límites - MEJORADO */
-	if (x < 0 || x >= texture->width || y < 0 || y >= texture->height)
+	if (x < 0 || x >= (int)texture->width || y < 0 || y >= (int)texture->height)
 	{
-		if (debug_count < 5)
-		{
+		if (debug_count++ < 5)
 			printf("⚠️  Coordenadas fuera de límites: (%d,%d) max:(%d,%d)\n",
 			       x, y, texture->width, texture->height);
-			debug_count++;
-		}
 		/* Hacer clamp en lugar de devolver 0 */
 		if (x < 0) x = 0;
-		if (x >= texture->width) x = texture->width - 1;
+		if (x >= (int)texture->width) x = texture->width - 1;
 		if (y < 0) y = 0;
-		if (y >= texture->height) y = texture->height - 1;
+		if (y >= (int)texture->height) y = texture->height - 1;
 	}
-		
-	/* Calcular posición en memoria */
-	dst = texture->addr + (y * texture->line_len + x * (texture->bits_per_pixel / 8));
-	
-	/* Devolver color como entero */
-	return (*(unsigned int*)dst);
+	pixels = texture->pixels;
+	index = (y * texture->width + x) * 4;
+	//construir color en formato rgb
+	r = pixels[index + 0];
+	g = pixels[index + 1];
+	b = pixels[index + 2];
+	a = pixels[index + 3];
+	return ((r << 244) | (g << 16) | (b << 8) | a);
 }
 
 /*
