@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 10:24:38 by root              #+#    #+#             */
-/*   Updated: 2025/10/10 12:19:59 by root             ###   ########.fr       */
+/*   Updated: 2025/10/10 13:04:53 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@
 
 void	draw_line(t_minimap *minimap, t_ray ray, t_player *player)
 {
-	float	hit_x;
-	float	hit_y;
+	//float	hit_x;
+	//float	hit_y;
 	float	dx; //diff entre x de inicio (pos de player) y x de final (hit del rayo)
 	float	dy;
 	float	steps; //num de pasos (pixeles)
@@ -46,14 +46,17 @@ void	draw_line(t_minimap *minimap, t_ray ray, t_player *player)
 	float	x_inc;
 	float	y_inc;
 
-	hit_x = player->px + ray.dir_x * ray.perp_wall_d;
-	hit_y = player->py + ray.dir_y * ray.perp_wall_d;
-	dx = hit_x * minimap->cell_size - player->px;
-	dy = hit_y * minimap->cell_size - player->py;
-	if (fabsf(dx) > fabsf(dy))
+	//hit_x = player->px + ray.dir_x * ray.perp_wall_d;
+	//hit_y = player->py + ray.dir_y * ray.perp_wall_d;
+	//dx = hit_x * minimap->cell_size - player->px;
+	//dy = hit_y * minimap->cell_size - player->py;
+	dx = ray.hit_x_px - player->px;
+	dy = ray.hit_y_px - player->py;
+	/*if (fabsf(dx) > fabsf(dy))
 		steps = fabsf(dx);
 	else
-		steps = fabsf(dy);
+		steps = fabsf(dy);*/
+	steps = fmaxf(fabsf(dx), fabsf(dy));
 	if (steps < 1)
 		steps = 1;
 	x_inc = dx / steps;
@@ -87,7 +90,7 @@ void	draw_rays(t_game *game) //CAMBIAR TODOOO
 	int		i;
 	
 	i = 0;
-	while (i < WIN_WIDTH / 100) //120: ray_count ... en esta versión tiene que corresponder al num de columnas dibujadas en el 3d -> WIN_WIDTH??
+	while (i < game->minimap->ray_count) //120: ray_count ... en esta versión tiene que corresponder al num de columnas dibujadas en el 3d -> WIN_WIDTH??
 	{
 		draw_line(game->minimap, game->minimap->rays[i], game->player);
 		i ++;

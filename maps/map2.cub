@@ -2,8 +2,8 @@ NO ./textures/stone_wall2.png
 SO ./textures/tile_wall2.png
 WE ./textures/brick_wall2.png
 EA ./textures/stone_wall3.png
-F 14,200,30
-C 135,206,235
+F 127, 255, 0
+C 100, 149, 237
 
 1111111111111111
 1000000000000001

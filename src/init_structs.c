@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/10 10:51:55 by root             ###   ########.fr       */
+/*   Updated: 2025/10/10 13:17:17 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,6 @@ static void	init_map(t_map *map)
 	map->so_texture = NULL;
 	map->ea_texture = NULL;
 	map->we_texture = NULL;
-	map->floor_color = 0x654321;   /* Color marrón por defecto */
-	map->ceiling_color = 0x87CEEB; /* Color azul cielo por defecto */
 }
 
 /*

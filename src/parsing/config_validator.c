@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   config_validator.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 10:33:52 by root              #+#    #+#             */
-/*   Updated: 2025/10/09 15:58:09 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/10 13:47:38 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "cub3d.h"
 
+static int	rgb_to_int(int r, int g, int b)
+{
+	int	a;
+
+	a = 0xFF;
+	return((r << 24) | (g << 16) | (b << 9) | a);
+	//return ((b & 0xFF) << 24) | ((g & 0xFF) << 16) | ((r & 0xFF) << 8) | (a & 0xFF);
+}
 
 /*
 	- No pueden faltar configuration keys ✅ 
@@ -24,11 +32,12 @@
 	- NO SE SI ES NECESARIO PASAR LOS RGB A INT PORK LUEGO IGUAL HAY QUE CONVERTIR A OTRA COSA
 */
 
-int	validate_rgb_values(char **parts, int color[3])
+int	validate_rgb_values(char **parts, uint32_t *color)
 {
 	int	i;
 	int	j;
 	int	val;
+	int rgb[3];
 
 	i = 0;
 	while (parts[i])
@@ -43,13 +52,14 @@ int	validate_rgb_values(char **parts, int color[3])
 		val = atoi(parts[i]);
 		if (val < 0 || val > 255)
 			return (error_msg(ERR_RGB, ERR_RGB_RANGE, 0));
-		color[i] = val;
+		rgb[i] = val;
 		i ++;
 	}
+	*color = rgb_to_int(rgb[0], rgb[1], rgb[2]);
 	return (1);
 }
 
-int	validate_color_str(char *color_str, int color[3])
+int	validate_color_str(char *color_str, uint32_t *color)
 {
 	char	**parts;
 	int		ret;
@@ -105,9 +115,9 @@ int	validate_config(t_game *game)
 		return (0);
 	if(!validate_texture_path(game->map->we_texture))
 		return (0);
-	if(!validate_color_str(game->mapinfo->c_color_raw, game->mapinfo->c_color))
+	if(!validate_color_str(game->mapinfo->c_color_raw, &game->map->ceiling_color))
 		return (0);
-	if(!validate_color_str(game->mapinfo->f_color_raw, game->mapinfo->f_color))
+	if(!validate_color_str(game->mapinfo->f_color_raw, &game->map->floor_color))
 		return (0);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 12:13:26 by root              #+#    #+#             */
-/*   Updated: 2025/10/10 12:21:59 by root             ###   ########.fr       */
+/*   Updated: 2025/10/10 13:07:57 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,17 @@ void	clear_minimap(t_minimap *minimap)
 		}
 		y ++;
 	}
+}
+
+int	get_minimap_cell_color(char cell)
+{
+	if (cell == '1') //wall
+		return (0xFF7F50FF); //coral
+	else if (cell == '0') //floor
+		return (0x556B2FFF); //kaki
+	else if (ft_strchr("NSEW", cell))
+		return (0x556B2FFF); //kaki para el suelo
+	return (0x222222FF); //dark grey - no deberia ocurrir - espacios
 }
 
 /**
@@ -75,15 +86,15 @@ void	draw_square(t_minimap *minimap, int x, int y, int color)
 
 int	init_minimap(t_game *game, t_minimap *minimap) //NO SE SI QUEDA UN POCO FEO PONER ESTO AQUÍ EN VEZ DE CON EL RESTO DE LOS INITS
 {
-	minimap->cell_size = 32; //PRUEBA - VER CÓMO SE VE EN PANTALLA, AVERIGUAR SI SE DEF TAMAÑO DE CELDA DE MAPA EN PIXELES
+	minimap->cell_size = 32 * MINIMAP_SCALE; //PRUEBA - VER CÓMO SE VE EN PANTALLA, AVERIGUAR SI SE DEF TAMAÑO DE CELDA DE MAPA EN PIXELES
 	minimap->offset_x = 20;
 	minimap->offset_y = 20;
-	minimap->width = game->map->width * minimap->cell_size; //* MINIMAP_SCALE
-	minimap->height = game->map->height * minimap->cell_size; //* MINIMAP_SCALE
+	minimap->width = game->map->width * minimap->cell_size;
+	minimap->height = game->map->height * minimap->cell_size;
 	minimap->img = mlx_new_image(game->mlx, minimap->width, minimap->height);
 	if (!minimap->img)
 		return (error_msg(NULL, NULL, 0));
-	minimap->ray_count = WIN_WIDTH / 100;
+	minimap->ray_count = WIN_WIDTH / 20;
 	minimap->rays = malloc(sizeof(t_ray) * minimap->ray_count);
 	if (!minimap->rays)
 		return(error_msg(NULL, NULL, 0));

@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 16:42:11 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/10 12:31:35 by root             ###   ########.fr       */
+/*   Updated: 2025/10/10 12:43:42 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
  * @param player	Puntero a estructura del jugador
  * @param col	Columna actual, número de rayo
  */
+
 t_ray	init_ray(t_player *player, int col)
 {
 	t_ray	ray;

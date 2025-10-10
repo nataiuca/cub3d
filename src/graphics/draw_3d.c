@@ -5,6 +5,7 @@
 ** Obtiene color de textura con bounds checking
 ** Clamp en lugar de return 0 para evitar artefactos
 */
+
 int	get_tex_color(mlx_image_t *tex, int x, int y)
 {
 	//char	*dst;

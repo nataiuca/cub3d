@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/10 12:15:19 by root             ###   ########.fr       */
+/*   Updated: 2025/10/10 13:33:33 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 /* Window/mlx values */
 # define WIN_WIDTH 1024
 # define WIN_HEIGHT 768
+
+# define MINIMAP_SCALE 0.5 
 
 # define TEXTURE_SIZE 64
 
@@ -196,8 +198,8 @@ typedef struct s_map
 	char	*so_texture;
 	char	*ea_texture;
 	char	*we_texture;
-	int		floor_color;
-	int		ceiling_color;
+	uint32_t		floor_color;
+	uint32_t		ceiling_color;
 }	t_map;
 
 typedef struct s_minimap
@@ -217,20 +219,10 @@ typedef struct	s_mapinfo
 	int		fd;
 	char	**file_raw_data;
 	char	**cursor;
-
-	/*char	*no_path;
-	char	*so_path;
-	char	*ea_path;
-	char	*we_path;*/
-
 	char	*f_color_raw;
 	char	*c_color_raw;
 	bool	f_color_set;
 	bool	c_color_set;
-
-	int		f_color[3]; //NO SE SI ES NECESARIO TENER LOS RGB EN INT PORQUE IGUAL HAY QUE PASAR A OTRO FORMATO
-	int		c_color[3];
-
 	char	**map_raw;
 
 }	t_mapinfo;
@@ -280,6 +272,7 @@ void	update_player(t_game *game, t_player *player);
 /* engines/raycasting.c */
 void	calc_step_dist(t_ray *ray, t_player *player);
 void	perform_dda(t_game *game, t_ray *ray);
+void	calc_wall_dist(t_ray *ray, t_player *player);
 void	cast_all_rays(t_game *game);
 
 /* engines/collision.c */
