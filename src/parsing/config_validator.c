@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 10:33:52 by root              #+#    #+#             */
-/*   Updated: 2025/10/10 13:54:21 by root             ###   ########.fr       */
+/*   Updated: 2025/10/10 19:16:01 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	validate_color_str(char *color_str, uint32_t *color)
 
 	parts = ft_split(color_str, ' ');
 	if (!parts)
-		return (error_msg(ERR_MALLOC, NULL, 0)); //error de memoria
+		return (error_msg(NULL, NULL, 0)); //error de memoria
 	count = 0;
 	while (parts[count])
 		count ++;
@@ -115,9 +115,9 @@ int	validate_config(t_game *game)
 		return (0);
 	if(!validate_texture_path(game->map->we_texture))
 		return (0);
-	if(!validate_color_str(game->mapinfo->c_color_raw, &game->map->ceiling_color))
+	if(!validate_color_str(game->info->c_color_raw, &game->map->ceiling_color))
 		return (0);
-	if(!validate_color_str(game->mapinfo->f_color_raw, &game->map->floor_color))
+	if(!validate_color_str(game->info->f_color_raw, &game->map->floor_color))
 		return (0);
 	return (1);
 }

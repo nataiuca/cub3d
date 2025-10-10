@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/10 13:33:33 by root             ###   ########.fr       */
+/*   Updated: 2025/10/10 19:13:32 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,26 +64,26 @@
 
 /* Error messages */
 
+//General error messages
+
 # define ERR_USAGE ": Usage: ./cub3d <map.dup>"
 # define ERR_FILE_EXT ": File must have .cub extension."
-
 # define ERR_INIT ": Failed to initialize game."
 # define ERR_LOAD_DATA ": Failed to load file data."
+# define ERR_PARSE ": Failed to parse file. "
+# define ERR_INIT_GRAPHS ": Failed to initialize graphics"
 
 # define ERR_LOAD_TEX ": Failed to load texture :"
 # define ERR_TEX_TO_IMG ": Failed to convert texture to image"
 # define ERR_MLX_INIT ": mlx initialization failed"
 # define ERR_IMG_MINIMAP ": The minimap image could not be created"
-# define ERR_INIT_GRAPHS ": Failed to initialize graphics"
 
-
-# define ERR_MALLOC ": Malloc failed"
-
-//Parsing error
+//Parsing error messages
 
 # define ERR_EMPTY_FILE ": Empty file"
 # define ERR_KEY ": Unexpected configuration key in file: "
 # define ERR_MISSING_CONF_KEYS ": Missing configuration keys (NO, SO, EA, WE, C, F)"
+
 # define ERR_TEXTURE_MISSING ": Texture path is missing"
 # define ERR_TEXTURE_FORMAT ": Invalid texture path format: "
 
@@ -100,8 +100,6 @@
 # define ERR_OPEN_MAP ": Open map"
 # define ERR_NO_MAP ": Map is missing"
 # define ERR_AFTER_MAP ": Unexpected line after the map"
-
-# define ERR_PARSE ": Failed to parse file. "
 
 /* Colors for msgs */
 # define RED "\033[0;31m"
@@ -142,18 +140,14 @@ typedef struct s_player
 	double	pos_y;
 	float	px; //coordeandas en pixeles para minimap
 	float	py; //coordenadas en píxeles para minimap
-
 	int		dir; //dirección en int
 	double	dir_x; //dirección en x
 	double	dir_y; // dirección en y
 	double	plane_x;
 	double	plane_y;
-
 	float	angle; //ángulo de visión/orientación en radianes
-	
 	double	move_speed;
 	double	rot_speed;
-
 	bool	move_forward;
 	bool	move_backward;
 	bool	move_right;
@@ -198,8 +192,8 @@ typedef struct s_map
 	char	*so_texture;
 	char	*ea_texture;
 	char	*we_texture;
-	uint32_t		floor_color;
-	uint32_t		ceiling_color;
+	uint32_t	floor_color;
+	uint32_t	ceiling_color;
 }	t_map;
 
 typedef struct s_minimap
@@ -214,7 +208,7 @@ typedef struct s_minimap
 	t_ray		*rays;
 }	t_minimap;
 
-typedef struct	s_mapinfo
+typedef struct	s_info
 {
 	int		fd;
 	char	**file_raw_data;
@@ -224,8 +218,7 @@ typedef struct	s_mapinfo
 	bool	f_color_set;
 	bool	c_color_set;
 	char	**map_raw;
-
-}	t_mapinfo;
+}	t_info;
 
 /* Estructura principal del juego */
 typedef struct s_game
@@ -237,7 +230,7 @@ typedef struct s_game
 	t_minimap		*minimap;
 	t_player		*player;
 	t_ray			*rays;
-	t_mapinfo		*mapinfo;
+	t_info		*info;
 }	t_game;
 
 /* main.c */
@@ -247,22 +240,22 @@ int		main(int argc, char **argv);
 int	init_game(t_game *game);
 
 /* parsing/read_file.c */
-int		load_mapinfo(char *file, t_mapinfo *mapinfo);
+int		load_info(char *file, t_info *info);
 
 /* parsing/config_parser.c */
-int	parse_config(t_game *game, t_mapinfo *mapinfo);
+int	parse_config(t_game *game, t_info *info);
 
 /* parsing/map_parser.c */
-int	parse_map(t_mapinfo *mapinfo);
+int	parse_map(t_info *info);
 
 /* parsing/config_validator.c */
 int	validate_config(t_game *game);
 
 /* parsing/map_validator.c */
-int	validate_map(t_game *game, t_mapinfo *mapinfo, t_map *map);
+int	validate_map(t_game *game, t_info *info, t_map *map);
 
 /* parsing/parse_utils.c */
-int	skip_empty_lines(t_mapinfo *mapinfo);
+int	skip_empty_lines(t_info *info);
 int	is_map_start_line(const char *line);
 
 /* engines/player */
@@ -278,12 +271,15 @@ void	cast_all_rays(t_game *game);
 /* engines/collision.c */
 int		is_valid_pos(t_game *game, double x, double y);;
 
-/* graphics/init_mlx.c */
+/* graphics/draw.c */
 int		init_graphics(t_game *game);
 int		load_textures(t_game *game);
-
-/* graphics/draw_3d.c - OPTIMIZADO */
 void	draw_3d_view(t_game *game);
+
+/* graphics/textures */
+int	get_tex_color(mlx_image_t *tex, int x, int y);
+int	get_texture_index(t_ray *ray);
+void	calc_texture_x(t_ray *ray, t_player *player, double *wall_x, int *tex_x, mlx_image_t *tex); 
 
 /* minimap/minimap_draw.c */
 int		init_minimap(t_game *game, t_minimap *minimap); 
@@ -313,7 +309,6 @@ void	rotate_player(t_player *player, int direction);
 /* utils/cleanup.c */
 void	ft_free_str_array(char **array);
 void	cleanup_game(t_game *game);
-void	free_map(t_map *map);
 
 /* utils/error.c */
 void	error_exit(char *msg);

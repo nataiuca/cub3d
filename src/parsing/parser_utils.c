@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 16:17:49 by root              #+#    #+#             */
-/*   Updated: 2025/10/08 16:25:33 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/10 19:16:01 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,29 @@
 /**
  * @brief	Salta las líneas vacías entre la configuración de texturas y colores
  * 			y el mapa.
- * @param mapinfo
+ * @param info
  * @return int	0 si no hay linea, 1 si hay linea
  * 
  */
 
-int	skip_empty_lines(t_mapinfo *mapinfo)
+int	skip_empty_lines(t_info *info)
 {
 	char	*line;
 
-	while (*mapinfo->cursor)
+	while (*info->cursor)
 	{
-		line = ft_strtrim(*mapinfo->cursor, " \t\n");
+		line = ft_strtrim(*info->cursor, " \t\n");
 		if (!line)
-			return (error_msg(ERR_MALLOC, NULL, 0));
+			return (error_msg(NULL, NULL, 0));
 		if (*line) //linea no vacia
 		{
 			free(line);
 			return (1);
 		}
 		free(line);
-		mapinfo->cursor++;
+		info->cursor++;
 	}
-	//si se nos ha acabado el *mapinfo->cursor
+	//si se nos ha acabado el *info->cursor
 	return (error_msg(ERR_NO_MAP, NULL, 0));
 }
 

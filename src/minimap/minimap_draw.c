@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 10:24:38 by root              #+#    #+#             */
-/*   Updated: 2025/10/10 13:04:53 by root             ###   ########.fr       */
+/*   Updated: 2025/10/10 17:29:50 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@
 
 void	draw_line(t_minimap *minimap, t_ray ray, t_player *player)
 {
-	//float	hit_x;
-	//float	hit_y;
 	float	dx; //diff entre x de inicio (pos de player) y x de final (hit del rayo)
 	float	dy;
 	float	steps; //num de pasos (pixeles)
@@ -46,16 +44,8 @@ void	draw_line(t_minimap *minimap, t_ray ray, t_player *player)
 	float	x_inc;
 	float	y_inc;
 
-	//hit_x = player->px + ray.dir_x * ray.perp_wall_d;
-	//hit_y = player->py + ray.dir_y * ray.perp_wall_d;
-	//dx = hit_x * minimap->cell_size - player->px;
-	//dy = hit_y * minimap->cell_size - player->py;
 	dx = ray.hit_x_px - player->px;
 	dy = ray.hit_y_px - player->py;
-	/*if (fabsf(dx) > fabsf(dy))
-		steps = fabsf(dx);
-	else
-		steps = fabsf(dy);*/
 	steps = fmaxf(fabsf(dx), fabsf(dy));
 	if (steps < 1)
 		steps = 1;
@@ -142,6 +132,50 @@ void	draw_player(t_minimap *minimap, t_player *player)
 }
 
 /**
+ * @brief	Pinta todos los píxeles de una celda (x, y) del color pasado  
+ * 			como parámetro.
+ * 			- x e y son las coordenadas del mapa lógico
+ * 			- Cada celda del mapa se representa en el minimapa como un 
+ * 			cuadrado de tamaño CELL_SIZE * CELL_SIZE píxeles
+ * 			- El bucle interno dx recorre los píxeles de una fila del cuadrado
+ * 			- El bucle externo dy recorre las filas del cuadrado
+ * 			- px y py calculan la posición real del píxel en la imagen:
+ * 				- x * CELL_SIZE: desplazamiento horizontal, salta cuadrados previos
+ * 				- y * CELL_SIZE: desplazamiento vertical
+ * 				- Luego se suma dx y dy para moverse dentro del cuadrado actual
+ * 				- Y en cada posición (px, py) se pinta el pixel del color que toca
+ * 
+ * @param img	Imagen en la que se pone el pixel
+ * @param x		Coordenada x de la celda del mapa - del mapa itnroducido como input
+ * @param y		Coordenada y de la celda del mapa
+ * @param color	Color del que hay que pintar
+ * 
+ */
+
+void	draw_square(t_minimap *minimap, int x, int y, int color)
+{
+	int	dy;
+	int	dx;
+	int	px;
+	int	py;
+
+	dy = 0;
+	while (dy < minimap->cell_size)
+	{
+		dx = 0;
+		while (dx < minimap->cell_size)
+		{
+			px = x * minimap->cell_size + dx;
+			py = y * minimap->cell_size + dy;
+			mlx_put_pixel(minimap->img, px, py, color);
+			dx ++;
+		}
+		dy ++;
+	}
+}
+
+
+/**
  * @brief	
  * 			SOLO DEBERIA DIBUJAR, NO ACTUALIZAR VALORES
  * 
@@ -149,7 +183,7 @@ void	draw_player(t_minimap *minimap, t_player *player)
  * @param img
  */
 
-void	draw_minimap_grid(t_game *game)
+void	draw_grid(t_game *game)
 {
 	int		x;
 	int		y;
@@ -178,7 +212,7 @@ void	draw_minimap(t_game *game)
 		return ;
 	clear_minimap(game->minimap);
 	cast_all_rays_minimap(game, game->minimap);
-	draw_minimap_grid(game);
+	draw_grid(game);
 	draw_player(game->minimap, game->player);
 	draw_rays(game);
 }

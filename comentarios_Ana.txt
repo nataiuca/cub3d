@@ -46,3 +46,43 @@ Cómo convertir xpm a xpm42?: python3 ../MLX42/tools/xpm3_conv.py wall_south.xpm
 VALGRIND: 
 
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./tu_programa
+
+
+
+
+src/
+│
+├── controls/
+│   ├── events.c    // handle_keypress() y handle_close()
+│
+├── engines /
+│   ├── collision.c //check_corners(), is_valid_pos()
+│   ├── moves.c // rotate_player(), move_right(), move_left()...
+│   └── player.c // update_player(), init_player_orientation()
+│   └── raycasting.c //cast_all_rays(), calc_wall_dist(), perform_dda(), calc_step_dist(), init_ray()
+│
+├── graphics /
+│   ├── draw_3d.c //get_tex_color(), get_tex_index(), calc_tex_x(), draw_floor_ceiling(), draw_tex_wall(), draw_column(), draw_3d_view()
+│   ├── init_mlx.c//init_graphics.c(), load_textures(), load_texture()
+│
+├── minimap /
+│   ├── minimap_cast.c //cast_ray_minimap(), cast_all_rays_minimap(), draw_rays(), draw_line(), 
+│   ├── minimap_draw.c//draw_minimap(), draw_minimap_grid(), draw_player(), 
+│   └── minimap_utils.c //init_minimap(), draw_square(), get_minimap_cell_color(), clear_minimap() 
+│  
+├── parsing /
+│   ├──config_parser.c //parse_config(), handle_config_line(), extract_texture_path(), extract_color_raw()
+│   ├── config_validator.c//validate_config(), validate_texture_path(), validate_color_str(), validate_rgb_values(), rgb_to_int()
+|   ├── map_parser.c//parse_map(), count_rows()
+|   ├── map_validator.c//validate_map(), check_trailing_rows(), is_map_closed(), normalize_map(), process_map_line(), measure_map(), 
+|   ├── parser_utils.c //skip_empty_lines(), is_map_start_line()
+│   └── read_file.c //load_info(), read_file(), count_file_lines()
+├── utils /
+│   ├── cleanup.c //cleanup_game(), free_map(), free_info(), free_str_array()
+│   └── error.c //error_msg(), error_exit(), error_cleanup_exit()
+└── main.c
+└── init_structs.c
+
+
+
+

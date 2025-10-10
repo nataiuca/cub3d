@@ -11,23 +11,6 @@ int	handle_close(t_game *game)
 	return (0);
 }
 
-
-/*
-** Mueve al jugador con detección de colisiones
-** direction: 1=adelante, -1=atrás, 2=derecha, -2=izquierda
-*/
-/*void	move_player(t_game *game, int direction)
-{
-	if (direction == 1)
-		move_forward(game);
-	else if (direction == -1)
-		move_backward(game);
-	else if (direction == 2)
-		move_right(game);
-	else if (direction == -2)
-		move_left(game);
-}*/
-
 /*
 ** Maneja pulsaciones de teclas
 ** Renderiza SOLO cuando hay movimiento (clave para el rendimiento)

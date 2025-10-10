@@ -4,7 +4,7 @@ NAME		= cub3D
 
 # Compiler and flags
 CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -g #-O3
+CFLAGS		= -Wall -Wextra -Werror -g  #-O3
 #MATHFLAGS	= -lm
 
 # ============================================================================ #
@@ -47,24 +47,26 @@ INCDIR		= inc
 #LIBFT_DIR	= libft
 
 # Source files - VERSIÓN OPTIMIZADA
-SOURCES		= main.c \
+SOURCES		= core/main.c \
+			  core/init_game.c \
+			  core/init_graphics.c \
+			  core/init_minimap.c \
+			  core/cleanup.c \
 			  parsing/read_file.c \
 			  parsing/config_parser.c \
 			  parsing/map_parser.c \
 			  parsing/config_validator.c \
 			  parsing/map_validator.c \
 			  parsing/parser_utils.c \
-			  engines/raycasting.c \
-			  engines/player.c \
-			  engines/collision.c \
-			  engines/moves.c \
-			  init_structs.c \
-			  utils/cleanup.c \
+			  engine/raycasting.c \
+			  engine/player.c \
+			  engine/collision.c \
+			  engine/moves.c \
 			  utils/error.c \
-			  graphics/init_mlx.c \
-			  graphics/draw_3d.c \
+			  graphics/draw.c \
+			  graphics/textures.c \
 			  controls/events.c \
-			  minimap/minimap_cast.c \
+			  minimap/minimap_rays.c \
 			  minimap/minimap_draw.c \
 			  minimap/minimap_utils.c 
 

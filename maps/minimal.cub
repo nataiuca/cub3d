@@ -1,6 +1,6 @@
 NO ./textures/stone_wall.png
 SO ./textures/tile_wall.png
-WE ./textures/palisade.png
+WE ./textures/stone_wall2.png
 EA ./textures/brick_wall.png
 F 220,100,0
 C 135,206,235

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_parser.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 11:13:09 by root              #+#    #+#             */
-/*   Updated: 2025/10/09 11:34:28 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/10 19:16:01 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,25 +46,25 @@ int	count_rows(char **array)
 	return (count);
 }
 
-int	parse_map(t_mapinfo *mapinfo)
+int	parse_map(t_info *info)
 {
 	printf("DEBUF: parse_map\n");
 	int		rows;
 	int		i;
 
-	rows = count_rows(mapinfo->cursor); //el cursor ahora mismo queda al final del mapa
+	rows = count_rows(info->cursor); //el cursor ahora mismo queda al final del mapa
 	printf("DEBUG: num of rows: %d\n", rows);
-	mapinfo->map_raw = calloc(rows + 1, sizeof(char *));
-	if (!mapinfo->map_raw)
-		return (error_msg(ERR_MALLOC, NULL, 0));
+	info->map_raw = calloc(rows + 1, sizeof(char *));
+	if (!info->map_raw)
+		return (error_msg(NULL, NULL, 0));
 	i = 0;
 	while (i < rows)
 	{
-		mapinfo->map_raw[i] = ft_strdup(mapinfo->cursor[i]);
-		if (!mapinfo->map_raw[i])
-			return(error_msg(ERR_MALLOC, NULL, 0));
+		info->map_raw[i] = ft_strdup(info->cursor[i]);
+		if (!info->map_raw[i])
+			return(error_msg(NULL, NULL, 0));
 		i ++;	
 	}
-	mapinfo->map_raw[rows] = NULL;
+	info->map_raw[rows] = NULL;
 	return (1);
 }

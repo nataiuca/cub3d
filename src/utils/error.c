@@ -34,11 +34,11 @@ int	error_msg(char *msg, char *arg, int exit_code)
 ** - Muestra "Error\n" seguido del mensaje personalizado
 ** - Sale del programa con código de error 1
 */
-void	error_exit(char *msg)
+/*void	error_exit(char *msg)
 {
 	error_msg(msg, NULL, 0);
 	exit(EXIT_FAILURE);
-}
+}*/
 
 /*
 ** Función para mostrar error, limpiar memoria y salir
