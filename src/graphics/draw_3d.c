@@ -25,8 +25,7 @@ int	get_tex_color(mlx_image_t *tex, int x, int y)
 	g = tex->pixels[i + 1];
 	b = tex->pixels[i + 2];
 	a = tex->pixels[i + 3];
-	//return (*(unsigned int *)dst);
-	return ((a << 24) | (r << 16) | (g << 8) | b);
+	return ((r << 24) | (g << 16) | (b << 8) | a);
 }
 
 /*
@@ -75,7 +74,7 @@ void	calc_texture_x(t_ray *ray, t_player *player, double *wall_x, int *tex_x, ml
 ** Aplica oscurecimiento a paredes horizontales
 ** Mejora la percepción de profundidad
 */
-static int	apply_shading(int color, int side)
+int	apply_shading(int color, int side)
 {
 	int	r;
 	int	g;
@@ -138,7 +137,7 @@ static void	draw_textured_wall(t_game *game, t_ray *ray, int x, mlx_image_t *tex
 			tex_y = tex->height - 1;
 		tex_pos += step;
 		color = get_tex_color(tex, tex_x, tex_y);
-		color = apply_shading(color, ray->side);
+		//color = apply_shading(color, ray->side);
 		mlx_put_pixel(game->img, x, y, color);
 		y++;
 	}
