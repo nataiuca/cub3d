@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 17:43:40 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/10 12:15:19 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,12 @@
 
 # define TEXTURE_SIZE 64
 
-//# define PI 3.14159265358979323846
+//# define MINIMAP_SCALE 0.2
 
+# define PI 3.14159265358979323846
 
 # define RIGHT 1
 # define LEFT -1
-
-# define MOVE_SPEED 0.1
-# define ROT_SPEED 0.08
 
 /* ========================================================================== */
 /* ⚠️  ELIMINAR PARA ENTREGA: Códigos de teclas para macOS                   */
@@ -103,10 +101,6 @@
 
 # define ERR_PARSE ": Failed to parse file. "
 
-
-//Parsing error
-
-
 /* Colors for msgs */
 # define RED "\033[0;31m"
 # define RESET "\033[0m"
@@ -142,7 +136,7 @@ typedef enum e_tex_index
 /* Estructura del jugador */
 typedef struct s_player
 {
-	double	pos_x; //coordenadas en celdas ?
+	double	pos_x; //coordenadas (en el medio de la celda x,y en la que se encuentra)
 	double	pos_y;
 	float	px; //coordeandas en pixeles para minimap
 	float	py; //coordenadas en píxeles para minimap
@@ -155,8 +149,8 @@ typedef struct s_player
 
 	float	angle; //ángulo de visión/orientación en radianes
 	
-	//double	move_speed;
-	//double	rot_speed;
+	double	move_speed;
+	double	rot_speed;
 
 	bool	move_forward;
 	bool	move_backward;
@@ -174,14 +168,18 @@ typedef struct s_ray
 	double	dir_y;
 	int		map_x;
 	int		map_y;
-	double	side_dist_x;
-	double	side_dist_y;
-	double	delta_dist_x;
-	double	delta_dist_y;
-	double	perp_wall_dist;
+	double	side_dx;
+	double	side_dy;
+	double	delta_dx;
+	double	delta_dy;
+	double	perp_wall_d; //distancia perpendicular desde player hasta pared hiteada
 	int		step_x;
 	int		step_y;
 	int		hit;
+	double		hit_x;
+	double		hit_y;
+	double		hit_x_px;
+	double		hit_y_px;
 	int		side;
 	int		line_height;
 	int		draw_start;
@@ -205,10 +203,13 @@ typedef struct s_map
 typedef struct s_minimap
 {
 	mlx_image_t	*img;
+	int			width;
+	int			height;
 	int			cell_size; //igual sobra, con escala a 1 se ve bien en los ejemplos que he probado
 	int			offset_x;
 	int			offset_y; //pos in window
-	
+	int			ray_count;
+	t_ray		*rays;
 }	t_minimap;
 
 typedef struct	s_mapinfo
@@ -241,6 +242,7 @@ typedef struct s_game
 	mlx_image_t		*img;
 	mlx_image_t		*textures[4];
 	t_map			*map;
+	t_minimap		*minimap;
 	t_player		*player;
 	t_ray			*rays;
 	t_mapinfo		*mapinfo;
@@ -271,41 +273,49 @@ int	validate_map(t_game *game, t_mapinfo *mapinfo, t_map *map);
 int	skip_empty_lines(t_mapinfo *mapinfo);
 int	is_map_start_line(const char *line);
 
-/* engine/player */
+/* engines/player */
 void	init_player_orientation(t_player *player);
 void	update_player(t_game *game, t_player *player);
 
-/* engine/raycasting.c */
+/* engines/raycasting.c */
+void	calc_step_dist(t_ray *ray, t_player *player);
+void	perform_dda(t_game *game, t_ray *ray);
 void	cast_all_rays(t_game *game);
+
+/* engines/collision.c */
+int		is_valid_pos(t_game *game, double x, double y);;
 
 /* graphics/init_mlx.c */
 int		init_graphics(t_game *game);
 int		load_textures(t_game *game);
 
-/* graphics/render.c - OPTIMIZADO */
-//void	render_game(t_game *game);
-void	fast_pixel_put(mlx_image_t *img, int x, int y, int color);
-int		get_tex_color(mlx_image_t *tex, int x, int y);
-
 /* graphics/draw_3d.c - OPTIMIZADO */
 void	draw_3d_view(t_game *game);
 
-/* graphics/draw_minimap.c */
+/* minimap/minimap_draw.c */
+int		init_minimap(t_game *game, t_minimap *minimap); 
+void	draw_minimap(t_game *game);
 
+/* minimap/minimap_cast.c */
+int		get_minimap_cell_color(char cell);
+void	cast_all_rays_minimap(t_game *game, t_minimap *minimap);
+
+/* minimap/minimap_utils.c */
+void	draw_square(t_minimap *minimap, int x, int y, int color);
+void	clear_minimap(t_minimap *minimap);
+int		init_minimap(t_game *game, t_minimap *minimap);
 
 /* controls/events.c - OPTIMIZADO */
 void	handle_keypress(mlx_key_data_t data, void *param);
 int		handle_close(t_game *game);
 //void	move_player(t_game *game, int direction);
 
-
-/* controls/movement.c - OPTIMIZADO */
-int		is_valid_pos(t_game *game, double x, double y);
-void	move_forward(t_game *game);
-void	move_backward(t_game *game);
-void	move_left(t_game *game);
-void	move_right(t_game *game);
-void	rotate_player(t_game *game, int direction);
+/* controls/moves.c - OPTIMIZADO */
+void	move_forward(t_game *game, t_player *player);
+void	move_backward(t_game *game, t_player *player);
+void	move_left(t_game *game, t_player *player);
+void	move_right(t_game *game, t_player *player);
+void	rotate_player(t_player *player, int direction);
 
 /* utils/cleanup.c */
 void	ft_free_str_array(char **array);
@@ -315,6 +325,6 @@ void	free_map(t_map *map);
 /* utils/error.c */
 void	error_exit(char *msg);
 void	error_cleanup_exit(char *msg, t_game *game);
-int	error_msg(char *msg, char *arg, int exit_code);
+int		error_msg(char *msg, char *arg, int exit_code);
 
 #endif

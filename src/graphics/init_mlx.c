@@ -76,9 +76,15 @@ int	init_graphics(t_game *game)
 	game->img = mlx_new_image(game->mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!game->img)
 		return(error_msg(NULL, NULL, 0)); //creo que si falla mlx_new_img ya establece su propio error -> COMPROBAR
+	if (!init_minimap(game, game->minimap))
+		return (error_msg("Error in minimap initialization.", NULL, 0));
 	if (!load_textures(game))
-		return(0);
-	mlx_key_hook(game->mlx, handle_keypress, game); //NO SE SI ES MEJOR QUE ESTAS FUNCIONES VAYAN AQUÍ O EN EL MAIN
+		return(error_msg("Error loading textures.", NULL, 0));
+	if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)
+		return (error_msg(NULL, NULL, 0));
+	if (mlx_image_to_window(game->mlx, game->minimap->img, game->minimap->offset_x, game->minimap->offset_y) < 0)
+		return (error_msg(NULL, NULL, 0));
+	//mlx_key_hook(game->mlx, handle_keypress, game); //NO SE SI ES MEJOR QUE ESTAS FUNCIONES VAYAN AQUÍ O EN EL MAIN
 	//mlx_hook(game->mlx, handle_close, game);
 	
 	/* NO configurar loop de render automático por ahora */

@@ -72,6 +72,8 @@ void	init_player_orientation(t_player *player)
 		player->plane_x = 0;
 		player->plane_y = -0.66;
 	}
+	printf("PLAYER dir = (%.3f,%.3f) plane=(%.3f,%.3f)\n",
+       player->dir_x, player->dir_y, player->plane_x, player->plane_y);
 }
 
 //DESDE DÓNDE LLAMAR A ESTA FUNCIÓN??
@@ -80,15 +82,15 @@ void	init_player_orientation(t_player *player)
 void	update_player(t_game *game, t_player *player) //actualizar px/py y ángulo dependiendo de los moves, no¿
 {
 	if (player->move_forward == true)
-		move_forward(game);
+		move_forward(game, player);
 	if (player->move_backward == true)
-		move_backward(game);
+		move_backward(game, player);
 	if (player->move_right == true)
-		move_right(game);
+		move_right(game, player);
 	if (player->move_left == true)
-		move_left(game);
+		move_left(game, player);
 	if (player->turn_right == true)
-		rotate_player(game, RIGHT);
+		rotate_player(player, RIGHT);
 	if (player->turn_left == true)
-		rotate_player(game, LEFT);
+		rotate_player(player, LEFT);
 }

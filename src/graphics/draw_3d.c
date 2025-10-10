@@ -37,16 +37,16 @@ int	get_texture_index(t_ray *ray)
 	if (ray->side == 0)
 	{
 		if (ray->step_x > 0)
-			return (2);
+			return (TEX_EA);
 		else
-			return (3);
+			return (TEX_WE);
 	}
 	else
 	{
 		if (ray->step_y > 0)
-			return (1);
+			return (TEX_SO);
 		else
-			return (0);
+			return (TEX_NO);
 	}
 }
 
@@ -57,9 +57,9 @@ int	get_texture_index(t_ray *ray)
 void	calc_texture_x(t_ray *ray, t_player *player, double *wall_x, int *tex_x, mlx_image_t *tex)
 {
 	if (ray->side == 0)
-		*wall_x = player->pos_y + ray->perp_wall_dist * ray->dir_y;
+		*wall_x = player->pos_y + ray->perp_wall_d * ray->dir_y;
 	else
-		*wall_x = player->pos_x + ray->perp_wall_dist * ray->dir_x;
+		*wall_x = player->pos_x + ray->perp_wall_d * ray->dir_x;
 	*wall_x -= floor(*wall_x);
 	*tex_x = (int)(*wall_x * (double)tex->width);
 	if ((ray->side == 0 && ray->dir_x > 0) || (ray->side == 1 && ray->dir_y < 0))
@@ -124,6 +124,7 @@ static void	draw_textured_wall(t_game *game, t_ray *ray, int x, mlx_image_t *tex
 	double	step;
 	double	tex_pos;
 
+
 	step = (double)tex->height / (double)ray->line_height;
 	tex_pos = (ray->draw_start - WIN_HEIGHT / 2.0 + ray->line_height / 2.0) * step;
 	y = ray->draw_start;
@@ -165,15 +166,9 @@ void	draw_column(t_game *game, int col, t_ray *ray)
 	draw_textured_wall(game, ray, col, tex, tex_x);
 }
 
-//función que vaya columna a columna / rayo a rayo, pintando
-/*draw_3d_view(game)
-{
-	//...
-	mlx_put_image_to_window(game->mlx, game->window, game->screen->img, 0, 0);
-}*/
-
 void	draw_3d_view(t_game *game)
 {
+	printf("DEBUG: draw_3d_view\n");
 	int	i;
 
 	i = 0;

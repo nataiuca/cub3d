@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_validator.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 19:37:05 by root              #+#    #+#             */
-/*   Updated: 2025/10/09 11:56:31 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/10 09:49:59 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ int	process_map_line(t_map *map, t_player *player, int row, char *line)
 			if (player->dir != '\0')
 				return (error_msg(ERR_PLAYERS, NULL, 0));
 			player->dir = line[i];
-			player->pos_x = i;
-			player->pos_y = row;
+			player->pos_x = i + 0.5;
+			player->pos_y = row + 0.5;
 			init_player_orientation(player);
 		}
 		i ++;

@@ -23,10 +23,6 @@ void	free_mapinfo(t_mapinfo *mapinfo)
 		return ;
 	ft_free_str_array(mapinfo->file_raw_data);
 	mapinfo->file_raw_data = NULL;
-	/*free(mapinfo->no_path);
-	free(mapinfo->so_path);
-	free(mapinfo->ea_path);
-	free(mapinfo->we_path);*/
 	free(mapinfo->f_color_raw);
 	free(mapinfo->c_color_raw);
 	ft_free_str_array(mapinfo->map_raw);

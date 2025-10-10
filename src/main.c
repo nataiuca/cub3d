@@ -26,7 +26,6 @@ void	print_parsed_input(t_game *game)
 
 int	parse_validate_input(t_game *game)
 {
-
 	if (!parse_config(game, game->mapinfo))
 		return (0);
 	if(!validate_config(game))
@@ -69,12 +68,12 @@ int	update_game(void *param)
 	game = param;
 	update_player(game, game->player); //ACT POSICIÓN, TENIENDO EN CUENTA MOVES
 	cast_all_rays(game); //cálculo de rayos
-	//draw_minimap(game);
-	/*if (mlx_image_to_window(game->mlx, game->minimap->img, game->minimap->offset_x, cub->minimap->offset_y) < 0)
-		return (error_msg(NULL, NULL, 1));*/
 	draw_3d_view(game);
-	if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)
-		return (error_msg(NULL, NULL, 1));
+	/*if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)
+		return (error_msg(NULL, NULL, 1));*/
+	draw_minimap(game);
+	/*if (mlx_image_to_window(game->mlx, game->minimap->img, game->minimap->offset_x, game->minimap->offset_y) < 0)
+		return (error_msg(NULL, NULL, 1));*/
 
 	return (0);
 }

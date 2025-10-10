@@ -54,18 +54,19 @@ SOURCES		= main.c \
 			  parsing/config_validator.c \
 			  parsing/map_validator.c \
 			  parsing/parser_utils.c \
-			  engine/raycasting.c \
-			  engine/player.c \
+			  engines/raycasting.c \
+			  engines/player.c \
+			  engines/collision.c \
+			  engines/moves.c \
 			  init_structs.c \
 			  utils/cleanup.c \
 			  utils/error.c \
-			  graphics/init_mlx.c
-#			  graphics/render.c \
-			  graphics/draw.c \
+			  graphics/init_mlx.c \
+			  graphics/draw_3d.c \
 			  controls/events.c \
-			  controls/movement.c \
-			  
-#			  parsing/parse_map.c \
+			  minimap/minimap_cast.c \
+			  minimap/minimap_draw.c \
+			  minimap/minimap_utils.c 
 
 # Add src/ prefix
 SRCS		= $(addprefix $(SRCDIR)/, $(SOURCES))

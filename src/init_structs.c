@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_structs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/09 17:58:39 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/10 10:51:55 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ static void	init_player(t_player *player)
 	player->py = 0;
 	player->dir = '\0';
 	player->angle = 0;
-
+	player->move_speed = 0.1;
+	player->rot_speed = 0.08;
 	player->move_forward = false;
 	player->move_backward = false;
 	player->move_right = false;
@@ -81,6 +82,9 @@ static int	init_structs(t_game *game)
 	game->map = malloc(sizeof(t_map));
 	if (!game->map)
 		return (0);
+	game->minimap = malloc(sizeof(t_minimap));
+	if (!game->minimap)
+		return (0);
 	game->player = malloc(sizeof(t_player));
 	if (!game->player)
 	{
@@ -113,6 +117,7 @@ int	init_game(t_game *game)
 		return (0);
 	init_mapinfo(game->mapinfo);
 	init_map(game->map);
+	//init_minimap(game, game->minimap);
 	init_player(game->player);
 	if (!init_rays(game))
 		return (0);
