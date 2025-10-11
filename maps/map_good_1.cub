@@ -4,7 +4,7 @@ WE ./textures/stone_wall2.png
 EA ./textures/tile_wall.png
 
 F 0, 128, 0
-C 0, 191, 255
+C 0, 191,           255
 
         1111111111111111111111111
         1000000000110000000000001

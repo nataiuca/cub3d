@@ -47,7 +47,12 @@ VALGRIND:
 
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./tu_programa
 
+CÓMO SABER SI LOS LEAKS SON DE NUESTRO CÓDIGO O DE LA MLX42:
 
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./cub3D maps/map.cub 2> valgrind.log
+
+-> Si la línea menciona usr/lib/.. o libglfw, libX11, libGL, libpthread, libc... Son leaks del sistema o de MLX42
+-> Preocuparse de frames que terminan en tu binario, 
 
 
 src/

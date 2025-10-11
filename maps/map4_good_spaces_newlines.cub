@@ -1,9 +1,9 @@
-NO     ./textures/stone_wall.png
+NO ./textures/brick_wall.png
+SO ./textures/stone_wall.png
 
 
-SO ./textures/wood_wall.png     
-WE ./textures/brick_wall.png
-EA ./textures/stone_wall2.png
+WE          ./textures/stone_wall2.png
+EA ./textures/tile_wall.png
 
 
 

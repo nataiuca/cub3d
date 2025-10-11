@@ -1,5 +1,5 @@
 NO     ./textures/stone_wall.png
-SO ./textures/wood_wall.png     
+SO ./textures/tile_wall.png     
 WE ./textures/brick_wall.png
 EA ./textures/stone_wall2.png
 

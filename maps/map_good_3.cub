@@ -1,4 +1,9 @@
-
+NO ./textures/stone_wall.png
+SO ./textures/gotic_window.png
+WE ./textures/dark_forest.png
+EA ./textures/quartz.png
+F 76, 45, 42
+C 25, 25, 112
 
 
 111111111111111111111

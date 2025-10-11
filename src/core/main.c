@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 16:45:08 by root              #+#    #+#             */
-/*   Updated: 2025/10/10 19:05:24 by root             ###   ########.fr       */
+/*   Updated: 2025/10/11 16:48:57 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,23 @@ static void	print_parsed_input(t_game *game)
 {
 	int	i;
 
+	printf("\n%s=== CUB3D GAME INFO ===%s\n", CYAN, RESET);
+	printf("%s[Textures]%s\n", YELLOW, RESET);
 	printf("NO texture: %s\n", game->map->no_texture);
 	printf("SO texture: %s\n", game->map->so_texture);
 	printf("EA texture: %s\n", game->map->ea_texture);
 	printf("WE texture: %s\n", game->map->we_texture);
+	printf("\n%s[Colors]%s\n", GREEN, RESET);
 	printf("Floor color: %d\n", game->map->floor_color);
 	printf("Ceiling color: %d\n", game->map->ceiling_color);
+	printf("\n%s[Map]%s\n", MAGENTA, RESET);
 	i = 0;
 	while (game->map->grid[i])
 	{
-		printf("%s", game->map->grid[i]);
-		printf("$\n");
+		printf("%s%s%s$\n", BLUE, game->map->grid[i], RESET);
 		i ++;
 	}
+	printf("\n%s=== GAME STARTED ===%s\n\n", CYAN, RESET);
 }
 
 /**
@@ -57,7 +61,7 @@ static int	parse_validate_input(t_game *game)
 	if (!validate_config(game))
 		return (0);
 	if (!skip_empty_lines(game->info))
-		return (0);
+		return (error_msg(ERR_NO_MAP, NULL, 0));
 	if (!parse_map(game->info))
 		return (0);
 	if (!validate_map(game, game->info, game->map))

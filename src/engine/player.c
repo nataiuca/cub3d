@@ -12,42 +12,68 @@
 
 #include "cub3d.h"
 
+/**
+ * @brief	Initializes the player's direction and camera plabe based on the
+ * 			starting direction character (N, S, E, W).
+ * 			Sets dir_x, dir_y (direction vector) and plane_x, plane_y (camera
+ * 			plane perpendicular to direction) according to standard raycasting
+ * 			conventions.
+ * 			- dir_x, dir_y: direction vector of the player, 'where is looking
+ * 			to':
+ * 				* N -> dir_x = 0, dir_y = -1
+ * 				* S -> dir_x = 0, dir_y = 1
+ * 				* E -> dir_x = 1, dir_y = 0
+ * 				* W -> dir_x = -1, dir_y = 0
+ * 			- plane_x, plane_y: plano de la cámara, define el campo de visión
+ * 			del player y es perpendicular al vector de dirección.
+ * 			Si el jugador mira hacia el norte, con vector de dirección (0, .1),
+ * 			la cámara debe extenderse perpendicular a esto para cubrir la
+ * 			pantalla horizontalmente, así que plane_x = 0.66 y plane_y = 0.
+ * 			0.66 es el ángulo de visión. Es decir, está viendo 0.66 grados en
+ * 			x y nada en y
+ * 			 ⚠️ HACER DIBUJO PARA ENTENDER BIEN ESTO!
+ * 			Como las direcciones y los planos se han inicialziado en 0, podemos 
+ * 			ahorrarnos esas líneas
+ * 
+ * @param player	Pointer to the player structure to initialize
+ */
+
 void	init_player_orientation(t_player *player)
 {
 	if (player->dir == 'N')
 	{
-		player->dir_x = 0;
-		player->dir_y = -1;  /* Norte es hacia arriba */
-		player->plane_x = 0.66;  /* Plano de cámara perpendicular */
-		player->plane_y = 0;
+		player->dir_y = -1;
+		player->plane_x = 0.66;
 	}
 	else if (player->dir == 'S')
 	{
-		player->dir_x = 0;
-		player->dir_y = 1;   /* Sur es hacia abajo */
+		player->dir_y = 1;
 		player->plane_x = -0.66;
-		player->plane_y = 0;
 	}
 	else if (player->dir == 'E')
 	{
-		player->dir_x = 1;   /* Este es hacia la derecha */
-		player->dir_y = 0;
-		player->plane_x = 0;
+		player->dir_x = 1;
 		player->plane_y = 0.66;
 	}
 	else if (player->dir == 'W')
 	{
-		player->dir_x = -1;  /* Oeste es hacia la izquierda */
-		player->dir_y = 0;
-		player->plane_x = 0;
+		player->dir_x = -1;
 		player->plane_y = -0.66;
 	}
 }
 
-//DESDE DÓNDE LLAMAR A ESTA FUNCIÓN??
-//ACTUALIZAR LA ORIENTACIÓN CON LAS FLECHAS! ESO EN MOVES
+/**
+ * @brief	Updates the player's position and orientation based on movement
+ * 			flags.
+ * 			- Checks the movement booleans in the player structure
+ * 			- Calls the corresponding movement or rotation functions to update
+ * 			position and orientation/direction
+ * 
+ * @param game	Pointer to the main game structure
+ * @param player	Pointer to the player structure to update
+ */
 
-void	update_player(t_game *game, t_player *player) //actualizar px/py y ángulo dependiendo de los moves, no¿
+void	update_player(t_game *game, t_player *player)
 {
 	if (player->move_forward == true)
 		move_forward(game, player);

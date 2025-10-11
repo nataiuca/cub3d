@@ -102,6 +102,5 @@ void	cleanup_game(t_game *game)
 		mlx_delete_image(game->mlx, game->img);
 	if (game->mlx)
 		mlx_terminate(game->mlx);
-	printf("✅ Memoria liberada correctamente\n");
 }
 

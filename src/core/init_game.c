@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/10 19:05:24 by root             ###   ########.fr       */
+/*   Updated: 2025/10/11 17:14:49 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,10 @@ static void	init_player(t_player *player)
 	player->px = 0;
 	player->py = 0;
 	player->dir = '\0';
-	player->dir_x = 0;
-	player->dir_y = 0;
-	player->plane_x = 0;
-	player->plane_y = 0;
+	player->dir_x = 0; //sí hay que inicializar en 0
+	player->dir_y = 0; //sí hay que inicializar en 0
+	player->plane_x = 0; //sí hay que inicializar en 0
+	player->plane_y = 0; //sí hay que inicializar en 0
 	player->angle = 0;
 	player->move_speed = 0.1;
 	player->rot_speed = 0.08;

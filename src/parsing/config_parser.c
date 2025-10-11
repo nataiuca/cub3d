@@ -6,21 +6,11 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:21:52 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/10 19:19:20 by root             ###   ########.fr       */
+/*   Updated: 2025/10/11 16:48:37 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-/*
-Errores: 
-	- No pueden faltar configuration keys ✅ 
-	- Configuratio keys invalidas ✅
-	- Puede haber espacios y newlines ✅
-	- Puede haber espacios entre los args de los colores ✅
-	- Checkear valores de los args de los colores 0-255 y solo digitos ✅
-	- Qué pasa si meto cuatro valores en vez de tres? no controlado ✅
-*/
 
 /**
  * @brief	Parses a color configurtion line
@@ -131,8 +121,10 @@ int	parse_config(t_game *game, t_info *info)
 	keys_found = 0;
 	while (*info->cursor && keys_found < 6)
 	{
-		if (!skip_empty_lines(info))
-			return (0);
+		if (!skip_empty_lines(info) && keys_found == 6)
+			return (error_msg(ERR_NO_MAP, NULL, 0)); //AQUÍ HABRIA QUE CONTEMPLAR DOS POSIBLES ERRORES: 
+		if (!skip_empty_lines(info) && keys_found != 6)
+			return (error_msg(ERR_MISSING_CONF_KEYS, NULL, 0));
 		line = ft_strtrim(*info->cursor, " \t\n");
 		if (!line)
 			return (error_msg(NULL, NULL, 0));

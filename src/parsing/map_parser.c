@@ -6,54 +6,33 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 11:13:09 by root              #+#    #+#             */
-/*   Updated: 2025/10/10 19:16:01 by root             ###   ########.fr       */
+/*   Updated: 2025/10/11 16:11:17 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-/* 
-	- El mapa tiene que ir después de las configuraciones de texturas y colores
-	- No puede haber líneas vacías dentro del mapa  -> ESTA IMPLEMENTACIÓN
-	INTERPRETA LÍNEA VACÍA COMO FIN DE MAPA!
-	- EL mapa debe parsearse con los espacios que tenga dentro ✅
-		- no sé cómo interpretar los espacios, si como chars inválidos o qué ❌
-		- los espacios al inicio o final de una linea del mapa también se conservan 
-	- El mapa tiene que estar rodeado de paredes (1) ✅
-	- Solo puede tener los caracteres 0, 1, N, S, E, W ✅
-	- Solo puede haber un player ✅
-	- Tiene que haber un player ✅
-	- El mapa tiene que ser rectangular ✅
-	- No puede haber ninguna línea escrita más después del mapa ✅
-
-		1 - wall
-		0 - empty space
-		N, S, E, W - player start pos + orientation
-*/
-
-int	count_rows(char **array)
-{
-	printf("DEBUG: count_rows\n");
-	int	count;
-
-	count = 0;
-	while (array[count])
-	{
-		if (!*array[count]) //linea vacia -> fin de mapa
-			break ;
-		count ++;
-	}
-	return (count);
-}
-
+/**
+ * @brief	Extracts and stores the map section from the file data.
+ * 			Starting from the current position of info->cursor (after iterating
+ * 			through configuration lines), this function:
+ * 			- Counts the number of map lines using count_rows()
+ * 			- Allocates memory for info->map_raw
+ * 			- Duplicates each map line into the new array
+ * 			The resulting info->map_raw will contain a NULL-terminated copy
+ * 			of all valid map lines. The function stops reading when it encounters
+ * 			an empty line or the end of the file
+ * 
+ * @param info	Pointer to the t_info structure containing the map cursor and
+ * 				the map_raw string array to store the map lines
+ * @result	1 on succes, 0 on allocation or read error
+ */
 int	parse_map(t_info *info)
 {
-	printf("DEBUF: parse_map\n");
 	int		rows;
 	int		i;
 
-	rows = count_rows(info->cursor); //el cursor ahora mismo queda al final del mapa
-	printf("DEBUG: num of rows: %d\n", rows);
+	rows = count_rows(info->cursor);
 	info->map_raw = calloc(rows + 1, sizeof(char *));
 	if (!info->map_raw)
 		return (error_msg(NULL, NULL, 0));
@@ -62,8 +41,8 @@ int	parse_map(t_info *info)
 	{
 		info->map_raw[i] = ft_strdup(info->cursor[i]);
 		if (!info->map_raw[i])
-			return(error_msg(NULL, NULL, 0));
-		i ++;	
+			return (error_msg(NULL, NULL, 0));
+		i ++;
 	}
 	info->map_raw[rows] = NULL;
 	return (1);

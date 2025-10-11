@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/10 19:13:32 by root             ###   ########.fr       */
+/*   Updated: 2025/10/11 16:54:16 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@
 # define WIN_HEIGHT 768
 
 # define MINIMAP_SCALE 0.5 
+# define MIN_CELL_SIZE 4
+# define MAX_CELL_SIZE 32
+# define MAX_MINIMAP_SIZE 300
 
 # define TEXTURE_SIZE 64
 
@@ -92,18 +95,21 @@
 # define ERR_RGB_RANGE "invalid range [0, 255]"
 # define ERR_RGB_COUNT "must have 3 values"
 
-# define ERR_CHAR_MAP ": Invalid character in map"
-# define ERR_EMPTY_LINE ": Empty line in map"
-# define ERR_MAP_SHAPE ": The map is not rectangular"
-# define ERR_NO_PLAYER ": Player not found"
+# define ERR_CHAR_MAP ": Invalid character in map: "
 # define ERR_PLAYERS ": More than one player in the map"
+# define ERR_NO_PLAYER ": Player not found"
 # define ERR_OPEN_MAP ": Open map"
 # define ERR_NO_MAP ": Map is missing"
 # define ERR_AFTER_MAP ": Unexpected line after the map"
 
 /* Colors for msgs */
-# define RED "\033[0;31m"
-# define RESET "\033[0m"
+# define RED     "\033[0;31m"
+# define GREEN   "\033[0;32m"
+# define YELLOW  "\033[0;33m"
+# define BLUE    "\033[0;34m"
+# define MAGENTA "\033[0;35m"
+# define CYAN    "\033[0;36m"
+# define RESET   "\033[0m"
 
 /* Colors */
 # define BLACK 0x000000
@@ -237,13 +243,13 @@ typedef struct s_game
 int		main(int argc, char **argv);
 
 /* init_structs.c */
-int	init_game(t_game *game);
+int		init_game(t_game *game);
 
 /* parsing/read_file.c */
 int		load_info(char *file, t_info *info);
 
 /* parsing/config_parser.c */
-int	parse_config(t_game *game, t_info *info);
+int		parse_config(t_game *game, t_info *info);
 
 /* parsing/map_parser.c */
 int	parse_map(t_info *info);
@@ -256,6 +262,7 @@ int	validate_map(t_game *game, t_info *info, t_map *map);
 
 /* parsing/parse_utils.c */
 int	skip_empty_lines(t_info *info);
+int	count_rows(char **array);
 int	is_map_start_line(const char *line);
 
 /* engines/player */
