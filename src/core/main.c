@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 16:45:08 by root              #+#    #+#             */
-/*   Updated: 2025/10/11 16:48:57 by root             ###   ########.fr       */
+/*   Updated: 2025/10/12 13:27:59 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	update_game(void *param)
 	cast_all_rays(game);
 	draw_3d_view(game);
 	draw_minimap(game);
+	draw_sprite(game, game->sprite);
 }
 
 /**

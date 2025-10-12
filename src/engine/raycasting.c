@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 16:42:11 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/10 18:07:41 by root             ###   ########.fr       */
+/*   Updated: 2025/10/12 17:29:02 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,23 +188,12 @@ void	cast_all_rays(t_game *game)
 	int		i;
 
 	i = 0;
-	printf("DEBUG: WIN_WIDTH = %d\n", WIN_WIDTH);
-	printf("sizeof(t_ray) = %zu\n", sizeof(t_ray));
 	while (i < WIN_WIDTH)
 	{
 		game->rays[i] = init_ray(game->player, i);
 		calc_step_dist(&game->rays[i], game->player);
 		perform_dda(game, &game->rays[i]);
 		calc_wall_dist(&game->rays[i], game->player);
-
-		//debug
-		if (i == 0 || i == WIN_WIDTH/2 || i == WIN_WIDTH-1 || i % (WIN_WIDTH/8) == 0)
-		{
-			t_ray *r = &game->rays[i];
-			printf("COL %3d: dir=(%.3f,%.3f) map=(%d,%d) perp=%.3f line_h=%d start=%d end=%d side=%d\n",
-				i, r->dir_x, r->dir_y, r->map_x, r->map_y,
-				r->perp_wall_d, r->line_height, r->draw_start, r->draw_end, r->side);
-		}
 		i ++;
 	}
 }

@@ -68,7 +68,8 @@ SOURCES		= core/main.c \
 			  controls/events.c \
 			  minimap/minimap_rays.c \
 			  minimap/minimap_draw.c \
-			  minimap/minimap_utils.c 
+			  minimap/minimap_utils.c \
+			  sprite/sprite.c
 
 # Add src/ prefix
 SRCS		= $(addprefix $(SRCDIR)/, $(SOURCES))

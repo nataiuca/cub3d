@@ -70,6 +70,21 @@ void	free_minimap(t_game *game)
 	game->minimap = NULL;
 }
 
+void	free_sprite(t_game *game)
+{
+	int	i;
+
+	i = 0;
+	while (i < game->sprite->frame_count)
+	{
+		mlx_delete_image(game->mlx, game->sprite->frames[i]);
+		i ++;
+	}
+	free(game->sprite->frames);
+	free(game->sprite);
+	game->sprite = NULL;
+}
+
 /*
 ** Función para limpiar todo el juego
 ** - Libera todas las texturas
@@ -102,5 +117,7 @@ void	cleanup_game(t_game *game)
 		mlx_delete_image(game->mlx, game->img);
 	if (game->mlx)
 		mlx_terminate(game->mlx);
+	if (game->sprite)
+		free_sprite(game);
 }
 

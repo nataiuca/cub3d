@@ -13,7 +13,7 @@
 #include "cub3d.h"
 
 /**
- * @brief	Initializes the player's direction and camera plabe based on the
+ * @brief	Initializes the player's direction and camera plane based on the
  * 			starting direction character (N, S, E, W).
  * 			Sets dir_x, dir_y (direction vector) and plane_x, plane_y (camera
  * 			plane perpendicular to direction) according to standard raycasting
@@ -34,6 +34,8 @@
  * 			 ⚠️ HACER DIBUJO PARA ENTENDER BIEN ESTO!
  * 			Como las direcciones y los planos se han inicialziado en 0, podemos 
  * 			ahorrarnos esas líneas
+ * 
+ * 			0.66 de plane_x/y está relacionado con FOV=66º, estándar Wolfenstein
  * 
  * @param player	Pointer to the player structure to initialize
  */

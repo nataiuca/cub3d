@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/11 16:54:16 by root             ###   ########.fr       */
+/*   Updated: 2025/10/12 17:13:03 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include <stdbool.h>
 # include <math.h>
+# include <sys/time.h>
 # include "libft.h"
 # include <MLX42.h>
 
@@ -79,7 +80,10 @@
 # define ERR_LOAD_TEX ": Failed to load texture :"
 # define ERR_TEX_TO_IMG ": Failed to convert texture to image"
 # define ERR_MLX_INIT ": mlx initialization failed"
-# define ERR_IMG_MINIMAP ": The minimap image could not be created"
+# define ERR_MINIMAP_INIT ": Error in minimap initialization"
+# define ERR_LOAD_WALL_TEX ": Error loading textures"
+# define ERR_INIT_SPRITE ": Error in sprite initialization"
+# define ERR_LOAD_SPRITE ": Error loading animated sprite"
 
 //Parsing error messages
 
@@ -102,7 +106,7 @@
 # define ERR_NO_MAP ": Map is missing"
 # define ERR_AFTER_MAP ": Unexpected line after the map"
 
-/* Colors for msgs */
+/* Colors for messages */
 # define RED     "\033[0;31m"
 # define GREEN   "\033[0;32m"
 # define YELLOW  "\033[0;33m"
@@ -111,14 +115,12 @@
 # define CYAN    "\033[0;36m"
 # define RESET   "\033[0m"
 
-/* Colors */
-# define BLACK 0x000000
-# define WHITE 0xFFFFFF
-
-
-
 /* Structures */
 
+/**
+ * @enum	t_tex_index
+ * 			LOS ENUM SE SUELEN LLAMAR CON T AL PRINCIPIO??	
+ */
 typedef enum e_tex_index
 {
 	TEX_NO = 0,
@@ -127,31 +129,39 @@ typedef enum e_tex_index
 	TEX_WE = 3
 }	t_tex_index;
 
-/* Estructura para imágenes/texturas */
-/*typedef struct s_img
-{
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_len;
-	int		endian;
-	int		width;
-	int		height;
-}	t_img;*/
+/**
+ * @struct	t_player ⚠️ --> HACER DIBUJOS/ESQUEMAS PARA EXPLICAR BIEN CADA VARIABLE
+ * 			- pos_x/y: coordenadas x,y del jugador, en el centro de la celda; 
+ * 			corresponde al valor de línea y de posición de char dentro de
+ * 			esa línea (en el grid del map) + 0.5 para ubicarlo en el centro.
+ * 			Su valor se asigna en map_validator->proces_map_line() y se actualiza
+ * 			con los movimientos del player
+ * 			- px/y: coordenadas en píxeles para minimap. Su valor es pos_x/y
+ * 			* minimap->cell_size y se asigna en draw_minimap->draw_player()
+ * 			- dir: dirección en integer. Es el character que indica la posición
+ * 			y orientación del player en el input ('N', 'S', 'E', 'W')
+ * 			- dir_x/y: valores x,y del vector de dirección del player.
+ * 			Su valor se asigna en init_player_orientation deacuerdo al valor de
+ * 			dir y cambia se actualiza con los rotates del player.
+ * 			- plane_x/y: plano de la cámara, define el campo de visión
+ * 			del player y es perpendicular al vector de dirección. Se asigna
+ * 			en init_player_orientation() y se actualiza en los rotates del player
+ * 			- move_speed;
+ * 			- rot_speed:
+ * 			- flags para controlar si el player debe moverse o girar
+ */
 
-/* Estructura del jugador */
 typedef struct s_player
 {
-	double	pos_x; //coordenadas (en el medio de la celda x,y en la que se encuentra)
+	double	pos_x;
 	double	pos_y;
-	float	px; //coordeandas en pixeles para minimap
-	float	py; //coordenadas en píxeles para minimap
-	int		dir; //dirección en int
-	double	dir_x; //dirección en x
-	double	dir_y; // dirección en y
+	float	px;
+	float	py;
+	int		dir;
+	double	dir_x;
+	double	dir_y;
 	double	plane_x;
 	double	plane_y;
-	float	angle; //ángulo de visión/orientación en radianes
 	double	move_speed;
 	double	rot_speed;
 	bool	move_forward;
@@ -162,7 +172,11 @@ typedef struct s_player
 	bool	turn_left;
 }	t_player;
 
-/* Estructura para raycasting */
+/**
+ * @struct	t_ray ⚠️
+ * 			- camer_x:
+ * 			- dir_x:
+ */
 typedef struct s_ray
 {
 	double	camera_x;
@@ -214,6 +228,38 @@ typedef struct s_minimap
 	t_ray		*rays;
 }	t_minimap;
 
+/**
+ * @struct	t_sprite
+ * 			Estructura para sprites animados
+ * 			- frames: array de imágenes (una por cada frame)
+ * 			- frame_count: cantidad de frames totales
+ * 			- curr_frame: índice del frame actual
+ * 			- last_update: tiempo del último cambio de frame
+ * 			- frame_time: tiempo entre frames (en segundos)
+ * 			- x/y: posición del frame en el mapa
+ * 			- visible: si se debe dibujar en el 3d o no
+ */
+
+typedef struct s_sprite
+{
+	mlx_image_t	**frames;
+	int			frame_count;
+	int			curr_frame;
+	double		last_update;
+	double		frame_time;
+	double		x;
+	double		y;
+	double		cam_x;
+	double		cam_y;
+	double		screen_x;
+	double		screen_y;
+	int			draw_x;
+	int			draw_y;
+	int			width;
+	int			height;
+}	t_sprite;
+
+
 typedef struct	s_info
 {
 	int		fd;
@@ -236,7 +282,8 @@ typedef struct s_game
 	t_minimap		*minimap;
 	t_player		*player;
 	t_ray			*rays;
-	t_info		*info;
+	t_info			*info;
+	t_sprite		*sprite;
 }	t_game;
 
 /* main.c */
@@ -279,8 +326,9 @@ void	cast_all_rays(t_game *game);
 int		is_valid_pos(t_game *game, double x, double y);;
 
 /* graphics/draw.c */
-int		init_graphics(t_game *game);
+mlx_image_t	*load_texture(void *mlx, char *path);
 int		load_textures(t_game *game);
+int		init_graphics(t_game *game);
 void	draw_3d_view(t_game *game);
 
 /* graphics/textures */
@@ -299,12 +347,15 @@ void	cast_all_rays_minimap(t_game *game, t_minimap *minimap);
 /* minimap/minimap_utils.c */
 void	draw_square(t_minimap *minimap, int x, int y, int color);
 void	clear_minimap(t_minimap *minimap);
-int		init_minimap(t_game *game, t_minimap *minimap);
+
+/* sprite/sprite.c */
+void	init_sprite(t_sprite *sprite);
+int	load_sprite(t_game *game, t_sprite *sprite);
+void	draw_sprite(t_game *game, t_sprite *sprite);
 
 /* controls/events.c - OPTIMIZADO */
 void	handle_keypress(mlx_key_data_t data, void *param);
 int		handle_close(t_game *game);
-//void	move_player(t_game *game, int direction);
 
 /* controls/moves.c - OPTIMIZADO */
 void	move_forward(t_game *game, t_player *player);

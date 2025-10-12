@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/11 17:14:49 by root             ###   ########.fr       */
+/*   Updated: 2025/10/12 12:42:14 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ static void	init_player(t_player *player)
 	player->dir_y = 0; //sí hay que inicializar en 0
 	player->plane_x = 0; //sí hay que inicializar en 0
 	player->plane_y = 0; //sí hay que inicializar en 0
-	player->angle = 0;
 	player->move_speed = 0.1;
 	player->rot_speed = 0.08;
 	player->move_forward = false;
@@ -118,6 +117,9 @@ static int	init_structs(t_game *game)
 	game->rays = malloc(WIN_WIDTH * sizeof(t_ray));
 	if (!game->rays)
 		return (error_msg(NULL, NULL, 0));
+	game->sprite = malloc(sizeof(t_sprite));
+	if (!game->sprite)
+		return (error_msg(NULL, NULL, 0));
 	return (1);
 }
 
@@ -144,5 +146,6 @@ int	init_game(t_game *game)
 	init_info(game->info);
 	init_map(game->map);
 	init_player(game->player);
+	init_sprite(game->sprite);
 	return (1);
 }

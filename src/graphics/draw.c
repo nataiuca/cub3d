@@ -100,7 +100,6 @@ void	draw_column(t_game *game, int col, t_ray *ray)
 
 void	draw_3d_view(t_game *game)
 {
-	printf("DEBUG: draw_3d_view\n");
 	int	i;
 
 	i = 0;

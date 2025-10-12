@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 12:13:26 by root              #+#    #+#             */
-/*   Updated: 2025/10/10 17:29:29 by root             ###   ########.fr       */
+/*   Updated: 2025/10/12 17:53:24 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ int	get_minimap_cell_color(char cell)
 		return (0xFF7F50FF); //coral
 	else if (cell == '0') //floor
 		return (0x556B2FFF); //kaki
-	else if (ft_strchr("NSEW", cell))
+	else if (ft_strchr("NSEWC", cell))
 		return (0x556B2FFF); //kaki para el suelo
-	return (0x222222FF); //dark grey - no deberia ocurrir - espacios
+	return (0x222222FF); //dark grey - vacíos
 }
 
 

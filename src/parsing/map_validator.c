@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 19:37:05 by root              #+#    #+#             */
-/*   Updated: 2025/10/11 17:03:49 by root             ###   ########.fr       */
+/*   Updated: 2025/10/12 17:49:11 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ int	measure_map(t_info *info, t_map *map)
  * 				orientation
  * 			- Copies the processed line into map->grid[row]
  * 
+ * AÑADIR COSAS!!
+ * 
  * @param map	Pointer to the t_map structure
  * @param player	Pointer to the t_player structure
  * @param row	Row index to store the line
@@ -63,23 +65,28 @@ int	measure_map(t_info *info, t_map *map)
  * @return	1 on success, 0 on error
  */
 
-int	process_map_line(t_map *map, t_player *player, int row, char *line)
+int	process_map_line(t_game *game, t_map *map, int row, char *line)
 {
 	int	i;
 
 	i = 0;
 	while (line[i])
 	{
-		if (!ft_strchr("01NSEW ", line[i]))
+		if (!ft_strchr("01NSEWC ", line[i]))
 			return (error_msg(ERR_CHAR_MAP, &line[i], 0));
 		if (ft_strchr("NSEW", line[i]))
 		{
-			if (player->dir != '\0')
+			if (game->player->dir != '\0')
 				return (error_msg(ERR_PLAYERS, NULL, 0));
-			player->dir = line[i];
-			player->pos_x = i + 0.5;
-			player->pos_y = row + 0.5;
-			init_player_orientation(player);
+			game->player->dir = line[i];
+			game->player->pos_x = i + 0.5;
+			game->player->pos_y = row + 0.5;
+			init_player_orientation(game->player);
+		}
+		if (line[i] == 'C')
+		{
+			game->sprite->x = i + 0.5;
+			game->sprite->y = row + 0.5;
 		}
 		i ++;
 	}
@@ -147,7 +154,7 @@ static int	is_map_closed(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			if (ft_strchr("0NSEW", map->grid[y][x]))
+			if (ft_strchr("0NSEWC", map->grid[y][x]))
 			{
 				if (y == 0 || y == map->height - 1
 					|| x == 0 || x == map->width - 1)
@@ -190,7 +197,7 @@ int	validate_map(t_game *game, t_info *info, t_map *map)
 	row = 0;
 	while (row < map->height)
 	{
-		if (!process_map_line(map, game->player, row, info->map_raw[row]))
+		if (!process_map_line(game, map, row, info->map_raw[row]))
 			return (0);
 		row ++;
 	}

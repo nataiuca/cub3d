@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 10:24:38 by root              #+#    #+#             */
-/*   Updated: 2025/10/10 17:29:50 by root             ###   ########.fr       */
+/*   Updated: 2025/10/12 18:07:52 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,33 @@ void	draw_rays(t_game *game) //CAMBIAR TODOOO
 	{
 		draw_line(game->minimap, game->minimap->rays[i], game->player);
 		i ++;
+	}
+}
+
+void	draw_sprite_minimap(t_minimap *minimap, t_sprite *sprite)
+{
+	int		radius;
+	int		dy;
+	int		dx;
+	int		px;
+	int		py;
+
+	if (sprite->x == 0) //significa que no se ha dado valor
+		return ;
+	radius = minimap->cell_size / 4;
+	dy = -radius;
+	px = (int)(sprite->x * minimap->cell_size);
+	py = (int)(sprite->y * minimap->cell_size);
+	while (dy <= radius)
+	{
+		dx = -radius;
+		while (dx <= radius)
+		{
+			if (dx * dx + dy * dy <= radius * radius)
+				mlx_put_pixel(minimap->img, px + dx, py + dy, 0x00FF000);
+			dx ++;
+		}
+		dy ++;
 	}
 }
 
@@ -199,6 +226,8 @@ void	draw_grid(t_game *game)
 			cell = game->map->grid[y][x];
 			color = get_minimap_cell_color(cell);
 			draw_square(game->minimap, x, y, color); //no dibujar el player aún
+			if (cell == 'C')
+				draw_sprite_minimap(game->minimap, game->sprite);
 			x ++;
 		}
 		y ++;
@@ -207,7 +236,6 @@ void	draw_grid(t_game *game)
  
 void	draw_minimap(t_game *game)
 {
-	printf("DEBUG: draw minimap\n");
 	if (!game || !game->minimap || !game->minimap->img)
 		return ;
 	clear_minimap(game->minimap);
