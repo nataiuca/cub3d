@@ -75,23 +75,32 @@ void	free_sprite(t_game *game)
 	int	i;
 	int	j;
 
+	if (!game || !game->sprite)
+		return ;
 	i = 0;
 	while (i < game->sprite_count)
 	{
-		if (!game->sprite[i])
-			return ;
-		if (game->sprite[i]->frames)
+		if (game->sprite[i])
 		{
 			j = 0;
-			while (j < game->sprite[i]->frame_count)
+			if (game->sprite[i]->frames)
 			{
-				mlx_delete_image(game->mlx, game->sprite[i]->frames[j]);
-				j ++;
+				while (j < game->sprite[i]->frame_count)
+				{
+					if (game->sprite[i]->frames[j])
+					{
+						mlx_delete_image(game->mlx, game->sprite[i]->frames[j]);
+						game->sprite[i]->frames[j] = NULL;
+					}
+					j++;
+				}
+				free(game->sprite[i]->frames);
+				game->sprite[i]->frames = NULL;
 			}
-			free(game->sprite[i]->frames);
+			free(game->sprite[i]);
+			game->sprite[i] = NULL;
 		}
-		free(game->sprite[i]);
-		i ++;
+		i++;
 	}
 	free(game->sprite);
 	game->sprite = NULL;
@@ -108,28 +117,42 @@ void	free_sprite(t_game *game)
 void	cleanup_game(t_game *game)
 {
 	int	i;
-	
+
 	if (!game)
-		return;
+		return ;
 	free_info(game);
 	free_map(game);
 	if (game->player)
+	{
 		free(game->player);
+		game->player = NULL;
+	}
 	if (game->rays)
+	{
 		free(game->rays);
+		game->rays = NULL;
+	}
 	free_minimap(game);
 	i = 0;
 	while (i < 4)
 	{
-		if(game->textures[i])
+		if (game->textures[i])
+		{
 			mlx_delete_image(game->mlx, game->textures[i]);
+			game->textures[i] = NULL;
+		}
 		i++;
 	}
 	if (game->mlx && game->img)
+	{
 		mlx_delete_image(game->mlx, game->img);
-	if (game->mlx)
-		mlx_terminate(game->mlx);
+		game->img = NULL;
+	}
 	if (game->sprite)
 		free_sprite(game);
+	if (game->mlx)
+	{
+		mlx_terminate(game->mlx);
+		game->mlx = NULL;
+	}
 }
-
