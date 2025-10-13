@@ -6,26 +6,68 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 11:04:35 by root              #+#    #+#             */
-/*   Updated: 2025/10/12 17:43:53 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 13:20:20 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	init_sprite(t_sprite *sprite)
+void	init_sprite_position(t_game *game)
 {
-	sprite->frames = NULL;
-	sprite->frame_count = 6;
-	sprite->curr_frame = 0;
-	sprite->last_update = 0.0;
-	sprite->frame_time = 0.5; //elegir numero segun lo que tenga sentido
-	sprite->x = 0;
-	sprite->y = 0;
-	sprite->cam_x = 0;
-	sprite->cam_y = 0;
-	sprite->screen_x = 0;
-	sprite->height = 0;
-	sprite->width = 0;
+	int	y;
+	int	x;
+	int	sprite_index;
+
+	sprite_index = 0;
+	y = 0;
+	while (y < game->map->height)
+	{
+		x = 0;
+		while (game->map->grid[y][x])
+		{
+			if (game->map->grid[y][x] == 'C')
+			{
+				game->sprite[sprite_index]->x = x + 0.5;
+				game->sprite[sprite_index]->y = y + 0.5;
+				sprite_index ++;
+			}
+			x ++;
+		}
+		y ++;
+	}
+}
+
+/**tiene que iterar por todo el array de estructuras t_sprite */
+
+int	init_sprites(t_game *game)
+{
+	int	i;
+
+	game->sprite = malloc(sizeof(t_sprite *) * game->sprite_count);
+	if (!game->sprite)
+		return (error_msg(NULL, NULL, 0));
+	i = 0;
+	while (i < game->sprite_count)
+	{
+		game->sprite[i] = malloc(sizeof (t_sprite));
+		if (!game->sprite[i])
+			return(error_msg(NULL, NULL, 0));
+		game->sprite[i]->frames = NULL;
+		game->sprite[i]->frame_count = 6;
+		game->sprite[i]->curr_frame = 0;
+		game->sprite[i]->last_update = 0.0;
+		game->sprite[i]->frame_time = 0.5; //elegir numero segun lo que tenga sentido
+		game->sprite[i]->x = 0;
+		game->sprite[i]->y = 0;
+		game->sprite[i]->cam_x = 0;
+		game->sprite[i]->cam_y = 0;
+		game->sprite[i]->screen_x = 0;
+		game->sprite[i]->height = 0;
+		game->sprite[i]->width = 0;
+		i ++;
+	}
+	init_sprite_position(game);
+	return (1);
 }
 
 int	load_sprite(t_game *game, t_sprite *sprite)
@@ -53,6 +95,20 @@ int	load_sprite(t_game *game, t_sprite *sprite)
 			free(sprite->frames);
 			return (0);
 		}
+		i ++;
+	}
+	return (1);
+}
+
+int	load_all_sprites(t_game *game)
+{
+	int	i;
+
+	i = 0;
+	while (i < game->sprite_count)
+	{
+		if (!load_sprite(game, game->sprite[i]))
+			return (0);
 		i ++;
 	}
 	return (1);
@@ -201,11 +257,22 @@ void	draw_sprite(t_game *game, t_sprite *sprite)
 		return ;
 	if (!project_sprite(game, sprite))
 		return ;
-	
 	calc_sprite_size(sprite, frame);
 	if (sprite->draw_x + sprite->width < 0 || sprite->draw_x >= WIN_WIDTH)
 		return ;
 	if (sprite->draw_y + sprite->height < 0 || sprite->draw_y >= WIN_HEIGHT)
 		return ;
 	blit_sprite_scaled(game, sprite, frame);
+}
+
+void	draw_all_sprites(t_game *game)
+{
+	int i;
+
+	i = 0;
+	while (i < game->sprite_count)
+	{
+		draw_sprite(game, game->sprite[i]);
+		i ++;
+	}
 }

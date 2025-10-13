@@ -73,14 +73,26 @@ void	free_minimap(t_game *game)
 void	free_sprite(t_game *game)
 {
 	int	i;
+	int	j;
 
 	i = 0;
-	while (i < game->sprite->frame_count)
+	while (i < game->sprite_count)
 	{
-		mlx_delete_image(game->mlx, game->sprite->frames[i]);
+		if (!game->sprite[i])
+			return ;
+		if (game->sprite[i]->frames)
+		{
+			j = 0;
+			while (j < game->sprite[i]->frame_count)
+			{
+				mlx_delete_image(game->mlx, game->sprite[i]->frames[j]);
+				j ++;
+			}
+			free(game->sprite[i]->frames);
+		}
+		free(game->sprite[i]);
 		i ++;
 	}
-	free(game->sprite->frames);
 	free(game->sprite);
 	game->sprite = NULL;
 }

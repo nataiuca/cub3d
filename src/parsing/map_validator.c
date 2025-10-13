@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 19:37:05 by root              #+#    #+#             */
-/*   Updated: 2025/10/12 17:49:11 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 13:03:18 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,9 @@ int	process_map_line(t_game *game, t_map *map, int row, char *line)
 		}
 		if (line[i] == 'C')
 		{
-			game->sprite->x = i + 0.5;
-			game->sprite->y = row + 0.5;
+			/*game->sprite[game->sprite_count]->x = i + 0.5;
+			game->sprite[game->sprite_count]->y = row + 0.5;*/
+			game->sprite_count ++;
 		}
 		i ++;
 	}

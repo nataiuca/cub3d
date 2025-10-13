@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/12 12:42:14 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 13:03:28 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,9 @@ static int	init_structs(t_game *game)
 	game->rays = malloc(WIN_WIDTH * sizeof(t_ray));
 	if (!game->rays)
 		return (error_msg(NULL, NULL, 0));
-	game->sprite = malloc(sizeof(t_sprite));
+	/*game->sprite = malloc(sizeof(t_sprite));
 	if (!game->sprite)
-		return (error_msg(NULL, NULL, 0));
+		return (error_msg(NULL, NULL, 0));*/ //NO HACER AQUÍ ESTO PORQUE NO SABEMOS CUÁNTOS SPRITES HAY
 	return (1);
 }
 
@@ -146,6 +146,7 @@ int	init_game(t_game *game)
 	init_info(game->info);
 	init_map(game->map);
 	init_player(game->player);
-	init_sprite(game->sprite);
+	game->sprite = NULL;
+	game->sprite_count = 0;
 	return (1);
 }

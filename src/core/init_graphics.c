@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 11:17:02 by root              #+#    #+#             */
-/*   Updated: 2025/10/12 17:47:57 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 13:11:19 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,9 @@ int	init_graphics(t_game *game)
 		return (error_msg(ERR_MINIMAP_INIT, NULL, 0));
 	if (!load_wall_textures(game))
 		return(error_msg(ERR_LOAD_WALL_TEX, NULL, 0));
-	if (!load_sprite(game, game->sprite))
+	if (!init_sprites(game))
+		return (error_msg(ERR_SPRITE_INIT, NULL, 0));
+	if (!load_all_sprites(game))
 		return (error_msg(ERR_LOAD_SPRITE, NULL, 0));
 	if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)
 		return (error_msg(NULL, NULL, 0));

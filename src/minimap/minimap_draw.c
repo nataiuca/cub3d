@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 10:24:38 by root              #+#    #+#             */
-/*   Updated: 2025/10/12 18:07:52 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 13:23:06 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,7 +216,9 @@ void	draw_grid(t_game *game)
 	int		y;
 	char	cell;
 	int		color;
+	int		sprite_index;
 
+	sprite_index = 0;
 	y = 0;
 	while (y < game->map->height)
 	{
@@ -227,7 +229,10 @@ void	draw_grid(t_game *game)
 			color = get_minimap_cell_color(cell);
 			draw_square(game->minimap, x, y, color); //no dibujar el player aún
 			if (cell == 'C')
-				draw_sprite_minimap(game->minimap, game->sprite);
+			{
+				draw_sprite_minimap(game->minimap, game->sprite[sprite_index]);
+				sprite_index ++;
+			}
 			x ++;
 		}
 		y ++;

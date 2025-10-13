@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/12 17:13:03 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 13:20:33 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@
 # define ERR_TEX_TO_IMG ": Failed to convert texture to image"
 # define ERR_MLX_INIT ": mlx initialization failed"
 # define ERR_MINIMAP_INIT ": Error in minimap initialization"
+# define ERR_SPRITE_INIT ": Error in sprites initialization"
 # define ERR_LOAD_WALL_TEX ": Error loading textures"
 # define ERR_INIT_SPRITE ": Error in sprite initialization"
 # define ERR_LOAD_SPRITE ": Error loading animated sprite"
@@ -283,7 +284,8 @@ typedef struct s_game
 	t_player		*player;
 	t_ray			*rays;
 	t_info			*info;
-	t_sprite		*sprite;
+	t_sprite		**sprite;
+	int				sprite_count;
 }	t_game;
 
 /* main.c */
@@ -349,9 +351,9 @@ void	draw_square(t_minimap *minimap, int x, int y, int color);
 void	clear_minimap(t_minimap *minimap);
 
 /* sprite/sprite.c */
-void	init_sprite(t_sprite *sprite);
-int	load_sprite(t_game *game, t_sprite *sprite);
-void	draw_sprite(t_game *game, t_sprite *sprite);
+int	init_sprites(t_game *game);
+int	load_all_sprites(t_game *game);
+void	draw_all_sprites(t_game *game);
 
 /* controls/events.c - OPTIMIZADO */
 void	handle_keypress(mlx_key_data_t data, void *param);
