@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 16:42:11 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/12 17:29:02 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 18:01:37 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ void	perform_dda(t_game *game, t_ray *ray)
 
 /**
  * @brief	Calcula:
- * 			- Distancia perpendicular (perp_wall_d) desde el player hasta la pared hitteada
+ * 			- Distancia perpendicular (dist) desde el player hasta la pared hitteada
  * 
  * La distancia perpendicular se calcula usando geometría para evitar el efecto
  * ojo de pez
@@ -160,21 +160,21 @@ void	calc_wall_dist(t_ray *ray, t_player *player)
 	if (ray->side == 0) //hitea pared vertical (E-W)
 	{
 		if (fabs(ray->dir_x) < EPS)
-			ray->perp_wall_d = HUGE_VAL;
+			ray->dist = HUGE_VAL;
 		else
-			ray->perp_wall_d = (ray->map_x - player->pos_x + (1 - ray->step_x) / 2.0) / ray->dir_x;
+			ray->dist = (ray->map_x - player->pos_x + (1 - ray->step_x) / 2.0) / ray->dir_x;
 	}
 	else //hitea pared horizontal
 	{
 		if (fabs(ray->dir_y) < EPS)
-			ray->perp_wall_d = HUGE_VAL;
+			ray->dist = HUGE_VAL;
 		else
-			ray->perp_wall_d = (ray->map_y - player->pos_y + (1 - ray->step_y) / 2.0) / ray->dir_y;
+			ray->dist = (ray->map_y - player->pos_y + (1 - ray->step_y) / 2.0) / ray->dir_y;
 	}
-	if (!isfinite(ray->perp_wall_d) || ray->perp_wall_d <= 0.0)
+	if (!isfinite(ray->dist) || ray->dist <= 0.0)
 		ray->line_height = WIN_HEIGHT;
 	else
-		ray->line_height = (int)(WIN_HEIGHT / ray->perp_wall_d);
+		ray->line_height = (int)(WIN_HEIGHT / ray->dist);
 	ray->draw_start = -ray->line_height / 2 + WIN_HEIGHT / 2;
 	if (ray->draw_start < 0)
 		ray->draw_start = 0;

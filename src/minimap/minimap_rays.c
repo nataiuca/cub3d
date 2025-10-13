@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 12:11:45 by root              #+#    #+#             */
-/*   Updated: 2025/10/12 13:07:51 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 18:01:37 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ static t_ray	cast_ray_minimap(t_game *game, t_minimap *minimap, int i)
 	calc_step_dist(&ray, game->player);
 	perform_dda(game, &ray);
 	calc_wall_dist(&ray, game->player);
-	ray.hit_x = game->player->pos_x + ray.dir_x * ray.perp_wall_d;
-	ray.hit_y = game->player->pos_y + ray.dir_y * ray.perp_wall_d;
+	ray.hit_x = game->player->pos_x + ray.dir_x * ray.dist;
+	ray.hit_y = game->player->pos_y + ray.dir_y * ray.dist;
 	ray.hit_x_px = ray.hit_x * minimap->cell_size;
 	ray.hit_y_px = ray.hit_y * minimap->cell_size;
 	return(ray);

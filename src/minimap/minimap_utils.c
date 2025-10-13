@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 12:13:26 by root              #+#    #+#             */
-/*   Updated: 2025/10/12 17:53:24 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 17:52:34 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,3 @@ int	get_minimap_cell_color(char cell)
 		return (0x556B2FFF); //kaki para el suelo
 	return (0x222222FF); //dark grey - vacíos
 }
-
-

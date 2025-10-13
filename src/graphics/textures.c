@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 17:25:16 by root              #+#    #+#             */
-/*   Updated: 2025/10/10 17:40:17 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 18:01:37 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ int	get_texture_index(t_ray *ray)
 void	calc_texture_x(t_ray *ray, t_player *player, double *wall_x, int *tex_x, mlx_image_t *tex)
 {
 	if (ray->side == 0)
-		*wall_x = player->pos_y + ray->perp_wall_d * ray->dir_y;
+		*wall_x = player->pos_y + ray->dist * ray->dir_y;
 	else
-		*wall_x = player->pos_x + ray->perp_wall_d * ray->dir_x;
+		*wall_x = player->pos_x + ray->dist * ray->dir_x;
 	*wall_x -= floor(*wall_x);
 	*tex_x = (int)(*wall_x * (double)tex->width);
 	if ((ray->side == 0 && ray->dir_x > 0) || (ray->side == 1 && ray->dir_y < 0))

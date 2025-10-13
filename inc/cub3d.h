@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/13 13:20:33 by root             ###   ########.fr       */
+/*   Updated: 2025/10/13 19:22:02 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,11 @@ typedef struct s_player
  * @struct	t_ray ⚠️
  * 			- camer_x:
  * 			- dir_x:
+ * 
+ * 
+ * 			- dist: distancia perpendicular desde el player/camera hasta la pared golpeada
  */
+
 typedef struct s_ray
 {
 	double	camera_x;
@@ -189,7 +193,7 @@ typedef struct s_ray
 	double	side_dy;
 	double	delta_dx;
 	double	delta_dy;
-	double	perp_wall_d; //distancia perpendicular desde player hasta pared hiteada
+	double	dist; //distancia perpendicular desde player hasta pared hiteada
 	int		step_x;
 	int		step_y;
 	int		hit;
@@ -234,11 +238,17 @@ typedef struct s_minimap
  * 			Estructura para sprites animados
  * 			- frames: array de imágenes (una por cada frame)
  * 			- frame_count: cantidad de frames totales
- * 			- curr_frame: índice del frame actual
+ * 			- curr_frame: index of the current texture frame
  * 			- last_update: tiempo del último cambio de frame
  * 			- frame_time: tiempo entre frames (en segundos)
  * 			- x/y: posición del frame en el mapa
- * 			- visible: si se debe dibujar en el 3d o no
+ * 			- cam_x/y: sprite X and Y in camera space (relative horizontal
+ * 			and depth (cam_y positive means front))
+ * 			- screen_x: horizontal pixel coordinate on the screen
+ * 
+ * 			- draw_x/y: top left X,Y coordinates of the sprite on screen
+ * 			- 
+ * 			- width/height: sclaed sprite size 
  */
 
 typedef struct s_sprite
@@ -253,7 +263,6 @@ typedef struct s_sprite
 	double		cam_x;
 	double		cam_y;
 	double		screen_x;
-	double		screen_y;
 	int			draw_x;
 	int			draw_y;
 	int			width;
@@ -338,6 +347,17 @@ int	get_tex_color(mlx_image_t *tex, int x, int y);
 int	get_texture_index(t_ray *ray);
 void	calc_texture_x(t_ray *ray, t_player *player, double *wall_x, int *tex_x, mlx_image_t *tex); 
 
+/* controls/events.c - OPTIMIZADO */
+void	handle_keypress(mlx_key_data_t data, void *param);
+int		handle_close(t_game *game);
+
+/* controls/moves.c - OPTIMIZADO */
+void	move_forward(t_game *game, t_player *player);
+void	move_backward(t_game *game, t_player *player);
+void	move_left(t_game *game, t_player *player);
+void	move_right(t_game *game, t_player *player);
+void	rotate_player(t_player *player, int direction);
+
 /* minimap/minimap_draw.c */
 int		init_minimap(t_game *game, t_minimap *minimap); 
 void	draw_minimap(t_game *game);
@@ -350,21 +370,18 @@ void	cast_all_rays_minimap(t_game *game, t_minimap *minimap);
 void	draw_square(t_minimap *minimap, int x, int y, int color);
 void	clear_minimap(t_minimap *minimap);
 
-/* sprite/sprite.c */
+/* sprite/init_sprite.c */
 int	init_sprites(t_game *game);
+
+/* sprite/sprite_load.c */
 int	load_all_sprites(t_game *game);
+
+/* sprite/sprite_draw.c*/
 void	draw_all_sprites(t_game *game);
 
-/* controls/events.c - OPTIMIZADO */
-void	handle_keypress(mlx_key_data_t data, void *param);
-int		handle_close(t_game *game);
-
-/* controls/moves.c - OPTIMIZADO */
-void	move_forward(t_game *game, t_player *player);
-void	move_backward(t_game *game, t_player *player);
-void	move_left(t_game *game, t_player *player);
-void	move_right(t_game *game, t_player *player);
-void	rotate_player(t_player *player, int direction);
+/* sprite/sprite_update.c */
+void	update_sprite(t_sprite *sprite);
+int	project_sprite(t_sprite *sprite, t_player *player);
 
 /* utils/cleanup.c */
 void	ft_free_str_array(char **array);
