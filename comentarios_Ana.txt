@@ -49,10 +49,61 @@ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose .
 
 CÓMO SABER SI LOS LEAKS SON DE NUESTRO CÓDIGO O DE LA MLX42:
 
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./cub3D maps/map.cub 2> valgrind.log
+valgrind --leak-che ck=full --show-leak-kinds=all --track-origins=yes ./cub3D maps/map.cub 2> valgrind.log
 
 -> Si la línea menciona usr/lib/.. o libglfw, libX11, libGL, libpthread, libc... Son leaks del sistema o de MLX42
 -> Preocuparse de frames que terminan en tu binario, 
+
+
+13.10.25 - 14h
+Revision del parseo: 
+
+read_file.c → lectura del archivo .cub
+config_parser.c → parseo de texturas y colores
+map_parser.c → parseo de la matriz del mapa
+config_validator.c → validaciones de texturas y colores
+map_validator.c → validaciones del mapa (cierre, caracteres, jugador)
+parser_utils.c → helpers (split, atoi, trim, check file)
+✅ Parseo correcto para cub3D.
+
+Cumplimiento del subject
+Mapas
+Solo caracteres 0,1,N,S,E,W → map_validator.c verifica caracteres válidos
+Mapa cerrado → map_validator.c incluye validación de bordes y adyacentes
+Un solo jugador → map_parser.c / validator cuentan el jugador
+Espacios → el parser respeta espacios dentro del mapa
+Líneas vacías fuera del mapa → ignoradas correctamente
+✅ Cumple con todos los puntos de mapa.
+Texturas
+NO, SO, WE, EA → extraídos por config_parser.c
+Se debe comprobar que cada textura exista → si config_parser.c llama a access() o similar, está correcto
+No duplicados → config_parser.c verifica si ya se asignó una textura
+✅ Cumple, si efectivamente se valida la existencia de archivos.
+Colores F y C
+Parseo de RGB → config_parser.c / config_validator.c
+Validación de rango 0–255 → está implementada en config_validator.c
+Manejo de espacios extra → con ft_split
+✅ Cumple, con la condición de que se validan números fuera de rango y caracteres inválidos.
+Manejo de errores
+El subject exige "Error\n" + mensaje descriptivo
+Se llama a la función error_exit(msg)
+✅ Se cumple.
+
+He revisado con valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log ./cub3D maps/map_good_3.cub
+y free_sprite termina prematuramente, Esto hace que si un sprite es NULL en medio de la lista, se queden sprites sin liberar.
+Además, si este return se activa, algunos punteros de sprites quedan todavía en memoria y luego cleanup_game podría intentar liberar algo de nuevo,
+causando use-after-free.
+mlx_delete_image sobre punteros posiblemente ya liberados:
+En cleanup_game, se libera game-texture [i] y luego se llama a a mlx_terminate, despues se llama a 
+free_sprite(game), que hace mlx_delete_image sobre los frames de los sprites. Si alguna de esas imagenes 
+ya fue liberada por mlx_terminate o mlx_delete_image antes, valgrind marcara invalid read.
+Falta NULL despues de liberar: 
+después de free() y mlx_delete_image() no hay punteros a NULL, podría haber double free o use-after-free.
+Modificadas las funciones cleanup_game y free_sprite, se elimina return en free_sprite, se usa continue. 
+Se ponen los punteros a NULL después de liberar y asegurar que nada se lea después de ser liberado. 
+Los leaks que salen son de la MLX42.
+
+Falta pasar Norminette
 
 
 src/
@@ -87,7 +138,4 @@ src/
 │   └── error.c //error_msg(), error_exit(), error_cleanup_exit()
 └── main.c
 └── init_structs.c
-
-
-
 
