@@ -50,7 +50,6 @@ INCDIR		= inc
 SOURCES		= core/main.c \
 			  core/init_game.c \
 			  core/init_graphics.c \
-			  core/init_minimap.c \
 			  core/cleanup.c \
 			  parsing/read_file.c \
 			  parsing/config_parser.c \
@@ -66,10 +65,14 @@ SOURCES		= core/main.c \
 			  graphics/draw.c \
 			  graphics/textures.c \
 			  controls/events.c \
+			  minimap/init_minimap.c \
 			  minimap/minimap_rays.c \
 			  minimap/minimap_draw.c \
 			  minimap/minimap_utils.c \
-			  sprite/sprite.c
+			  sprite/init_sprite.c \
+			  sprite/sprite_load.c \
+			  sprite/sprite_draw.c \
+			  sprite/sprite_update.c
 
 # Add src/ prefix
 SRCS		= $(addprefix $(SRCDIR)/, $(SOURCES))
