@@ -128,6 +128,31 @@ Esto genera un comportamiento tosco o poco natural.
 Con sliding, el jugador resbala por la pared, permitiendo un movimiento más suave y menos frustrante.
 
 
+
+14.10.25 14h
+
+Implementación de la rotación de la cámara con el ratón:
+Implementamos rotación de la cámara con el ratón. Creamos una función que detecta el movimiento 
+horizontal del cursor (xpos) y, si se mueve hacia la derecha o izquierda, actualiza la dirección del jugador llamando a rotate_player(). 
+Además, centramos el ratón constantemente para evitar que llegue al borde de la ventana y poder seguir girando indefinidamente, como en los 
+juegos en primera persona. Esta función se engancha con mlx_set_cursor_hook() de MLX42, y ocultamos el cursor con mlx_set_cursor_mode().
+1. Detecta movimiento del ratón
+MLX42 llama automáticamente a handle_mouse_movement() cada vez que el ratón se mueve.
+Recibe las coordenadas del ratón: xpos (horizontal) y ypos (vertical).
+🔄 2. Compara la posición actual con la anterior
+delta_x = xpos - last_x calcula cuánto se ha movido el ratón horizontalmente.
+Un valor positivo significa que el ratón se movió a la derecha, y negativo a la izquierda.
+🔁 3. Gira al jugador
+Si el ratón se movió a la derecha, se llama a rotate_player() con RIGHT.
+Si se movió a la izquierda, se llama con LEFT.
+Esta función actualiza la dirección (dir_x, dir_y) del jugador.
+🎯 4. Centra el ratón
+Se llama a mlx_set_mouse_pos() para volver a poner el ratón en el centro de la ventana.
+Esto permite que el usuario pueda seguir girando indefinidamente, sin que el ratón llegue a los bordes de la pantalla.
+
+
+
+
 src/
 │
 ├── controls/
