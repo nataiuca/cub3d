@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/14 16:19:08 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/14 17:16:10 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,11 @@
 # define WIN_HEIGHT 768
 
 # define MINIMAP_SCALE 0.5 
-# define MIN_CELL_SIZE 4
+# define MIN_CELL_SIZE 10
 # define MAX_CELL_SIZE 32
-# define MAX_MINIMAP_SIZE 300
+# define MAX_MINIMAP_SIZE 500
 
 # define TEXTURE_SIZE 64
-
-//# define MINIMAP_SCALE 0.2
 
 # define PI 3.14159265358979323846
 
@@ -156,8 +154,8 @@ typedef struct s_player
 {
 	double	pos_x;
 	double	pos_y;
-	float	px;
-	float	py;
+	double	px;
+	double	py;
 	int		dir;
 	double	dir_x;
 	double	dir_y;
@@ -174,13 +172,28 @@ typedef struct s_player
 }	t_player;
 
 /**
- * @struct	t_ray ⚠️
- * 			- camer_x:
- * 			- dir_x:
- * 
- * 
+ * @struct	t_ray
+ * 			- camera_x: horizontal position of the ray on the camera plane,
+ * 			normalized to range [-1, 1]. Determines how far to the left/right
+ * 			of the player's center view the ray is cast
+ * 			- dir_x/y: direction vector of the ray, calculated by combining
+ * 			the player's viewing direction and the camera plane, scaled by
+ * 			camera_x
+ * 			- map_x/y: grid cell where the player is currently in, se utiliza
+ * 			para avanzar durante el dda en el raycasting... ¿?
+ * 			- delta_dx/y: distance the ray has to travel to cross one vertical
+ * 			or horizontal grid line
  * 			- dist: distancia perpendicular desde el player/camera hasta la pared golpeada
+ * 			- hit_x/hit_y: punto el que el rayo golpea la pared
+ * 			- hit_x_px/hit_y_px: position where the ray hits a wall in pixels - for drawing minimap
+ * 			- steps: determines how many pixels long the line is - drawing the ray in the minimap
+ * 			- x_inc/y_inc: incremental steps per pixel
+ * 			- step_x/y: indicates in which direction (positive or negative) the ray
+ * 			will step through the grid in X and Y axes
  */
+
+
+//⚠️ HABRIA QUE INICIALIZAR TODAS LAS VARIABLES DE T_RAY A CERO EN ALGUN LADO
 
 typedef struct s_ray
 {
@@ -189,11 +202,13 @@ typedef struct s_ray
 	double	dir_y;
 	int		map_x;
 	int		map_y;
-	double	side_dx;
-	double	side_dy;
 	double	delta_dx;
 	double	delta_dy;
-	double	dist; //distancia perpendicular desde player hasta pared hiteada
+	
+	double	side_dx;
+	double	side_dy;
+	
+	double	dist;
 	int		step_x;
 	int		step_y;
 	int		hit;
@@ -205,6 +220,10 @@ typedef struct s_ray
 	int		line_height;
 	int		draw_start;
 	int		draw_end;
+	
+	double	steps;
+	double	x_inc;
+	double	y_inc;
 }	t_ray;
 
 /* Estructura del mapa */
@@ -221,14 +240,30 @@ typedef struct s_map
 	uint32_t	ceiling_color;
 }	t_map;
 
+/**
+ * @struct	minimap
+ * @brief	Stores data required to render and manage the minimap:
+ * 			- img: pointer to the mlx image buffer used to render the
+ * 			minimap
+ * 			- width/height: minimap's dimensions in pixels, calculated
+ * 			from map width/height and minimap's cell size
+ * 			- cell_size: size of each cell (map tile) in pixels. Computed
+ * 			from map dimensions and MAX_MINIMAP_SIZE
+ * 			- offset_x/y: position in pixes from the window's origin
+ * 			where the minimap will be drawn
+ * 			- ray_count: number of rays to draw on the minimap (for field
+ * 			view), based on window size
+ * 			- rays: array of rays to be rendered on the minimap
+ */
+
 typedef struct s_minimap
 {
 	mlx_image_t	*img;
 	int			width;
 	int			height;
-	int			cell_size; //igual sobra, con escala a 1 se ve bien en los ejemplos que he probado
+	int			cell_size;
 	int			offset_x;
-	int			offset_y; //pos in window
+	int			offset_y;
 	int			ray_count;
 	t_ray		*rays;
 }	t_minimap;
@@ -316,7 +351,6 @@ typedef struct s_tex_calc
     int         tex_x;
 }   t_tex_calc;
 
-
 /* main.c */
 int		main(int argc, char **argv);
 
@@ -343,11 +377,11 @@ int	skip_empty_lines(t_info *info);
 int	count_rows(char **array);
 int	is_map_start_line(const char *line);
 
-/* engines/player */
+/* engine/player */
 void	init_player_orientation(t_player *player);
 void	update_player(t_game *game, t_player *player);
 
-/* engines/raycasting.c */
+/* engine/raycasting.c */
 int	check_hit(t_ray *ray, t_map *map);
 t_ray	init_ray(t_player *player, int col);
 void	calc_step_dist(t_ray *ray, t_player *player);
@@ -369,7 +403,7 @@ void	draw_3d_view(t_game *game);
 /* graphics/textures */
 int	get_tex_color(mlx_image_t *tex, int x, int y);
 int	get_texture_index(t_ray *ray);
-void	calc_texture_x(t_tex_calc *calc); 
+void	calc_texture_x(t_tex_calc *calc);
 
 /* controls/events.c - OPTIMIZADO */
 void	handle_keypress(mlx_key_data_t data, void *param);
@@ -394,6 +428,9 @@ void	cast_all_rays_minimap(t_game *game, t_minimap *minimap);
 
 /* minimap/minimap_utils.c */
 void	draw_square(t_minimap *minimap, int x, int y, int color);
+void	draw_circle(t_minimap *minimap, int x, int y, int color);
+void	draw_line(t_minimap *minimap, t_ray ray, t_player *player);
+int		get_minimap_cell_color(char cell);
 void	clear_minimap(t_minimap *minimap);
 
 /* sprite/init_sprite.c */
