@@ -47,10 +47,12 @@ INCDIR		= inc
 #LIBFT_DIR	= libft
 
 # Source files - VERSIÓN OPTIMIZADA
-SOURCES		= core/main.c \
+SOURCES		= main.c \
 			  core/init_game.c \
 			  core/init_graphics.c \
-			  core/cleanup.c \
+			  core/cleanup_info.c \
+			  core/cleanup_sprites.c \
+			  core/cleanup_game.c \
 			  parsing/read_file.c \
 			  parsing/config_parser.c \
 			  parsing/map_parser.c \
@@ -58,6 +60,7 @@ SOURCES		= core/main.c \
 			  parsing/map_validator.c \
 			  parsing/parser_utils.c \
 			  engine/raycasting.c \
+			  engine/raycasting_utils.c \
 			  engine/player.c \
 			  engine/collision.c \
 			  engine/moves.c \
