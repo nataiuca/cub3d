@@ -94,11 +94,14 @@ void	rotate_player(t_player *player, int direction)
 
 	rot_speed = player->rot_speed * direction;
 	old_dir_x = player->dir_x;
-	player->dir_x = player->dir_x * cos(rot_speed) - player->dir_y * sin(rot_speed);
+	player->dir_x = player->dir_x * cos(rot_speed) - player->dir_y
+		* sin(rot_speed);
 	player->dir_y = old_dir_x * sin(rot_speed) + player->dir_y * cos(rot_speed);
 	old_plane_x = player->plane_x;
-	player->plane_x = player->plane_x * cos(rot_speed) - player->plane_y * sin(rot_speed);
-	player->plane_y = old_plane_x * sin(rot_speed) + player->plane_y * cos(rot_speed);
+	player->plane_x = player->plane_x * cos(rot_speed) - player->plane_y
+		* sin(rot_speed);
+	player->plane_y = old_plane_x * sin(rot_speed) + player->plane_y
+		* cos(rot_speed);
 	if (direction == RIGHT)
 		player->turn_right = false;
 	else

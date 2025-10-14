@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/14 13:43:26 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/14 16:19:08 by natferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,13 @@
 # define WIN_HEIGHT 768
 
 # define MINIMAP_SCALE 0.5 
-# define MIN_CELL_SIZE 10
+# define MIN_CELL_SIZE 4
 # define MAX_CELL_SIZE 32
-# define MAX_MINIMAP_SIZE 500
+# define MAX_MINIMAP_SIZE 300
 
 # define TEXTURE_SIZE 64
+
+//# define MINIMAP_SCALE 0.2
 
 # define PI 3.14159265358979323846
 
@@ -154,8 +156,8 @@ typedef struct s_player
 {
 	double	pos_x;
 	double	pos_y;
-	double	px;
-	double	py;
+	float	px;
+	float	py;
 	int		dir;
 	double	dir_x;
 	double	dir_y;
@@ -178,15 +180,7 @@ typedef struct s_player
  * 
  * 
  * 			- dist: distancia perpendicular desde el player/camera hasta la pared golpeada
- * 			- hit_x/hit_y: punto el que el rayo golpea la pared
- * 			- hit_x_px/hit_y_px: position where the ray hits a wall in pixels - for drawing minimap
- * 			- steps: determines how many pixels long the line is - drawing the ray in the minimap
- * 			- x_inc/y_inc: incremental steps per pixel
- * 			- y_inc: 
  */
-
-
-//⚠️ HABRIA QUE INICIALIZAR TODAS LAS VARIABLES DE T_RAY A CERO EN ALGUN LADO
 
 typedef struct s_ray
 {
@@ -195,12 +189,10 @@ typedef struct s_ray
 	double	dir_y;
 	int		map_x;
 	int		map_y;
-	double	delta_dx;
-	double	delta_dy;
-
 	double	side_dx;
 	double	side_dy;
-	
+	double	delta_dx;
+	double	delta_dy;
 	double	dist; //distancia perpendicular desde player hasta pared hiteada
 	int		step_x;
 	int		step_y;
@@ -213,10 +205,6 @@ typedef struct s_ray
 	int		line_height;
 	int		draw_start;
 	int		draw_end;
-	
-	double	steps;
-	double	x_inc;
-	double	y_inc;
 }	t_ray;
 
 /* Estructura del mapa */
@@ -233,30 +221,14 @@ typedef struct s_map
 	uint32_t	ceiling_color;
 }	t_map;
 
-/**
- * @struct	minimap
- * @brief	Stores data required to render and manage the minimap:
- * 			- img: pointer to the mlx image buffer used to render the
- * 			minimap
- * 			- width/height: minimap's dimensions in pixels, calculated
- * 			from map width/height and minimap's cell size
- * 			- cell_size: size of each cell (map tile) in pixels. Computed
- * 			from map dimensions and MAX_MINIMAP_SIZE
- * 			- offset_x/y: position in pixes from the window's origin
- * 			where the minimap will be drawn
- * 			- ray_count: number of rays to draw on the minimap (for field
- * 			view), based on window size
- * 			- rays: array of rays to be rendered on the minimap
- */
-
 typedef struct s_minimap
 {
 	mlx_image_t	*img;
 	int			width;
 	int			height;
-	int			cell_size;
+	int			cell_size; //igual sobra, con escala a 1 se ve bien en los ejemplos que he probado
 	int			offset_x;
-	int			offset_y;
+	int			offset_y; //pos in window
 	int			ray_count;
 	t_ray		*rays;
 }	t_minimap;
@@ -323,7 +295,27 @@ typedef struct s_game
 	t_info			*info;
 	t_sprite		**sprite;
 	int				sprite_count;
+	bool			mouse_rotation_enabled;
 }	t_game;
+
+typedef struct s_draw_params
+{
+	t_game			*game;
+	t_ray			*ray;
+	int				x;
+	mlx_image_t		*tex;
+	int				tex_x;
+}	t_draw_params;
+
+typedef struct s_tex_calc
+{
+    t_ray       *ray;
+    t_player    *player;
+    mlx_image_t *tex;
+    double      wall_x;
+    int         tex_x;
+}   t_tex_calc;
+
 
 /* main.c */
 int		main(int argc, char **argv);
@@ -356,10 +348,14 @@ void	init_player_orientation(t_player *player);
 void	update_player(t_game *game, t_player *player);
 
 /* engines/raycasting.c */
+int	check_hit(t_ray *ray, t_map *map);
+t_ray	init_ray(t_player *player, int col);
 void	calc_step_dist(t_ray *ray, t_player *player);
 void	perform_dda(t_game *game, t_ray *ray);
 void	calc_wall_dist(t_ray *ray, t_player *player);
 void	cast_all_rays(t_game *game);
+double	calc_dist_side_0(t_ray *ray, t_player *player);
+double	calc_dist_side_1(t_ray *ray, t_player *player);
 
 /* engines/collision.c */
 int		is_valid_pos(t_game *game, double x, double y);;
@@ -373,7 +369,7 @@ void	draw_3d_view(t_game *game);
 /* graphics/textures */
 int	get_tex_color(mlx_image_t *tex, int x, int y);
 int	get_texture_index(t_ray *ray);
-void	calc_texture_x(t_ray *ray, t_player *player, double *wall_x, int *tex_x, mlx_image_t *tex); 
+void	calc_texture_x(t_tex_calc *calc); 
 
 /* controls/events.c - OPTIMIZADO */
 void	handle_keypress(mlx_key_data_t data, void *param);
@@ -385,20 +381,19 @@ void	move_backward(t_game *game, t_player *player);
 void	move_left(t_game *game, t_player *player);
 void	move_right(t_game *game, t_player *player);
 void	rotate_player(t_player *player, int direction);
+void	handle_mouse_click(mouse_key_t button, action_t action, modifier_key_t mods, void *param);
+void	handle_mouse_movement(double xpos, double ypos, void *param);
 
 /* minimap/minimap_draw.c */
 int		init_minimap(t_game *game, t_minimap *minimap); 
 void	draw_minimap(t_game *game);
 
 /* minimap/minimap_cast.c */
-
+int		get_minimap_cell_color(char cell);
 void	cast_all_rays_minimap(t_game *game, t_minimap *minimap);
 
 /* minimap/minimap_utils.c */
 void	draw_square(t_minimap *minimap, int x, int y, int color);
-void	draw_circle(t_minimap *minimap, int x, int y, int color);
-void	draw_line(t_minimap *minimap, t_ray ray, t_player *player);
-int		get_minimap_cell_color(char cell);
 void	clear_minimap(t_minimap *minimap);
 
 /* sprite/init_sprite.c */
@@ -417,6 +412,9 @@ int	project_sprite(t_sprite *sprite, t_player *player);
 /* utils/cleanup.c */
 void	ft_free_str_array(char **array);
 void	cleanup_game(t_game *game);
+void	free_info(t_game *game);
+void	free_map(t_game *game);
+void	free_sprite(t_game *game);
 
 /* utils/error.c */
 void	error_exit(char *msg);

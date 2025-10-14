@@ -103,7 +103,6 @@ Modificadas las funciones cleanup_game y free_sprite, se elimina return en free_
 Se ponen los punteros a NULL después de liberar y asegurar que nada se lea después de ser liberado. 
 Los leaks que salen son de la MLX42.
 
-Falta pasar Norminette
 
 14.10.25 12h
 Revisados los mmovimientos del jugador, al chocar contra los muros, hay desplazamiento, se desliza por las parredes, este desplazamiento es el "sliding",
@@ -127,8 +126,6 @@ Sin sliding, chocar contra una pared en diagonal frena completamente al jugador,
 Esto genera un comportamiento tosco o poco natural.
 Con sliding, el jugador resbala por la pared, permitiendo un movimiento más suave y menos frustrante.
 
-
-
 14.10.25 14h
 
 Implementación de la rotación de la cámara con el ratón:
@@ -149,6 +146,11 @@ Esta función actualiza la dirección (dir_x, dir_y) del jugador.
 🎯 4. Centra el ratón
 Se llama a mlx_set_mouse_pos() para volver a poner el ratón en el centro de la ventana.
 Esto permite que el usuario pueda seguir girando indefinidamente, sin que el ratón llegue a los bordes de la pantalla.
+
+Norminette (14.10.25 15h)
+src/controls/events.c
+- falta el header
+
 
 
 
