@@ -90,3 +90,35 @@ void	update_player(t_game *game, t_player *player)
 	if (player->turn_left == true)
 		rotate_player(player, LEFT);
 }
+
+/* Funcion para implementar la rotacion de la camara con 
+el raton. Cuando el jugador mueve el raton horizontalente,
+la camara debe rotar a la izqda o a la derecha como en un FPS,
+no hace falta moverlo verticalmente. es como si el jugador 
+girara la cabeza.*/
+
+void	handle_mouse_movement(double xpos, double ypos, void *param)
+{
+	t_game		*game = (t_game *)param;
+	static int	last_x = WIN_WIDTH / 2;
+	int			delta_x;
+
+	(void)ypos; // No usamos la posición vertical (y), solo la horizontal (x)
+
+	// Calcula cuánto se ha movido el ratón horizontalmente desde la última vez
+	delta_x = xpos - last_x;
+
+	// Actualiza la posición del ratón anterior para la próxima llamada
+	last_x = xpos;
+
+	// Si el ratón se ha movido a la derecha, gira el jugador a la derecha
+	if (delta_x > 0)
+		rotate_player(game->player, RIGHT);
+	else if (delta_x < 0)
+		rotate_player(game->player, LEFT);
+
+	// Reposiciona el ratón en el centro de la ventana para evitar que salga
+	mlx_set_mouse_pos(game->mlx, WIN_WIDTH / 2, WIN_HEIGHT / 2);
+	last_x = WIN_WIDTH / 2;
+}
+
