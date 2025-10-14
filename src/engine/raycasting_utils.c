@@ -1,4 +1,31 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycasting_utils.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/14 17:13:43 by amacarul          #+#    #+#             */
+/*   Updated: 2025/10/14 17:36:00 by amacarul         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
+
+/**
+ * @brief	Initializes the ray's step direction and initial side distances
+ * 			for the DDA algorithm
+ * 			- step_x/y: indicates in which direction (positive or negative) 
+ * 			the ray will step through the grid in X and Y axes
+ * 				- if the ray is going left/up -> step = -1
+ * 				- if the ray is going right/down -> step = 1
+ * 			- side_dx/dy: distance from the player's current position to the
+ * 			first grid line intersection along the X or Y axis. Used as the
+ * 			starting point for the DDA algorithm.
+ * 
+ * @param ray	Pointer to the current ray structure
+ * @param player	Pointer to the player structure
+ */
 
 void	calc_step_dist(t_ray *ray, t_player *player)
 {
@@ -23,6 +50,20 @@ void	calc_step_dist(t_ray *ray, t_player *player)
 		ray->side_dy = (ray->map_y + 1.0 - player->pos_y) * ray->delta_dy;
 	}
 }
+
+/**
+ * @brief	Performs the DDA (Digital Differential Analyzer) algorithm to
+ * 			find the first wall hit by the ray in the grid map.
+ * 			- At each step, the algorithm chooses whether to move to the 
+ * 			next x-side or y-side grid cell, depending on which side distance
+ * 			(side_dx/y) is smaller
+ * 			- side_dx/y are incremented by delta_dx/y at each step, simulating
+ * 			the ray traveling through the grid
+ * 			- The loop stops one the ray hits a wall, detected via check_hit()
+ * 
+ * @param game	Pointer to the game structure
+ * @param ray	Pointer to the ray being processed
+ */
 
 void	perform_dda(t_game *game, t_ray *ray)
 {
@@ -67,6 +108,13 @@ double	calc_dist_side_1(t_ray *ray, t_player *player)
 	return ((ray->map_y - player->pos_y + (1 - ray->step_y) / 2.0)
 		/ ray->dir_y);
 }
+
+
+/**
+ * @brief	Caculates the perpendicular distance from the player to the wall
+ * 			hit by the ray, and determines the height of the wall slice to render.
+ * 			- Uses appropriate 
+ */
 
 void	calc_wall_dist(t_ray *ray, t_player *player)
 {

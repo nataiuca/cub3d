@@ -1,5 +1,11 @@
 #include "cub3d.h"
 
+/**
+ * @brief	Checkea si hemos golpeado una pared
+ * 			- Si estamos fuera del mapa: devuelve 1 para evitar segfault
+ * 			- Si la celda actual del mapa contiene '1' (pared), devuelve 1.
+ */
+
 int	check_hit(t_ray *ray, t_map *map)
 {
 	if (ray->map_x < 0 || ray->map_x >= map->width)
@@ -10,6 +16,32 @@ int	check_hit(t_ray *ray, t_map *map)
 		return (1);
 	return (0);
 }
+
+/**
+ * @brief	Inicializa el rayo para la columna número 'col' de la pantalla.
+ * 			- Proyecta la columna de pantalla al rango [-1, 1], donde -1
+ * 			es el extremo izquierdo de la pantalla y el 1 el derecho
+ * 			HACER ESQUEMA DIBUJADO DE ESTO!
+ * 			- A partir de la proyección de la columna en pantalla en rango [-1 ,1]
+ * 			se calcula la dirección del rayo en el campo de visión (dir_x, dir_y)
+ * 			- Usa el camera_x para ajustar la dirección del rayo a lo ancho de la 
+ * 			pantalla
+ * 			- Si la posición incial del player en el mapa es 0, pone delta_dx
+ * 			en UN VALOR ALTISIMO para prevenir división por cero
+ * 			- delta_dx/y es la distancia entre líneas verticales/horizontales
+ * 			que el rayo debe recorrer.
+ * 
+ * 			- camera_x: horizontal position of the ray on the camera plane,
+ * 			normalized to range [-1, 1]. Determines how far to the left/right
+ * 			of the player's center view the ray is cast
+ * 			- dir_x/y: direction vector of the ray, calculated by combining
+ * 			the player's viewing direction and the camera plane, scaled by
+ * 			camera_x
+ * 
+ * @param ray	El rayo concreto a inicializar, el de la columna col
+ * @param player	Puntero a estructura del jugador
+ * @param col	Columna actual, número de rayo
+ */
 
 t_ray	init_ray(t_player *player, int col)
 {
