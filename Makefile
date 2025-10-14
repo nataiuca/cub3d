@@ -32,7 +32,7 @@ endif
 # ============================================================================ #
 
 # ============================================================================ #
-# OPCIÓN MLX42 DE CODAM
+# MLX42
 MLX42_DIR= ./MLX42
 MLX42_INC= $(MLX42_DIR)/include/MLX42
 MLX42_NAME= $(MLX42_DIR)/build/libmlx42.a
@@ -127,7 +127,6 @@ $(OBJDIR):
 #	@echo "$(GREEN)✅ libft compiled$(RESET)"
 
 $(MLX42_NAME):
-	@chmod +x $(MLX42_DIR)/tools/compile_shader.sh
 	@cmake -S $(MLX42_DIR) -B $(MLX42_DIR)/build
 	@cmake --build $(MLX42_DIR)/build -j4
 

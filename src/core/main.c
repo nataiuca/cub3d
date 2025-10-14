@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 16:45:08 by root              #+#    #+#             */
-/*   Updated: 2025/10/13 13:20:40 by root             ###   ########.fr       */
+/*   Updated: 2025/10/14 10:27:36 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,8 @@ int	main(int argc, char **argv)
  * 			- Starts the MLX42 main loop
  * 			- Cleanups for exiting
  * 			- On any error, the program prints an appropriate message and exits
+ * 
+ * @param argc	
  */
 
 int	main(int argc, char **argv)

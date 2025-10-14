@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_game.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/13 13:03:28 by root             ###   ########.fr       */
+/*   Updated: 2025/10/14 10:24:23 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,6 @@ static int	init_structs(t_game *game)
 	game->rays = malloc(WIN_WIDTH * sizeof(t_ray));
 	if (!game->rays)
 		return (error_msg(NULL, NULL, 0));
-	/*game->sprite = malloc(sizeof(t_sprite));
-	if (!game->sprite)
-		return (error_msg(NULL, NULL, 0));*/ //NO HACER AQUÍ ESTO PORQUE NO SABEMOS CUÁNTOS SPRITES HAY
 	return (1);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_graphics.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 11:17:02 by root              #+#    #+#             */
-/*   Updated: 2025/10/13 13:11:19 by root             ###   ########.fr       */
+/*   Updated: 2025/10/14 10:49:09 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ CREO QUE ESTA FUNCIÓN DEBERIA DEBERIA DE ESTAR EN UN LUGAR MÁS GENÉRICO, PORK
 */
 mlx_image_t	*load_texture(void *mlx, char *path)
 {
-	//xpm_t	*tex;
 	mlx_texture_t	*tex;
 	mlx_image_t	*img;
 
-	//tex = mlx_load_xpm42(path);
 	tex = mlx_load_png(path);
 	if (!tex)
 	{
@@ -66,20 +64,31 @@ int	load_wall_textures(t_game *game)
 }
 
 /**
- * @brief	se encarga de la interacción con la libreria gráfica
- * 			mlx_init(), mlx_new_img, mlx_image_to_window
+ * @brief	Initializes the graphics system and related assets
+ * 			- Initializes the mlx libraary and creattes the window via 
+ * 			mlx_init()
+ * 			- Creates the image buffer uesd for rendering the game
+ * 			- Initializes the minimap
+ * 			- Loads wall textures
+ * 			- Initializes and loads the sprites
+ * 			- Places the main image to window
+ * 			- Places the minimap image to window
  * 
- * @param
+ * @param game	Pointer to the main game structure
+ * @return	1 on success, 0 on failure
  */
 
 int	init_graphics(t_game *game)
 {
+	int	x;
+	int	y;
+
 	game->mlx = mlx_init(WIN_WIDTH, WIN_HEIGHT, "cub3D", false);
 	if (!game->mlx)
 		return(error_msg(ERR_MLX_INIT, NULL, 0));
 	game->img = mlx_new_image(game->mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!game->img)
-		return(error_msg(NULL, NULL, 0)); //creo que si falla mlx_new_img ya establece su propio error -> COMPROBAR
+		return(error_msg(NULL, NULL, 0));
 	if (!init_minimap(game, game->minimap))
 		return (error_msg(ERR_MINIMAP_INIT, NULL, 0));
 	if (!load_wall_textures(game))
@@ -90,7 +99,9 @@ int	init_graphics(t_game *game)
 		return (error_msg(ERR_LOAD_SPRITE, NULL, 0));
 	if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)
 		return (error_msg(NULL, NULL, 0));
-	if (mlx_image_to_window(game->mlx, game->minimap->img, game->minimap->offset_x, game->minimap->offset_y) < 0)
+	x = game->minimap->offset_x;
+	y =  game->minimap->offset_y;
+	if (mlx_image_to_window(game->mlx, game->minimap->img, x, y) < 0)
 		return (error_msg(NULL, NULL, 0));
 	return (1);
 }
