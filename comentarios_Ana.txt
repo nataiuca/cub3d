@@ -105,6 +105,28 @@ Los leaks que salen son de la MLX42.
 
 Falta pasar Norminette
 
+14.10.25 12h
+Revisados los mmovimientos del jugador, al chocar contra los muros, hay desplazamiento, se desliza por las parredes, este desplazamiento es el "sliding",
+El sliding es una técnica de movimiento que permite al jugador deslizarse suavemente a lo largo de obstáculos en lugar de quedarse completamente bloqueado 
+cuando intenta moverse en diagonal hacia una esquina. Cuando el jugador intenta moverse en diagonal, puede ocurrir que:
+La nueva posición completa (X + Y) está ocupada por una pared.
+Pero la dirección solo en X o solo en Y está libre.
+👉 En lugar de bloquear totalmente el movimiento, permitimos que el jugador se desplace parcialmente, generando una sensación más fluida y realista.
+En nuestras funciones de movimiento (move_forward, move_backward, move_left y mode_right.), aplicamos la siguiente lógica:
+if (valid(X + dx, Y + dy))
+    mover completamente
+else if (valid(X + dx, Y))
+    mover solo en X
+else if (valid(X, Y + dy))
+    mover solo en Y
+Esto permite:
+Intentar moverse completamente.
+Si no es posible, moverse en la dirección libre.
+Si ambas están bloqueadas, quedarse quieto.
+Sin sliding, chocar contra una pared en diagonal frena completamente al jugador, incluso si una de las dos direcciones está libre. 
+Esto genera un comportamiento tosco o poco natural.
+Con sliding, el jugador resbala por la pared, permitiendo un movimiento más suave y menos frustrante.
+
 
 src/
 │
