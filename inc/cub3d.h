@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/14 17:16:10 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/15 10:39:47 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,6 @@
 
 # define RIGHT 1
 # define LEFT -1
-
-/* ========================================================================== */
-/* ⚠️  ELIMINAR PARA ENTREGA: Códigos de teclas para macOS                   */
-/* ========================================================================== */
-# ifdef __APPLE__
-/* macOS keycodes */
-#  define KEY_W 13
-#  define KEY_A 0
-#  define KEY_S 1
-#  define KEY_D 2
-#  define KEY_LEFT 123
-#  define KEY_RIGHT 124
-#  define KEY_ESC 53
-# else
-/* ========================================================================== */
-
-
-/* ========================================================================== */
-# endif
-/* ⬆️  ELIMINAR el #ifdef __APPLE__, #else y #endif                          */
-/* ⬆️  DEJAR SOLO las defines de Linux (KEY_W 119, etc.)                     */
-/* ========================================================================== */
 
 /* Error messages */
 
@@ -173,57 +151,62 @@ typedef struct s_player
 
 /**
  * @struct	t_ray
+ * @brief	Represents a single ray used in the raycasting process.
+ * 			Each ray corresponds to one vertical column on the screen.
+ * 
  * 			- camera_x: horizontal position of the ray on the camera plane,
  * 			normalized to range [-1, 1]. Determines how far to the left/right
  * 			of the player's center view the ray is cast
- * 			- dir_x/y: direction vector of the ray, calculated by combining
- * 			the player's viewing direction and the camera plane, scaled by
- * 			camera_x
- * 			- map_x/y: grid cell where the player is currently in, se utiliza
- * 			para avanzar durante el dda en el raycasting... ¿?
- * 			- delta_dx/y: distance the ray has to travel to cross one vertical
- * 			or horizontal grid line
- * 			- dist: distancia perpendicular desde el player/camera hasta la pared golpeada
- * 			- hit_x/hit_y: punto el que el rayo golpea la pared
- * 			- hit_x_px/hit_y_px: position where the ray hits a wall in pixels - for drawing minimap
- * 			- steps: determines how many pixels long the line is - drawing the ray in the minimap
- * 			- x_inc/y_inc: incremental steps per pixel
- * 			- step_x/y: indicates in which direction (positive or negative) the ray
- * 			will step through the grid in X and Y axes
+ * 			- dir_x/y: direction vector of the ray, computed from the player's
+ * 			direction and the camera plane
+ * 			- map_x/y: Integer coordinates of the current map cell being 
+ * 			checked by the DDA algorithm
+ * 			- delta_dx/y: distance the ray has to travel to cross the next 
+ * 			vertical (X) or horizontal  (Y) grid line. Represents the distance 
+ * 			between succesive intersections in the grid
+ * 			- side_dx/dy: distance from the player to the first grid line 
+ * 			intersection along the X or Y axis.
+ * 			- step_x/y: direction of grid traversal (left/up direction = -1,
+ * 			right/down direction = 1)
+ * 			- side: indicates which axis the wall was hit on (0 = x-side,
+ * 			vertical wall; 1 = y-side, horizontal wall)
+ * 			- dist: perpendicular distance from the player to the wall 	
+ * 			- line_height: height of the wall slice to be rendered on screen
+ * 			- draw_start/end: vertical screen coordinates defining where
+ * 			to start and stop drawing the wall slice
+ * 			- hit_x/hit_y: world coordinates of the wall hit point
+ * 			- hit_x_px/hit_y_px: hit point coordinates in pixel units - used
+ * 			for rendering on the minimap
+ * 			- steps: number of pixels used to draw the ray line on the minimap
+ * 			- x_inc/y_inc: incremental steps per pixel used when drawing the 
+ * 			ray in the minimap
  */
-
-
-//⚠️ HABRIA QUE INICIALIZAR TODAS LAS VARIABLES DE T_RAY A CERO EN ALGUN LADO
 
 typedef struct s_ray
 {
-	double	camera_x;
-	double	dir_x;
-	double	dir_y;
-	int		map_x;
-	int		map_y;
-	double	delta_dx;
-	double	delta_dy;
-	
-	double	side_dx;
-	double	side_dy;
-	
-	double	dist;
-	int		step_x;
-	int		step_y;
-	int		hit;
+	double		camera_x;
+	double		dir_x;
+	double		dir_y;
+	int			map_x;
+	int			map_y;
+	double		delta_dx;
+	double		delta_dy;
+	double		side_dx;
+	double		side_dy;
+	int			side;
+	double		dist;
+	int			step_x;
+	int			step_y;
 	double		hit_x;
 	double		hit_y;
 	double		hit_x_px;
 	double		hit_y_px;
-	int		side;
-	int		line_height;
-	int		draw_start;
-	int		draw_end;
-	
-	double	steps;
-	double	x_inc;
-	double	y_inc;
+	int			line_height;
+	int			draw_start;
+	int			draw_end;
+	double		steps;
+	double		x_inc;
+	double		y_inc;
 }	t_ray;
 
 /* Estructura del mapa */
@@ -382,14 +365,12 @@ void	init_player_orientation(t_player *player);
 void	update_player(t_game *game, t_player *player);
 
 /* engine/raycasting.c */
-int	check_hit(t_ray *ray, t_map *map);
-t_ray	init_ray(t_player *player, int col);
+void	cast_all_rays(t_game *game);
+
+/* engine/raycasting_utils.c */
 void	calc_step_dist(t_ray *ray, t_player *player);
 void	perform_dda(t_game *game, t_ray *ray);
-void	calc_wall_dist(t_ray *ray, t_player *player);
-void	cast_all_rays(t_game *game);
-double	calc_dist_side_0(t_ray *ray, t_player *player);
-double	calc_dist_side_1(t_ray *ray, t_player *player);
+void	calc_wall_dist_height(t_ray *ray, t_player *player);
 
 /* engines/collision.c */
 int		is_valid_pos(t_game *game, double x, double y);;
