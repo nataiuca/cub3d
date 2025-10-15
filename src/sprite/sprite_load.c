@@ -6,20 +6,32 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 17:21:55 by root              #+#    #+#             */
-/*   Updated: 2025/10/13 17:22:13 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 11:45:38 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int	load_sprite(t_game *game, t_sprite *sprite)
+/**
+ * @brief	Loads all texture frames for a single animated sprite.
+ * 			- Allocates memory for the sprite's frames array
+ * 			- Loads each frame using load_texture()
+ * 			- If any frame fails to load, the function cleans up previously
+ * 			loaded frames and returns failure
+ * 
+ * @param game	Pointer to the game main structure
+ * @param sprite	Pointer to the sprite to load frames for
+ * @return	1 on success, 0 on failure
+ */
+
+static int	load_sprite(t_game *game, t_sprite *sprite)
 {
 	int			i;
-	char		*sprite_paths[sprite->frame_count];
+	char		*sprite_paths[6];
 
-	sprite->frames = malloc(sizeof(mlx_image_t *)  *sprite->frame_count);
+	sprite->frames = malloc(sizeof(mlx_image_t *) * sprite->frame_count);
 	if (!sprite->frames)
-		return(error_msg(NULL, NULL, 0));
+		return (error_msg(NULL, NULL, 0));
 	sprite_paths[0] = "./sprites/cat_1.png";
 	sprite_paths[1] = "./sprites/cat_2.png";
 	sprite_paths[2] = "./sprites/cat_3.png";
@@ -32,15 +44,20 @@ int	load_sprite(t_game *game, t_sprite *sprite)
 		sprite->frames[i] = load_texture(game->mlx, sprite_paths[i]);
 		if (!sprite->frames[i])
 		{
-			while (--i >= 0)
-				mlx_delete_image(game->mlx, sprite->frames[i]);
-			free(sprite->frames);
+			free_sprite_frames(game, sprite);
 			return (0);
 		}
 		i ++;
 	}
 	return (1);
 }
+
+/**
+ * @brief	Loads all sprites in the game.
+ * 
+ * @param game	Pointer to the game main structure.
+ * @param return	1 on succes, 0 if any sprite fails to load
+ */
 
 int	load_all_sprites(t_game *game)
 {
