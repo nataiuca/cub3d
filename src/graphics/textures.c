@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 17:25:16 by root              #+#    #+#             */
-/*   Updated: 2025/10/15 12:11:47 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 13:37:34 by natferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,8 @@ int	get_tex_color(mlx_image_t *tex, int x, int y)
 	uint8_t	a;
 	int		i;
 
-	// char	*dst;
 	if (!tex)
-		return (0xFF00FF); // no se si esto sobra
+		return (0xFF00FF);
 	if (x < 0 || y < 0 || x >= (int)tex->width || y >= (int)tex->height)
 		return (0);
 	i = (y * tex->width + x) * 4;
@@ -67,7 +66,7 @@ int	get_texture_index(t_ray *ray)
 */
 void	calc_texture_x(t_ray *ray, t_player *player, mlx_image_t *tex)
 {
-	double wall_x;
+	double	wall_x;
 
 	if (ray->side == 0)
 		wall_x = player->pos_y + ray->dist * ray->dir_y;
@@ -75,7 +74,8 @@ void	calc_texture_x(t_ray *ray, t_player *player, mlx_image_t *tex)
 		wall_x = player->pos_x + ray->dist * ray->dir_x;
 	wall_x -= floor(wall_x);
 	ray->tex_x = (int)(wall_x * (double)tex->width);
-	if ((ray->side == 0 && ray->dir_x > 0) || (ray->side == 1 && ray->dir_y < 0))
+	if ((ray->side == 0 && ray->dir_x > 0) || (ray->side == 1
+			&& ray->dir_y < 0))
 		ray->tex_x = tex->width - ray->tex_x - 1;
 	if (ray->tex_x < 0)
 		ray->tex_x = 0;
@@ -93,8 +93,6 @@ mlx_image_t	*load_texture(void *mlx, char *path)
 	mlx_texture_t	*tex;
 	mlx_image_t		*img;
 
-	// xpm_t	*tex;
-	// tex = mlx_load_xpm42(path);
 	tex = mlx_load_png(path);
 	if (!tex)
 	{

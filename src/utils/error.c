@@ -1,4 +1,3 @@
-
 #include "cub3d.h"
 
 int	error_msg(char *msg, char *arg, int exit_code)
@@ -26,7 +25,7 @@ int	error_msg(char *msg, char *arg, int exit_code)
 		ft_putstr_fd("\n", 2);
 		ft_putstr_fd(RESET, 2);
 	}
-	return(exit_code);
+	return (exit_code);
 }
 
 /*
@@ -39,7 +38,6 @@ int	error_msg(char *msg, char *arg, int exit_code)
 	error_msg(msg, NULL, 0);
 	exit(EXIT_FAILURE);
 }*/
-
 /*
 ** Función para mostrar error, limpiar memoria y salir
 ** - Igual que error_exit pero limpia la memoria antes de salir

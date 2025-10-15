@@ -147,44 +147,83 @@ Esta función actualiza la dirección (dir_x, dir_y) del jugador.
 Se llama a mlx_set_mouse_pos() para volver a poner el ratón en el centro de la ventana.
 Esto permite que el usuario pueda seguir girando indefinidamente, sin que el ratón llegue a los bordes de la pantalla.
 
-Norminette (14.10.25 15h)
-src/controls/events.c
-- falta el header
+Norminette (15.10.25 13h) 
+main.c: OK!
+controls/events.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):      Missing or invalid 42 header
+core/cleanup_game.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):      Missing or invalid 42 header
+core/cleanup_info.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):      Missing or invalid 42 header
+core/cleanup_sprites.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):      Missing or invalid 42 header
+core/init_game.c: OK!
+core/init_graphics.c: OK!
+engine/collision.c: OK!
+engine/moves.c: OK!
+engine/player.c: OK!
+engine/raycasting.c: OK!
+engine/raycasting_utils.c: OK!
+graphics/draw.c: OK!
+graphics/textures.c: Error!
+Error: WRONG_SCOPE_COMMENT  (line:  33, col:   5):      Comment is invalid in this scope
+minimap/init_minimap.c: OK!
+minimap/minimap_draw.c: OK!
+minimap/minimap_rays.c: OK!
+minimap/minimap_utils.c: OK!
+parsing/config_parser.c: OK!
+parsing/config_validator.c: OK!
+parsing/map_parser.c: OK!
+parsing/map_validator.c: OK!
+parsing/parser_utils.c: OK!
+parsing/read_file.c: OK!
+sprite/init_sprite.c: OK!
+sprite/sprite_draw.c: OK!
+sprite/sprite_load.c: OK!
+sprite/sprite_update.c: OK!
+utils/error.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):      Missing or invalid 42 header
+utils/principal.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):      Missing or invalid 42 header
 
-está todo revisado salvo minimap, sprite y el main
 
 
-
-src/
-│
-├── controls/
-│   ├── events.c    // handle_keypress() y handle_close()
-│
-├── engines /
-│   ├── collision.c //check_corners(), is_valid_pos()
-│   ├── moves.c // rotate_player(), move_right(), move_left()...
-│   └── player.c // update_player(), init_player_orientation()
-│   └── raycasting.c //cast_all_rays(), calc_wall_dist(), perform_dda(), calc_step_dist(), init_ray()
-│
-├── graphics /
-│   ├── draw_3d.c //get_tex_color(), get_tex_index(), calc_tex_x(), draw_floor_ceiling(), draw_tex_wall(), draw_column(), draw_3d_view()
-│   ├── init_mlx.c//init_graphics.c(), load_textures(), load_texture()
-│
-├── minimap /
-│   ├── minimap_cast.c //cast_ray_minimap(), cast_all_rays_minimap(), draw_rays(), draw_line(), 
-│   ├── minimap_draw.c//draw_minimap(), draw_minimap_grid(), draw_player(), 
-│   └── minimap_utils.c //init_minimap(), draw_square(), get_minimap_cell_color(), clear_minimap() 
-│  
-├── parsing /
-│   ├──config_parser.c //parse_config(), handle_config_line(), extract_texture_path(), extract_color_raw()
-│   ├── config_validator.c//validate_config(), validate_texture_path(), validate_color_str(), validate_rgb_values(), rgb_to_int()
-|   ├── map_parser.c//parse_map(), count_rows()
-|   ├── map_validator.c//validate_map(), check_trailing_rows(), is_map_closed(), normalize_map(), process_map_line(), measure_map(), 
-|   ├── parser_utils.c //skip_empty_lines(), is_map_start_line()
-│   └── read_file.c //load_info(), read_file(), count_file_lines()
-├── utils /
-│   ├── cleanup.c //cleanup_game(), free_map(), free_info(), free_str_array()
-│   └── error.c //error_msg(), error_exit(), error_cleanup_exit()
-└── main.c
-└── init_structs.c
-
+├── src
+│   ├── controls
+│   │   └── events.c
+│   ├── core
+│   │   ├── cleanup_game.c
+│   │   ├── cleanup_info.c
+│   │   ├── cleanup_sprites.c
+│   │   ├── init_game.c
+│   │   └── init_graphics.c
+│   ├── engine
+│   │   ├── collision.c
+│   │   ├── moves.c
+│   │   ├── player.c
+│   │   ├── raycasting.c
+│   │   └── raycasting_utils.c
+│   ├── graphics
+│   │   ├── draw.c
+│   │   └── textures.c
+│   ├── main.c
+│   ├── minimap
+│   │   ├── init_minimap.c
+│   │   ├── minimap_draw.c
+│   │   ├── minimap_rays.c
+│   │   └── minimap_utils.c
+│   ├── parsing
+│   │   ├── config_parser.c
+│   │   ├── config_validator.c
+│   │   ├── map_parser.c
+│   │   ├── map_validator.c
+│   │   ├── parser_utils.c
+│   │   └── read_file.c
+│   ├── sprite
+│   │   ├── init_sprite.c
+│   │   ├── sprite_draw.c
+│   │   ├── sprite_load.c
+│   │   └── sprite_update.c
+│   └── utils
+│       ├── error.c
+│       └── principal.c

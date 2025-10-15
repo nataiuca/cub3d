@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/15 12:43:16 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 13:44:21 by natferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -378,6 +378,7 @@ void	calc_wall_dist_height(t_ray *ray, t_player *player);
 int		is_valid_pos(t_game *game, double x, double y);;
 
 /* graphics/draw.c */
+int	init_graphics(t_game *game);
 void	draw_3d_view(t_game *game);
 
 /* graphics/textures */
@@ -444,5 +445,10 @@ void	free_sprite(t_game *game);
 void	error_exit(char *msg);
 void	error_cleanup_exit(char *msg, t_game *game);
 int		error_msg(char *msg, char *arg, int exit_code);
+
+/* utils/principal.c */
+void	update_game(void *param);
+int	validate_args(int argc, char **argv);
+int	parse_validate_input(t_game *game);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/14 15:23:05 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:26:39 by natferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ static void	init_map(t_map *map)
  * 
  * 			⚠️ AQUÍ NO SÉ SI DEBERÍAMOS INICIALIZAR A NÚMEROS NEGATIVOS (-1)
  *  PARA QUE SI SE ASIGNA MAL EN ALGÚN LADO SALTE ERROR
- * 			TAMBIÉN HAY QUE REPASAR SI SE USAN TODAS ESAS VARIABLES Y DEFINIRLAS MEJOR, 
+ * 			TAMBIÉN HAY QUE REPASAR SI SE USAN TODAS ESAS VARIABLES Y DEFINIRLAS 
+ MEJOR, 
  * ES CONFUSO
  * 
  * @param player	Pointer to the t_player structure.
@@ -119,10 +120,6 @@ static int	init_structs(t_game *game)
 	game->rays = malloc(WIN_WIDTH * sizeof(t_ray));
 	if (!game->rays)
 		return (error_msg(NULL, NULL, 0));
-	/*game->sprite = malloc(sizeof(t_sprite));
-	if (!game->sprite)
-		return (error_msg(NULL, NULL, 0));*/ //NO HACER AQUÍ ESTO PORQUE 
-		//NO SABEMOS CUÁNTOS SPRITES HAY
 	return (1);
 }
 
