@@ -5,17 +5,16 @@ Enlace MLX42: https://github.com/42-Fundacion-Telefonica/MLX42?tab=readme-ov-fil
 ⚠️ Las funciones que se usen solo dentro del archivo en el que se encuentran, ponerlas static y quitarlas del .h
 
 NORMINETTE + COMENTARIOS estilo doxygen + CORRECTA UBICACIÓN EN EL .H
-- cub3d.h
-- Makefile
+- cub3d.h ✅
+- Makefile✅
 - main.c ✅
 
 controls:
-- events.c
+- events.c ✅
  
 core:
-- cleanup_game.c 
-- cleanup_info.c 
-- cleanup_sprites.c  
+- cleanup_game.c ✅
+- cleanup_utils.c ✅
 - init_game.c ✅ 
 - init_graphics.c ✅
 
@@ -28,7 +27,7 @@ engine:
 
 graphics:
 - draw.c ✅
-- textures.c
+- textures.c ✅
 
 minimap:
 - init_minimap.c ✅
@@ -51,5 +50,4 @@ sprite:
 - sprite_update.c ✅
 
 utils:
-- errors.c 
-- principal.c
+- errors.c ✅
