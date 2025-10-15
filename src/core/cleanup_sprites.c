@@ -1,6 +1,6 @@
 #include "cub3d.h"
 
-static void	free_sprite_frames(t_game *game, t_sprite *sprite)
+void	free_sprite_frames(t_game *game, t_sprite *sprite)
 {
 	int	j;
 
@@ -20,14 +20,6 @@ static void	free_sprite_frames(t_game *game, t_sprite *sprite)
 	sprite->frames = NULL;
 }
 
-static void	free_single_sprite(t_game *game, t_sprite *sprite)
-{
-	if (!sprite)
-		return ;
-	free_sprite_frames(game, sprite);
-	free(sprite);
-}
-
 void	free_sprite(t_game *game)
 {
 	int	i;
@@ -39,7 +31,8 @@ void	free_sprite(t_game *game)
 	{
 		if (game->sprite[i])
 		{
-			free_single_sprite(game, game->sprite[i]);
+			free_sprite_frames(game, game->sprite[i]);
+			free(game->sprite[i]);
 			game->sprite[i] = NULL;
 		}
 		i++;
