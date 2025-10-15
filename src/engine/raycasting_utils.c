@@ -171,7 +171,7 @@ static double	calc_dist_side_y(t_ray *ray, t_player *player)
  * @param player	Pointer to the player structure
  */
 
-void	calc_wall_dist_height_height(t_ray *ray, t_player *player)
+void	calc_wall_dist_height(t_ray *ray, t_player *player)
 {
 	if (ray->side == 0)
 		ray->dist = calc_dist_side_x(ray, player);
