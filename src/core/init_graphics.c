@@ -12,11 +12,15 @@
 
 #include "cub3d.h"
 
-/*
-** Función para cargar todas las texturas del mapa
-** - Carga las 4 texturas de las pa redes (N, S, E, W)
-** - Las guarda en el array de texturas del juego
-*/
+/**
+ * @brief	Loads all wall textures defined in the map configuration.
+ * 			Each cardinal direction (N, S, E, W) is loaded into the
+ * 			game’s texture array.
+ *
+ * @param game	Pointer to the main game structure.
+ *
+ * @return	1 on success, 0 on failure.
+ */
 
 int	load_wall_textures(t_game *game)
 {
@@ -36,10 +40,13 @@ int	load_wall_textures(t_game *game)
 }
 
 /**
- * @brief	se encarga de la interacción con la libreria gráfica
- * 			mlx_init(), mlx_new_img, mlx_image_to_window
+ * @brief	Initializes all MLX graphical components.
+ * 			Creates the main window, rendering image, minimap, wall textures,
+ * 			and sprites. Configures mouse and cursor hooks.
  *
- * @param
+ * @param game	Pointer to the main game structure.
+ *
+ * @return	1 on success, 0 on error.
  */
 
 int	init_graphics(t_game *game)
