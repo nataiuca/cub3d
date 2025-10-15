@@ -12,10 +12,16 @@
 
 #include "cub3d.h"
 
-/*
-** Obtiene color de textura con bounds checking
-** Clamp en lugar de return 0 para evitar artefactos
-*/
+/**
+ * @brief	Retrieves a pixel color from a texture image with boundary checks.
+ * 			Clamps coordinates to prevent out-of-bounds access and rendering artifacts.
+ *
+ * @param tex	Pointer to the texture image.
+ * @param x		Texture X coordinate.
+ * @param y		Texture Y coordinate.
+ *
+ * @return	Packed RGBA color value (uint32_t).
+ */
 
 int	get_tex_color(mlx_image_t *tex, int x, int y)
 {
@@ -38,10 +44,15 @@ int	get_tex_color(mlx_image_t *tex, int x, int y)
 	return ((r << 24) | (g << 16) | (b << 8) | a);
 }
 
-/*
-** Determina qué textura usar según la pared golpeada
-** Norte=0, Sur=1, Este=2, Oeste=3
-*/
+/**
+ * @brief	Selects the appropriate wall texture based on the ray collision.
+ * 			Determines orientation (N/S/E/W) using ray direction and step.
+ *
+ * @param ray	Pointer to the ray structure.
+ *
+ * @return	Texture index corresponding to the hit wall.
+ */
+
 int	get_texture_index(t_ray *ray)
 {
 	if (ray->side == 0)
@@ -60,10 +71,15 @@ int	get_texture_index(t_ray *ray)
 	}
 }
 
-/*
-** Calcula coordenada X de la textura
-** wall_x: posición exacta donde el rayo golpeó la pared
-*/
+/**
+ * @brief	Computes the horizontal texture coordinate (tex_x)
+ * 			for the wall segment hit by the ray.
+ *
+ * @param ray		Pointer to the ray structure.
+ * @param player	Pointer to the player structure.
+ * @param tex		Pointer to the texture image.
+ */
+
 void	calc_texture_x(t_ray *ray, t_player *player, mlx_image_t *tex)
 {
 	double	wall_x;
@@ -83,11 +99,16 @@ void	calc_texture_x(t_ray *ray, t_player *player, mlx_image_t *tex)
 		ray->tex_x = tex->width - 1;
 }
 
-/** Función para cargar una textura desde un archivo
-** - Carga una imagen .png usando mlx_load_png
-CREO QUE ESTA FUNCIÓN DEBERIA DEBERIA DE ESTAR EN UN LUGAR MÁS GENÉRICO,
-	PORK TB LA USA SPRITE
-*/
+/**
+ * @brief	Loads a PNG texture file into an MLX image.
+ * 			Used by both walls and sprites.
+ *
+ * @param mlx	Pointer to the MLX instance.
+ * @param path	Path to the .png texture file.
+ *
+ * @return	Pointer to the created MLX image, or NULL on failure.
+ */
+
 mlx_image_t	*load_texture(void *mlx, char *path)
 {
 	mlx_texture_t	*tex;
