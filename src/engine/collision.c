@@ -12,10 +12,19 @@
 
 #include "cub3d.h"
 
-/*
-** Verifica colisiones en las esquinas del jugador
-** Previene atravesar paredes en diagonal
-*/
+/**
+ * @brief	Checks for corner collisions around the player.
+ * 			Prevents diagonal wall clipping by testing four surrounding
+ * 			corner cells with a safety margin.
+ *
+ * @param game	Pointer to the main game structure.
+ * @param x		Target X position to validate.
+ * @param y		Target Y position to validate.
+ * @param margin	Small offset applied to each corner for collision padding.
+ *
+ * @return	1 if all corners are free of walls, 0 otherwise.
+ */
+
 static int	check_corners(t_game *game, double x, double y, double margin)
 {
 	if (game->map->grid[(int)(y - margin)][(int)(x - margin)] == '1')
@@ -29,10 +38,17 @@ static int	check_corners(t_game *game, double x, double y, double margin)
 	return (1);
 }
 
-/*
-** Verifica si una posición es válida (no hay pared)
-** Incluye margen de seguridad para evitar atravesar paredes
-*/
+/**
+ * @brief	Validates a given position within the game map.
+ * 			Checks whether the target coordinates correspond to a walkable
+ * 			tile and ensures that nearby walls are not clipped through.
+ *
+ * @param game	Pointer to the main game structure.
+ * @param x		X coordinate of the position to test.
+ * @param y		Y coordinate of the position to test.
+ *
+ * @return	1 if the position is valid and not obstructed, 0 otherwise.
+ */
 int	is_valid_pos(t_game *game, double x, double y)
 {
 	int		map_x;
