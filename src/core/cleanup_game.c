@@ -1,5 +1,10 @@
 #include "cub3d.h"
 
+/**
+ * @brief	Frees all memory and resources associated with the minimap.
+ *
+ * @param game	Pointer to the main game structure.
+ */
 void	free_minimap(t_game *game)
 {
 	if (!game->minimap)
@@ -12,13 +17,13 @@ void	free_minimap(t_game *game)
 	game->minimap = NULL;
 }
 
-/*
-** Función para limpiar todo el juego
-** - Libera todas las texturas
-** - Destruye la ventana
-** - Libera todas las estructuras
-** - Cierra la conexión con MLX
-*/
+/**
+ * @brief	Frees all loaded textures and screen images.
+ * 			- Deletes MLX texture images for the four walls.
+ * 			- Deletes the main render image if present.
+ *
+ * @param game	Pointer to the main game structure.
+ */
 void	free_textures(t_game *game)
 {
 	int	i;
@@ -40,6 +45,13 @@ void	free_textures(t_game *game)
 	}
 }
 
+/**
+ * @brief	Cleans up all game resources and safely terminates MLX.
+ * 			- Frees info, map, minimap, player, rays, textures, and sprites.
+ * 			- Properly closes the MLX instance.
+ *
+ * @param game	Pointer to the main game structure.
+ */
 void	cleanup_game(t_game *game)
 {
 	if (!game)
