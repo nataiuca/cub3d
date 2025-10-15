@@ -7,24 +7,24 @@ Enlace MLX42: https://github.com/42-Fundacion-Telefonica/MLX42?tab=readme-ov-fil
 NORMINETTE + COMENTARIOS estilo doxygen + CORRECTA UBICACIÓN EN EL .H
 - cub3d.h
 - Makefile
-- main.c
+- main.c ✅
 
 controls:
 - events.c
  
 core:
-- cleanup_game.c
-- cleanup_info.c
-- cleanup_sprites.c
-- init_game.c
-- init_graphics.c
+- cleanup_game.c 
+- cleanup_info.c 
+- cleanup_sprites.c  
+- init_game.c ✅ 
+- init_graphics.c ✅
 
 engine:
-- raycasting.c
-- raycasting_utils.c
-- player.c
-- moves.c
-- collision.c
+- raycasting.c ✅ 
+- raycasting_utils.c ✅
+- player.c ✅ 
+- moves.c ✅ 
+- collision.c ✅
 
 graphics:
 - draw.c ✅
@@ -37,12 +37,12 @@ minimap:
 - minimap_rays.c ✅
 
 parsing:
-- read_file.c
-- config_parser.c
-- map_parser.c
-- config_validator.c
-- map_validator.c
-- parser_utils.c
+- config_parser.c ✅
+- config_validator.c ✅
+- map_parser.c ✅ 
+- map_validator.c ✅ 
+- parser_utils.c ✅ 
+- read_file.c ✅
 
 sprite:
 - init_sprite.c ✅
@@ -51,5 +51,5 @@ sprite:
 - sprite_update.c ✅
 
 utils:
-- errors.c
-
+- errors.c 
+- principal.c
