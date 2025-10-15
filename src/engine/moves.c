@@ -12,10 +12,14 @@
 
 #include "../../inc/cub3d.h"
 
-/*
-** Mueve al jugador hacia adelante (W)
-** Sliding: intenta mover en X e Y por separado
-*/
+/**
+ * @brief	Moves the player forward (W key).
+ * 			Implements sliding by checking X and Y movement separately.
+ *
+ * @param game		Pointer to the main game structure.
+ * @param player	Pointer to the player structure.
+ */
+
 void	move_forward(t_game *game, t_player *player)
 {
 	double	new_x;
@@ -30,9 +34,13 @@ void	move_forward(t_game *game, t_player *player)
 	player->move_forward = false;
 }
 
-/*
-** Mueve al jugador hacia atrás (S)
-*/
+/**
+ * @brief	Moves the player backward (S key).
+ *
+ * @param game		Pointer to the main game structure.
+ * @param player	Pointer to the player structure.
+ */
+
 void	move_backward(t_game *game, t_player *player)
 {
 	double	new_x;
@@ -47,10 +55,14 @@ void	move_backward(t_game *game, t_player *player)
 	player->move_backward = false;
 }
 
-/*
-** Mueve al jugador a la izquierda (A)
-** Perpendicular a la dirección de vista
-*/
+/**
+ * @brief	Moves the player to the left (A key).
+ * 			Moves perpendicularly to the camera direction.
+ *
+ * @param game		Pointer to the main game structure.
+ * @param player	Pointer to the player structure.
+ */
+
 void	move_left(t_game *game, t_player *player)
 {
 	double	new_x;
@@ -65,9 +77,13 @@ void	move_left(t_game *game, t_player *player)
 	player->move_left = false;
 }
 
-/*
-** Mueve al jugador a la derecha (D)
-*/
+/**
+ * @brief	Moves the player to the right (D key).
+ *
+ * @param game		Pointer to the main game structure.
+ * @param player	Pointer to the player structure.
+ */
+
 void	move_right(t_game *game, t_player *player)
 {
 	double	new_x;
@@ -82,10 +98,14 @@ void	move_right(t_game *game, t_player *player)
 	player->move_right = false;
 }
 
-/*
-** Rota al jugador (dirección y plano de cámara)
-** direction: -1 = izquierda, 1 = derecha
-*/
+/**
+ * @brief	Rotates the player's view direction and camera plane.
+ * 			Handles both left (-1) and right (1) rotation directions.
+ *
+ * @param player	Pointer to the player structure.
+ * @param direction	Rotation direction: -1 for left, 1 for right.
+ */
+
 void	rotate_player(t_player *player, int direction)
 {
 	double	old_dir_x;
