@@ -1,49 +1,43 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycasting.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/15 09:58:51 by root              #+#    #+#             */
+/*   Updated: 2025/10/15 10:28:32 by root             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 /**
- * @brief	Checkea si hemos golpeado una pared
- * 			- Si estamos fuera del mapa: devuelve 1 para evitar segfault
- * 			- Si la celda actual del mapa contiene '1' (pared), devuelve 1.
+ * @brief	Initializes a ray corresponding to the given screen column.
+ * 			For each vertical column on the screen, a ray is cast into the
+ * 			game world. This function calculates the direction of the ray
+ * 			based on the player's viewing direction and camera plane, which
+ * 			together define the FOV (Field Of View)
+ * 
+ * 			- Convert the current column number ('col') into a normalized 
+ * 			coordinate 'camera_x' 
+ * 				* maps the column [0, WIN_WIDTH] to the range [-1, 1]
+ * 				* -1 represents the left edge of the screen, 1 the right edge
+ * 			- Compute the ray direction (dir_x/y) based on how far the column	
+ * 			is from the player's center view
+ * 			- Determine the map cell where the player currently stands (map_x/y)
+ * 			- Compute delta distances:
+ * 				* delta_x/y represent how far the ray travels between
+ * 				consecutive vertical (X) or horizontal (Y) grid lines
+ * 				* If the ray's direction component is 0, sets delta to a very
+ * 				large value to avoid division by zero
+ * 
+ * @param player	Pointer to the player structure
+ * @param col	Current screen column (ray index)
+ * @return	A fully initialized ray structure for the given column
  */
 
-int	check_hit(t_ray *ray, t_map *map)
-{
-	if (ray->map_x < 0 || ray->map_x >= map->width)
-		return (1);
-	if (ray->map_y < 0 || ray->map_y >= map->height)
-		return (1);
-	if (map->grid[ray->map_y][ray->map_x] == '1')
-		return (1);
-	return (0);
-}
-
-/**
- * @brief	Inicializa el rayo para la columna número 'col' de la pantalla.
- * 			- Proyecta la columna de pantalla al rango [-1, 1], donde -1
- * 			es el extremo izquierdo de la pantalla y el 1 el derecho
- * 			HACER ESQUEMA DIBUJADO DE ESTO!
- * 			- A partir de la proyección de la columna en pantalla en rango [-1 ,1]
- * 			se calcula la dirección del rayo en el campo de visión (dir_x, dir_y)
- * 			- Usa el camera_x para ajustar la dirección del rayo a lo ancho de la 
- * 			pantalla
- * 			- Si la posición incial del player en el mapa es 0, pone delta_dx
- * 			en UN VALOR ALTISIMO para prevenir división por cero
- * 			- delta_dx/y es la distancia entre líneas verticales/horizontales
- * 			que el rayo debe recorrer.
- * 
- * 			- camera_x: horizontal position of the ray on the camera plane,
- * 			normalized to range [-1, 1]. Determines how far to the left/right
- * 			of the player's center view the ray is cast
- * 			- dir_x/y: direction vector of the ray, calculated by combining
- * 			the player's viewing direction and the camera plane, scaled by
- * 			camera_x
- * 
- * @param ray	El rayo concreto a inicializar, el de la columna col
- * @param player	Puntero a estructura del jugador
- * @param col	Columna actual, número de rayo
- */
-
-t_ray	init_ray(t_player *player, int col)
+static t_ray	init_ray(t_player *player, int col)
 {
 	t_ray	ray;
 
@@ -63,6 +57,21 @@ t_ray	init_ray(t_player *player, int col)
 	return (ray);
 }
 
+/**
+ * @brief	Casts all rays for the current frame - one per screen column
+ * 			This function iterates through all columns of the screen,
+ * 			and performs the full raycasting pipeline:
+ * 			- Initializes all the rays via init_ray()
+ * 			- Compute step direction and initial side distances via
+ * 			calc_step_dist()
+ * 			- Perform the DDA algorithm to find the wall hit using
+ * 			perform_dda()
+ * 			- Compute perpendicular wall distance and screen projection with
+ * 			calc_wall_dist_height()
+ * 
+ * @param game	Pointer to the game main structure
+ */
+
 void	cast_all_rays(t_game *game)
 {
 	int	i;
@@ -73,7 +82,7 @@ void	cast_all_rays(t_game *game)
 		game->rays[i] = init_ray(game->player, i);
 		calc_step_dist(&game->rays[i], game->player);
 		perform_dda(game, &game->rays[i]);
-		calc_wall_dist(&game->rays[i], game->player);
+		calc_wall_dist_height(&game->rays[i], game->player);
 		i++;
 	}
 }

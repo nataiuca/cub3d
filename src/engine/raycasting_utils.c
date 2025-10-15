@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 17:13:43 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/14 17:36:00 by amacarul         ###   ########.fr       */
+/*   Updated: 2025/10/15 10:35:01 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,30 @@ void	calc_step_dist(t_ray *ray, t_player *player)
 /**
  * @brief	Performs the DDA (Digital Differential Analyzer) algorithm to
  * 			find the first wall hit by the ray in the grid map.
+ * 			The DDA algoruthm simulates the ray moving through the grid,
+ * 			checking which side (X or Y) it will crcoss next. It continues
+ * 			untill the ray collides with a wall.
  * 			- At each step, the algorithm chooses whether to move to the 
  * 			next x-side or y-side grid cell, depending on which side distance
  * 			(side_dx/y) is smaller
  * 			- side_dx/y are incremented by delta_dx/y at each step, simulating
  * 			the ray traveling through the grid
- * 			- The loop stops one the ray hits a wall, detected via check_hit()
+ * 			
+ * 			- If side_dx < side_dy -> move to the next x-side:
+ * 				* Increment side_dx by delta_dx
+ * 				* Move ray->map_x by step_x
+ * 				* set ray->side = 0 (X-side)
+ *			- If side_dx > side_dy -> move to the next y-side:
+ * 				* Increment side_dy by delta_dy
+ * 				* Move ray->map_y by step_y
+ * 				* Set ray->side = 1 (Y-side)
+ * 
+ * 			- After each move, the algorithm checks:
+ * 				* If the ray's position goes outside the map boundaries
+ * 				* Or if the current cell (grid[map_y][map_x]) contains a wall
+ * 				('1').
+ * 			In either case, the function returns immediately, since the ray 
+ * 			has reached a collision point
  * 
  * @param game	Pointer to the game structure
  * @param ray	Pointer to the ray being processed
@@ -67,8 +85,7 @@ void	calc_step_dist(t_ray *ray, t_player *player)
 
 void	perform_dda(t_game *game, t_ray *ray)
 {
-	ray->hit = 0;
-	while (!ray->hit)
+	while (1)
 	{
 		if (ray->side_dx < ray->side_dy)
 		{
@@ -82,12 +99,25 @@ void	perform_dda(t_game *game, t_ray *ray)
 			ray->map_y += ray->step_y;
 			ray->side = 1;
 		}
-		if (check_hit(ray, game->map))
-			ray->hit = 1;
+		if (ray->map_x < 0 || ray->map_x >= game->map->width
+			|| ray->map_y < 0 || ray->map_y >= game->map->height
+			|| game->map->grid[ray->map_y][ray->map_x] == '1')
+			return ;
 	}
 }
 
-double	calc_dist_side_0(t_ray *ray, t_player *player)
+/**
+ * @brief	Calculates the perpendicular distance from the player to the wall
+ * 			for x-side hit.
+ * 			Prevents division by zero using small epsilon. If the x-direction
+ * 			is almost 0, returns an infinite distance.
+ * 
+ * @param ray	Pointer to the current ray
+ * @param player	Pointer th the player
+ * @return	The perpendicular distance from the player to the wall for x-side
+ */
+
+static double	calc_dist_side_x(t_ray *ray, t_player *player)
 {
 	double	eps;
 
@@ -98,7 +128,18 @@ double	calc_dist_side_0(t_ray *ray, t_player *player)
 		/ ray->dir_x);
 }
 
-double	calc_dist_side_1(t_ray *ray, t_player *player)
+/**
+ * @brief	Calculates the perpendicular distance from the player to the wall
+ * 			for a y-side hit.
+ * 			Prevents division by zero using small epsilon. If the y-direction
+ * 			is almost 0, returns an infinite distance.
+ * 
+ * @param ray	Pointer to the current ray
+ * @param player	Pointer th the player
+ * @return	The perpendicular distance from the player to the wall for y-side
+ */
+
+static double	calc_dist_side_y(t_ray *ray, t_player *player)
 {
 	double	eps;
 
@@ -109,19 +150,33 @@ double	calc_dist_side_1(t_ray *ray, t_player *player)
 		/ ray->dir_y);
 }
 
-
 /**
- * @brief	Caculates the perpendicular distance from the player to the wall
- * 			hit by the ray, and determines the height of the wall slice to render.
- * 			- Uses appropriate 
+ * @brief	Caculates the perpendicular distance and the height of the wall
+ * 			slice to render.
+ * 			Determines how tall wall should appear on screen based on the 
+ * 			distance between the player and the wall hit by the ray. It also
+ * 			computes where to start and end drawing the wall slice vertically.
+ * 			- Selects the correct distance funcion depending on which side
+ * 			was hit (x-side or y-side hit)
+ * 			- If the computed distance is invalid (infinite or <= 0), uses
+ * 			full window height
+ * 			- Otherwise:
+ * 				* Sets the height of the wall slice on the screen as 
+ * 				line_height = WIN_HEIGHT / ray->dist (inverse proportional
+ * 				to distance)
+ * 				* draw_start and draw_end define the vertical segment to render
+ * 				* These values are clamped withing window bounds
+ * 
+ * @param ray	Pointer to the current ray
+ * @param player	Pointer to the player structure
  */
 
-void	calc_wall_dist(t_ray *ray, t_player *player)
+void	calc_wall_dist_height_height(t_ray *ray, t_player *player)
 {
 	if (ray->side == 0)
-		ray->dist = calc_dist_side_0(ray, player);
+		ray->dist = calc_dist_side_x(ray, player);
 	else
-		ray->dist = calc_dist_side_1(ray, player);
+		ray->dist = calc_dist_side_y(ray, player);
 	if (!isfinite(ray->dist) || ray->dist <= 0.0)
 		ray->line_height = WIN_HEIGHT;
 	else
