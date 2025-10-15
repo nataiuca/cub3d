@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   config_parser.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:21:52 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/14 16:25:03 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/11 16:48:37 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
  * 			separation
  * 			- Stores the result
  * 			- Marks it as set
- *
+ * 
  * @param line	The raw line containing a color configuration.
  * @param color_raw	Pointer to store the raw color string
  * @param color_set	Pointer to a bool that tracks if color was already set
@@ -40,7 +40,7 @@ static int	parse_color(char *line, char **color_raw, bool *color_set)
 	processed = ft_strreplace(trimmed, ',', ' ');
 	free(trimmed);
 	if (!processed)
-		return (error_msg(NULL, NULL, 0));
+		return (error_msg(NULL, NULL, 0)); //o recuperar NULL??
 	*color_raw = processed;
 	*color_set = true;
 	return (1);
@@ -50,7 +50,7 @@ static int	parse_color(char *line, char **color_raw, bool *color_set)
  * @brief	Extracts and trims a texture path from a configuration line.
  * 			- Removes leading/trailing whitespaces and newlines
  * 			- Memory for the trimmed string must be freed by the caller
- *
+ * 
  * @param line	Raw configuration line containing the texture path
  * @param dst	Pointer to where the trimmed texture path will be stored
  * @return 1 in success, 0 on failure (memory allocation error)
@@ -60,20 +60,20 @@ static int	extract_texture_path(char *line, char **dst)
 {
 	*dst = ft_strtrim(line, " \t\n");
 	if (!*dst)
-		return (error_msg(NULL, NULL, 0));
+		return (error_msg(NULL, NULL, 0)); //⚠️ no se si errno contiene la infor del fallo de malloc en strtrim o no
 	return (1);
 }
 
 /**
  * @brief	Processes a configuration line and updates the game configuration
  * 			- Identifies the configuration key (textures or colors)
- * 			- For texture keys ("NO", "SO", "EA", "WE"), extracts the texture
+ * 			- For texture keys ("NO", "SO", "EA", "WE"), extracts the texture	
  * 			path and stores it in map structure
  * 			- For color keys ("C", "F"), extracts and stores the raw color
  * 			in info structure
- * 			- Validates that keys are not repeated and ensures required
+ * 			- Validates that keys are not repeated and ensures required	
  * 			configuration keys are present.
- *
+ * 
  * @param line	Configuration line to process
  * @param info	Pointer to the game structure to update
  * @param configs_found	Number of configuration keys already processed
@@ -106,10 +106,10 @@ static int	process_line(char *line, t_map *map, t_info *info, int keys_found)
  * 			until all required keys are found
  * 			- Skips empty lines and trims whitespace before processing
  * 			- Uses handle_config_line() to process each valid line
- *
+ * 
  * @param game	Pointer to the game main structure
  * @param info	Poinetr to the info structure containing raw file data
- * @return	1 in success, 0 on failure (missing keys or invalid configuration
+ * @return	1 in success, 0 on failure (missing keys or invalid configuration 
  * 			line)
  */
 
@@ -122,7 +122,7 @@ int	parse_config(t_game *game, t_info *info)
 	while (*info->cursor && keys_found < 6)
 	{
 		if (!skip_empty_lines(info) && keys_found == 6)
-			return (error_msg(ERR_NO_MAP, NULL, 0));
+			return (error_msg(ERR_NO_MAP, NULL, 0)); //AQUÍ HABRIA QUE CONTEMPLAR DOS POSIBLES ERRORES: 
 		if (!skip_empty_lines(info) && keys_found != 6)
 			return (error_msg(ERR_MISSING_CONF_KEYS, NULL, 0));
 		line = ft_strtrim(*info->cursor, " \t\n");
@@ -133,8 +133,11 @@ int	parse_config(t_game *game, t_info *info)
 			if (process_line(line, game->map, info, keys_found))
 				free(line);
 			else
-				return (free(line), 0);
-			keys_found++;
+			{
+				free(line);
+				return (0);
+			}
+			keys_found ++;
 		}
 		info->cursor++;
 	}

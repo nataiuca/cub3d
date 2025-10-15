@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_game.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/14 15:23:05 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/13 13:03:28 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,8 @@ static void	init_map(t_map *map)
  * 			Sets initial position, direction, and movement flags to neutral
  * 			values. Default movement and rotation speeds are assigned here.
  * 
- * 			⚠️ AQUÍ NO SÉ SI DEBERÍAMOS INICIALIZAR A NÚMEROS NEGATIVOS (-1)
- *  PARA QUE SI SE ASIGNA MAL EN ALGÚN LADO SALTE ERROR
- * 			TAMBIÉN HAY QUE REPASAR SI SE USAN TODAS ESAS VARIABLES Y DEFINIRLAS MEJOR, 
- * ES CONFUSO
+ * 			⚠️ AQUÍ NO SÉ SI DEBERÍAMOS INICIALIZAR A NÚMEROS NEGATIVOS (-1) PARA QUE SI SE ASIGNA MAL EN ALGÚN LADO SALTE ERROR
+ * 			TAMBIÉN HAY QUE REPASAR SI SE USAN TODAS ESAS VARIABLES Y DEFINIRLAS MEJOR, ES CONFUSO
  * 
  * @param player	Pointer to the t_player structure.
  */
@@ -74,10 +72,10 @@ static void	init_player(t_player *player)
 	player->px = 0;
 	player->py = 0;
 	player->dir = '\0';
-	player->dir_x = 0;
-	player->dir_y = 0;
-	player->plane_x = 0;
-	player->plane_y = 0;
+	player->dir_x = 0; //sí hay que inicializar en 0
+	player->dir_y = 0; //sí hay que inicializar en 0
+	player->plane_x = 0; //sí hay que inicializar en 0
+	player->plane_y = 0; //sí hay que inicializar en 0
 	player->move_speed = 0.1;
 	player->rot_speed = 0.08;
 	player->move_forward = false;
@@ -121,8 +119,7 @@ static int	init_structs(t_game *game)
 		return (error_msg(NULL, NULL, 0));
 	/*game->sprite = malloc(sizeof(t_sprite));
 	if (!game->sprite)
-		return (error_msg(NULL, NULL, 0));*/ //NO HACER AQUÍ ESTO PORQUE 
-		//NO SABEMOS CUÁNTOS SPRITES HAY
+		return (error_msg(NULL, NULL, 0));*/ //NO HACER AQUÍ ESTO PORQUE NO SABEMOS CUÁNTOS SPRITES HAY
 	return (1);
 }
 

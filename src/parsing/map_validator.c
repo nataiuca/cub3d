@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_validator.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 19:37:05 by root              #+#    #+#             */
-/*   Updated: 2025/10/14 16:29:40 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/13 13:03:18 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,11 @@ int	process_map_line(t_game *game, t_map *map, int row, char *line)
 			init_player_orientation(game->player);
 		}
 		if (line[i] == 'C')
+		{
+			/*game->sprite[game->sprite_count]->x = i + 0.5;
+			game->sprite[game->sprite_count]->y = row + 0.5;*/
 			game->sprite_count ++;
+		}
 		i ++;
 	}
 	map->grid[row] = ft_strdup(line);

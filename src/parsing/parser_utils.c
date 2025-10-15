@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 16:17:49 by root              #+#    #+#             */
-/*   Updated: 2025/10/14 16:32:33 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/11 16:46:33 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@
  * 			the function returns 1.
  * 			- If the end of the file is reached without finding a valid line
  * 			0 is returned
- *
+ * 
  * @param info	Pointer to the t_info structure containing the file raw data
  * 				cursor
  * @return	1 if a valid line is found, 0 if no valid line is found
- *
+ * 
  */
 
 int	skip_empty_lines(t_info *info)
@@ -45,6 +45,7 @@ int	skip_empty_lines(t_info *info)
 		free(line);
 		info->cursor++;
 	}
+	//return (error_msg(ERR_NO_MAP, NULL, 0));
 	return (0);
 }
 
@@ -53,7 +54,7 @@ int	skip_empty_lines(t_info *info)
  * 			Iterates through the given array of strings until it encounters
  * 			either a NULL pointer (end of array) or an empty line (indicating
  * 			the end of the map).
- *
+ * 
  * @param array	The NULL-terminated array of strings to count
  * @return	The number of non-empty lines found
  */
@@ -67,17 +68,16 @@ int	count_rows(char **array)
 	{
 		if (!*array[count])
 			break ;
-		count++;
+		count ++;
 	}
 	return (count);
 }
 
 /**
  * @brief
- *
+ * 
  * @param
- * @return 0 si no es inicio de mapa,
-	1 si solo contiene caracteres de mapa e interpretamos como inicio de mapa
+ * @return 0 si no es inicio de mapa, 1 si solo contiene caracteres de mapa e interpretamos como inicio de mapa
  */
 
 int	is_map_start_line(const char *line)
@@ -85,8 +85,8 @@ int	is_map_start_line(const char *line)
 	while (*line)
 	{
 		if (!ft_strchr("10NSEW", *line) && !ft_isspace(*line))
-			return (0);
-		line++;
+			return (0); //no es inicio del mapa
+		line ++;
 	}
-	return (1);
+	return (1); //solo contiene caracteres de mapa
 }

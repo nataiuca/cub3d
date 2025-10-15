@@ -1,3 +1,4 @@
+
 #include "../../inc/cub3d.h"
 
 /*
@@ -34,3 +35,4 @@ void	handle_keypress(mlx_key_data_t data, void *param)
 	else if (data.key == MLX_KEY_RIGHT && data.action == MLX_PRESS)
 		game->player->turn_right = true;
 }
+
