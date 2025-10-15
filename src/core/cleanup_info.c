@@ -1,5 +1,12 @@
 #include "cub3d.h"
 
+/**
+ * @brief	Cleans up all game resources and safely terminates MLX.
+ * 			- Frees info, map, minimap, player, rays, textures, and sprites.
+ * 			- Properly closes the MLX instance.
+ *
+ * @param game	Pointer to the main game structure.
+ */
 void	ft_free_str_array(char **array)
 {
 	int	i;
@@ -15,6 +22,11 @@ void	ft_free_str_array(char **array)
 	free(array);
 }
 
+/**
+ * @brief	Frees the game’s info structure and all its allocated fields.
+ *
+ * @param game	Pointer to the main game structure.
+ */
 void	free_info(t_game *game)
 {
 	ft_printf("DEBUG: free_info\n");
@@ -30,12 +42,13 @@ void	free_info(t_game *game)
 	game->info = NULL;
 }
 
-/*
-** Función para liberar el mapa
-** - Libera cada línea del grid
-** - Libera las rutas de texturas
-** - Libera la estructura del mapa
-*/
+/**
+ * @brief	Frees all memory used by the map structure.
+ * 			- Releases map grid and texture paths.
+ * 			- Finally frees the map structure itself.
+ *
+ * @param game	Pointer to the main game structure.
+ */
 void	free_map(t_game *game)
 {
 	if (!game->map)
