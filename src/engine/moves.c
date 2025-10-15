@@ -13,7 +13,7 @@
 #include "../../inc/cub3d.h"
 
 /**
- * @brief	Moves the player forward (W key).
+ * @brief	Moves the player forward (W key). 
  * 			Implements sliding by checking X and Y movement separately.
  *
  * @param game		Pointer to the main game structure.
