@@ -1,5 +1,17 @@
 #include "cub3d.h"
 
+/**
+ * @brief	Prints an error message to stderr.
+ * 			If `msg` is provided, displays it in red with optional argument.
+ * 			If not, prints system errno description.
+ *
+ * @param msg		Error message (optional).
+ * @param arg		Optional argument (e.g., file path).
+ * @param exit_code	Value to return for error handling.
+ *
+ * @return	The same exit code passed as parameter.
+ */
+
 int	error_msg(char *msg, char *arg, int exit_code)
 {
 	if (msg)
@@ -38,11 +50,15 @@ int	error_msg(char *msg, char *arg, int exit_code)
 	error_msg(msg, NULL, 0);
 	exit(EXIT_FAILURE);
 }*/
-/*
-** Función para mostrar error, limpiar memoria y salir
-** - Igual que error_exit pero limpia la memoria antes de salir
-** - Útil cuando ya hemos reservado memoria
-*/
+
+/**
+ * @brief	Prints an error message, cleans up all resources, and exits.
+ * 			Useful when memory or MLX instances have already been allocated.
+ *
+ * @param msg	Error message to display.
+ * @param game	Pointer to the main game structure for cleanup.
+ */
+
 void	error_cleanup_exit(char *msg, t_game *game)
 {
 	error_msg(msg, NULL, 0);
