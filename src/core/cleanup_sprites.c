@@ -1,5 +1,12 @@
 #include "cub3d.h"
 
+/**
+ * @brief	Frees all frames belonging to a sprite.
+ * 			Deletes associated MLX images and resets frame pointers.
+ *
+ * @param game		Pointer to the main game structure.
+ * @param sprite	Pointer to the sprite structure.
+ */
 void	free_sprite_frames(t_game *game, t_sprite *sprite)
 {
 	int	j;
@@ -20,6 +27,13 @@ void	free_sprite_frames(t_game *game, t_sprite *sprite)
 	sprite->frames = NULL;
 }
 
+/**
+ * @brief	Frees all frames belonging to a sprite.
+ * 			Deletes associated MLX images and resets frame pointers.
+ *
+ * @param game		Pointer to the main game structure.
+ * @param sprite	Pointer to the sprite structure.
+ */
 void	free_sprite(t_game *game)
 {
 	int	i;
