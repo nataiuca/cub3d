@@ -1,8 +1,13 @@
 #include "../../inc/cub3d.h"
 
-/*
-** Cierra el juego limpiamente
-*/
+/**
+ * @brief	Handles a clean shutdown of the game.
+ * 			Frees all resources and exits the program.
+ *
+ * @param game	Pointer to the main game structure.
+ *
+ * @return Always returns 0.
+ */
 int	handle_close(t_game *game)
 {
 	cleanup_game(game);
@@ -10,10 +15,15 @@ int	handle_close(t_game *game)
 	return (0);
 }
 
-/*
-** Maneja pulsaciones de teclas
-** Renderiza SOLO cuando hay movimiento (clave para el rendimiento)
-*/
+/**
+ * @brief	Processes key press events.
+ * 			Enables movement and rotation flags for the player.
+ * 			Rendering is only updated when movement occurs,
+ * 			which is essential for performance optimization.
+ *
+ * @param data	MLX key data structure containing key and action information.
+ * @param param	Pointer to the main game structure.
+ */
 void	handle_keypress(mlx_key_data_t data, void *param)
 {
 	t_game	*game;
@@ -35,15 +45,17 @@ void	handle_keypress(mlx_key_data_t data, void *param)
 		game->player->turn_right = true;
 }
 
-/* Funcion para implementar la rotacion de la camara con
-el raton. Cuando el jugador mueve el raton horizontalente,
-la camara debe rotar a la izqda o a la derecha como en un FPS,
-no hace falta moverlo verticalmente. es como si el jugador
-girara la cabeza.  No usamos la posición vertical (y), solo la horizontal (x)
-Calcula cuánto se ha movido el ratón horizontalmente desde la última vez
-Actualiza la posición del ratón anterior para la próxima llamada
-Si el ratón se ha movido a la derecha, gira el jugador a la derecha
-Reposiciona el ratón en el centro de la ventana para evitar que salga*/
+/**
+ * @brief	Handles horizontal camera rotation using the mouse.
+ * 			Simulates an FPS-like head rotation: only horizontal
+ * 			movement (X-axis) is used. The vertical movement (Y-axis)
+ * 			is ignored. After rotation, the cursor is re-centered
+ * 			to prevent it from leaving the window.
+ *
+ * @param xpos	Current mouse X position.
+ * @param ypos	Current mouse Y position (unused).
+ * @param param	Pointer to the main game structure.
+ */
 
 void	handle_mouse_movement(double xpos, double ypos, void *param)
 {
