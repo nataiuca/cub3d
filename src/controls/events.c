@@ -1,4 +1,16 @@
-#include "../../inc/cub3d.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   events.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/15 14:57:27 by root              #+#    #+#             */
+/*   Updated: 2025/10/15 15:43:53 by root             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3d.h"
 
 /**
  * @brief	Handles a clean shutdown of the game.
@@ -8,6 +20,7 @@
  *
  * @return Always returns 0.
  */
+
 int	handle_close(t_game *game)
 {
 	cleanup_game(game);
@@ -17,13 +30,16 @@ int	handle_close(t_game *game)
 
 /**
  * @brief	Processes key press events.
- * 			Enables movement and rotation flags for the player.
- * 			Rendering is only updated when movement occurs,
- * 			which is essential for performance optimization.
+ * 			Enables movement and rotation flags for the player when 
+ * 			corresponding keys are pressed (W, A, S, D, <-, ->).
+ * 			Rendering updates are triggered only when movement occurs.
+ * 			If any other key is pressed, the mouse rotation mode is toggled,
+ * 			switching between free cursor and locked rotation control
  *
  * @param data	MLX key data structure containing key and action information.
  * @param param	Pointer to the main game structure.
  */
+
 void	handle_keypress(mlx_key_data_t data, void *param)
 {
 	t_game	*game;
@@ -43,6 +59,14 @@ void	handle_keypress(mlx_key_data_t data, void *param)
 		game->player->turn_left = true;
 	else if (data.key == MLX_KEY_RIGHT && data.action == MLX_PRESS)
 		game->player->turn_right = true;
+	else if (data.action == MLX_PRESS)
+	{
+		game->mouse_rotation_enabled = !game->mouse_rotation_enabled;
+		if (game->mouse_rotation_enabled)
+			printf("🎮 Mouse rotation ON\n");
+		else
+			printf("🛑 Mouse rotation OFF\n");
+	}
 }
 
 /**
@@ -60,9 +84,10 @@ void	handle_keypress(mlx_key_data_t data, void *param)
 void	handle_mouse_movement(double xpos, double ypos, void *param)
 {
 	t_game		*game;
-	static int	last_x = WIN_WIDTH / 2;
+	static int	last_x;
 	int			delta_x;
 
+	last_x = WIN_WIDTH / 2;
 	game = (t_game *)param;
 	(void)ypos;
 	if (!game->mouse_rotation_enabled)
@@ -75,6 +100,9 @@ void	handle_mouse_movement(double xpos, double ypos, void *param)
 		rotate_player(game->player, RIGHT);
 	else if (delta_x < 0)
 		rotate_player(game->player, LEFT);
-	mlx_set_mouse_pos(game->mlx, WIN_WIDTH / 2, WIN_HEIGHT / 2);
-	last_x = WIN_WIDTH / 2;
+	if (game->mouse_rotation_enabled)
+	{
+		mlx_set_mouse_pos(game->mlx, WIN_WIDTH / 2, WIN_HEIGHT / 2);
+		last_x = WIN_WIDTH / 2;
+	}
 }

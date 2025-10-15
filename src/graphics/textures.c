@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 17:25:16 by root              #+#    #+#             */
-/*   Updated: 2025/10/15 13:37:34 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:06:54 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 /**
  * @brief	Retrieves a pixel color from a texture image with boundary checks.
- * 			Clamps coordinates to prevent out-of-bounds access and rendering artifacts.
+ * 			Clamps coordinates to prevent out-of-bounds access and rendering 
+ * 			artifacts.
  *
  * @param tex	Pointer to the texture image.
  * @param x		Texture X coordinate.
@@ -36,7 +37,6 @@ int	get_tex_color(mlx_image_t *tex, int x, int y)
 	if (x < 0 || y < 0 || x >= (int)tex->width || y >= (int)tex->height)
 		return (0);
 	i = (y * tex->width + x) * 4;
-	// dst = tex->addr + (y * tex->line_len + x * (tex->bits_per_pixel / 8));
 	r = tex->pixels[i + 0];
 	g = tex->pixels[i + 1];
 	b = tex->pixels[i + 2];
@@ -47,7 +47,13 @@ int	get_tex_color(mlx_image_t *tex, int x, int y)
 /**
  * @brief	Selects the appropriate wall texture based on the ray collision.
  * 			Determines orientation (N/S/E/W) using ray direction and step.
- *
+ *			* side == 0 -> x-side wall, vertical wall -> EAST or WEST wall
+ *				* side == 1 -> y-side wall, horizontal wall -> NORTH or SOUTH wall
+ * 				* step_x > 0 -> right direction -> EAST wall
+ * 				* step_x < 0 -> left direction
+ * 				* step_y > 0 -> down direction -> 
+ * 				* step_y < 0 -> up direction
+ * 							
  * @param ray	Pointer to the ray structure.
  *
  * @return	Texture index corresponding to the hit wall.

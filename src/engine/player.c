@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 09:18:39 by marvin            #+#    #+#             */
-/*   Updated: 2025/10/15 13:13:17 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:12:27 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,21 +89,4 @@ void	update_player(t_game *game, t_player *player)
 		rotate_player(player, RIGHT);
 	if (player->turn_left == true)
 		rotate_player(player, LEFT);
-}
-
-void	handle_mouse_click(mouse_key_t button, action_t action,
-		modifier_key_t mods, void *param)
-{
-	t_game	*game;
-
-	game = (t_game *)param;
-	(void)mods;
-	if (button == MLX_MOUSE_BUTTON_LEFT && action == MLX_PRESS)
-	{
-		game->mouse_rotation_enabled = !game->mouse_rotation_enabled;
-		if (game->mouse_rotation_enabled)
-			printf("🎮 Mouse rotation ON\n");
-		else
-			printf("🛑 Mouse rotation OFF\n");
-	}
 }

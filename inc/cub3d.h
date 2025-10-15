@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/15 13:44:21 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:08:20 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@
  * @enum	t_tex_index
  * 			LOS ENUM SE SUELEN LLAMAR CON T AL PRINCIPIO??	
  */
+
 typedef enum e_tex_index
 {
 	TEX_NO = 0,

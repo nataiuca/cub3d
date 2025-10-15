@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 11:17:02 by root              #+#    #+#             */
-/*   Updated: 2025/10/15 11:38:17 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 15:15:05 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,5 @@ int	init_graphics(t_game *game)
 	if (mlx_image_to_window(game->mlx, game->minimap->img,
 			game->minimap->offset_x, game->minimap->offset_y) < 0)
 		return (error_msg(NULL, NULL, 0));
-	game->mouse_rotation_enabled = true;
-	mlx_set_cursor_mode(game->mlx, MLX_MOUSE_DISABLED);
-	mlx_cursor_hook(game->mlx, handle_mouse_movement, game);
-	mlx_mouse_hook(game->mlx, handle_mouse_click, game);
-	mlx_set_mouse_pos(game->mlx, WIN_WIDTH / 2, WIN_HEIGHT / 2);
 	return (1);
 }
