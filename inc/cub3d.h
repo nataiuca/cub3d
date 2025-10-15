@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/13 19:22:02 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 12:43:16 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,40 +31,16 @@
 # define WIN_HEIGHT 768
 
 # define MINIMAP_SCALE 0.5 
-# define MIN_CELL_SIZE 4
+# define MIN_CELL_SIZE 10
 # define MAX_CELL_SIZE 32
-# define MAX_MINIMAP_SIZE 300
+# define MAX_MINIMAP_SIZE 500
 
 # define TEXTURE_SIZE 64
-
-//# define MINIMAP_SCALE 0.2
 
 # define PI 3.14159265358979323846
 
 # define RIGHT 1
 # define LEFT -1
-
-/* ========================================================================== */
-/* ⚠️  ELIMINAR PARA ENTREGA: Códigos de teclas para macOS                   */
-/* ========================================================================== */
-# ifdef __APPLE__
-/* macOS keycodes */
-#  define KEY_W 13
-#  define KEY_A 0
-#  define KEY_S 1
-#  define KEY_D 2
-#  define KEY_LEFT 123
-#  define KEY_RIGHT 124
-#  define KEY_ESC 53
-# else
-/* ========================================================================== */
-
-
-/* ========================================================================== */
-# endif
-/* ⬆️  ELIMINAR el #ifdef __APPLE__, #else y #endif                          */
-/* ⬆️  DEJAR SOLO las defines de Linux (KEY_W 119, etc.)                     */
-/* ========================================================================== */
 
 /* Error messages */
 
@@ -156,8 +132,8 @@ typedef struct s_player
 {
 	double	pos_x;
 	double	pos_y;
-	float	px;
-	float	py;
+	double	px;
+	double	py;
 	int		dir;
 	double	dir_x;
 	double	dir_y;
@@ -174,37 +150,67 @@ typedef struct s_player
 }	t_player;
 
 /**
- * @struct	t_ray ⚠️
- * 			- camer_x:
- * 			- dir_x:
+ * @struct	t_ray
+ * @brief	Represents a single ray used in the raycasting process.
+ * 			Each ray corresponds to one vertical column on the screen.
  * 
- * 
- * 			- dist: distancia perpendicular desde el player/camera hasta la pared golpeada
+ * 			- camera_x: horizontal position of the ray on the camera plane,
+ * 			normalized to range [-1, 1]. Determines how far to the left/right
+ * 			of the player's center view the ray is cast
+ * 			- dir_x/y: direction vector of the ray, computed from the player's
+ * 			direction and the camera plane
+ * 			- map_x/y: Integer coordinates of the current map cell being 
+ * 			checked by the DDA algorithm
+ * 			- delta_dx/y: distance the ray has to travel to cross the next 
+ * 			vertical (X) or horizontal  (Y) grid line. Represents the distance 
+ * 			between succesive intersections in the grid
+ * 			- side_dx/dy: distance from the player to the first grid line 
+ * 			intersection along the X or Y axis.
+ * 			- step_x/y: direction of grid traversal (left/up direction = -1,
+ * 			right/down direction = 1)
+ * 			- side: indicates which axis the wall was hit on (0 = x-side,
+ * 			vertical wall; 1 = y-side, horizontal wall)
+ * 			- dist: perpendicular distance from the player to the wall 	
+ * 			- line_height: height of the wall slice to be rendered on screen
+ * 			- draw_start/end: vertical screen coordinates defining where
+ * 			to start and stop drawing the wall slice
+ * 			- hit_x/hit_y: world coordinates of the wall hit point
+ * 			- hit_x_px/hit_y_px: hit point coordinates in pixel units - used
+ * 			for rendering on the minimap
+ * 			- steps: number of pixels used to draw the ray line on the minimap
+ * 			- x_inc/y_inc: incremental steps per pixel used when drawing the 
+ * 			ray in the minimap
+ * 			- tex_x/y: coordinates in the wall texture corresponding to the
+ * 			current column being drawn
  */
 
 typedef struct s_ray
 {
-	double	camera_x;
-	double	dir_x;
-	double	dir_y;
-	int		map_x;
-	int		map_y;
-	double	side_dx;
-	double	side_dy;
-	double	delta_dx;
-	double	delta_dy;
-	double	dist; //distancia perpendicular desde player hasta pared hiteada
-	int		step_x;
-	int		step_y;
-	int		hit;
+	double		camera_x;
+	double		dir_x;
+	double		dir_y;
+	int			map_x;
+	int			map_y;
+	double		delta_dx;
+	double		delta_dy;
+	double		side_dx;
+	double		side_dy;
+	int			side;
+	double		dist;
+	int			step_x;
+	int			step_y;
 	double		hit_x;
 	double		hit_y;
 	double		hit_x_px;
 	double		hit_y_px;
-	int		side;
-	int		line_height;
-	int		draw_start;
-	int		draw_end;
+	int			line_height;
+	int			draw_start;
+	int			draw_end;
+	double		steps;
+	double		x_inc;
+	double		y_inc;
+	int			tex_x;
+	int			tex_y; 
 }	t_ray;
 
 /* Estructura del mapa */
@@ -221,34 +227,57 @@ typedef struct s_map
 	uint32_t	ceiling_color;
 }	t_map;
 
+/**
+ * @struct	minimap
+ * @brief	Stores data required to render and manage the minimap:
+ * 			- img: pointer to the mlx image buffer used to render the
+ * 			minimap
+ * 			- width/height: minimap's dimensions in pixels, calculated
+ * 			from map width/height and minimap's cell size
+ * 			- cell_size: size of each cell (map tile) in pixels. Computed
+ * 			from map dimensions and MAX_MINIMAP_SIZE
+ * 			- offset_x/y: position in pixes from the window's origin
+ * 			where the minimap will be drawn
+ * 			- ray_count: number of rays to draw on the minimap (for field
+ * 			view), based on window size
+ * 			- rays: array of rays to be rendered on the minimap
+ */
+
 typedef struct s_minimap
 {
 	mlx_image_t	*img;
 	int			width;
 	int			height;
-	int			cell_size; //igual sobra, con escala a 1 se ve bien en los ejemplos que he probado
+	int			cell_size;
 	int			offset_x;
-	int			offset_y; //pos in window
+	int			offset_y;
 	int			ray_count;
 	t_ray		*rays;
 }	t_minimap;
 
 /**
  * @struct	t_sprite
- * 			Estructura para sprites animados
- * 			- frames: array de imágenes (una por cada frame)
- * 			- frame_count: cantidad de frames totales
- * 			- curr_frame: index of the current texture frame
- * 			- last_update: tiempo del último cambio de frame
- * 			- frame_time: tiempo entre frames (en segundos)
- * 			- x/y: posición del frame en el mapa
- * 			- cam_x/y: sprite X and Y in camera space (relative horizontal
- * 			and depth (cam_y positive means front))
- * 			- screen_x: horizontal pixel coordinate on the screen
- * 
- * 			- draw_x/y: top left X,Y coordinates of the sprite on screen
- * 			- 
- * 			- width/height: sclaed sprite size 
+ * @brief	Represents an animated sprite in the game world
+ * 			- frames: array of pointers to texture images (one per animation
+ * 			frame)
+ * 			- frame_count: total number of frames in the animation sequence
+ * 			- curr_frame: index of the current frame being displayed
+ * 			- last_update: timestamp in seconds when the last frame change 
+ * 			occured
+ * 			- frame_time:  duration (in seconds) each frame remains visible
+ * 			before advancing to the next one
+ * 			- x/y: sprite position in world coordinates (map space)
+ * 			corresponding to a map cell
+ * 			- cam_x/y: sprite position relative to the camera after
+ * 			transformation
+ * 				* cam_x > 0 -> sprite is to the right of view center;
+ * 				* cam_y > 0 -> sprite is in front of the camera
+ * 			- screen_x: horizontal pixel coordinate on the screen where the
+ * 			sprite's center should appear after projection
+ * 			- draw_x/y: top left X,Y coordinates of the sprite's drawing
+ * 			area on screen
+ * 			- width/height: sclaed sprite size in pixels when rendered on
+ * 			screen, depending on its distance from the player 
  */
 
 typedef struct s_sprite
@@ -295,7 +324,17 @@ typedef struct s_game
 	t_info			*info;
 	t_sprite		**sprite;
 	int				sprite_count;
+	bool			mouse_rotation_enabled;
 }	t_game;
+
+typedef struct s_tex_calc
+{
+    t_ray       *ray;
+    t_player    *player;
+    mlx_image_t *tex;
+    double      wall_x;
+    int         tex_x;
+}   t_tex_calc;
 
 /* main.c */
 int		main(int argc, char **argv);
@@ -323,29 +362,30 @@ int	skip_empty_lines(t_info *info);
 int	count_rows(char **array);
 int	is_map_start_line(const char *line);
 
-/* engines/player */
+/* engine/player */
 void	init_player_orientation(t_player *player);
 void	update_player(t_game *game, t_player *player);
 
-/* engines/raycasting.c */
+/* engine/raycasting.c */
+void	cast_all_rays(t_game *game);
+
+/* engine/raycasting_utils.c */
 void	calc_step_dist(t_ray *ray, t_player *player);
 void	perform_dda(t_game *game, t_ray *ray);
-void	calc_wall_dist(t_ray *ray, t_player *player);
-void	cast_all_rays(t_game *game);
+void	calc_wall_dist_height(t_ray *ray, t_player *player);
 
 /* engines/collision.c */
 int		is_valid_pos(t_game *game, double x, double y);;
 
 /* graphics/draw.c */
-mlx_image_t	*load_texture(void *mlx, char *path);
-int		load_textures(t_game *game);
-int		init_graphics(t_game *game);
 void	draw_3d_view(t_game *game);
 
 /* graphics/textures */
 int	get_tex_color(mlx_image_t *tex, int x, int y);
 int	get_texture_index(t_ray *ray);
-void	calc_texture_x(t_ray *ray, t_player *player, double *wall_x, int *tex_x, mlx_image_t *tex); 
+void	calc_texture_x(t_ray *ray, t_player *player, mlx_image_t *tex);
+mlx_image_t	*load_texture(void *mlx, char *path);
+
 
 /* controls/events.c - OPTIMIZADO */
 void	handle_keypress(mlx_key_data_t data, void *param);
@@ -357,17 +397,23 @@ void	move_backward(t_game *game, t_player *player);
 void	move_left(t_game *game, t_player *player);
 void	move_right(t_game *game, t_player *player);
 void	rotate_player(t_player *player, int direction);
+void	handle_mouse_click(mouse_key_t button, action_t action, modifier_key_t mods, void *param);
+void	handle_mouse_movement(double xpos, double ypos, void *param);
+
+/* minimap/init_minimap.c */
+int		init_minimap(t_game *game, t_minimap *minimap);
 
 /* minimap/minimap_draw.c */
-int		init_minimap(t_game *game, t_minimap *minimap); 
 void	draw_minimap(t_game *game);
 
-/* minimap/minimap_cast.c */
-int		get_minimap_cell_color(char cell);
+/* minimap/minimap_rays.c */
 void	cast_all_rays_minimap(t_game *game, t_minimap *minimap);
 
 /* minimap/minimap_utils.c */
 void	draw_square(t_minimap *minimap, int x, int y, int color);
+void	draw_circle(t_minimap *minimap, int x, int y, int color);
+void	draw_line(t_minimap *minimap, t_ray ray, t_player *player);
+int		get_minimap_cell_color(char cell);
 void	clear_minimap(t_minimap *minimap);
 
 /* sprite/init_sprite.c */
@@ -381,11 +427,18 @@ void	draw_all_sprites(t_game *game);
 
 /* sprite/sprite_update.c */
 void	update_sprite(t_sprite *sprite);
-int	project_sprite(t_sprite *sprite, t_player *player);
+int		project_sprite(t_sprite *sprite, t_player *player);
 
-/* utils/cleanup.c */
+/* core/cleanup_sprites.c */
+void	free_sprite_frames(t_game *game, t_sprite *sprite);
+void	free_sprite(t_game *game);
+
+
 void	ft_free_str_array(char **array);
 void	cleanup_game(t_game *game);
+void	free_info(t_game *game);
+void	free_map(t_game *game);
+void	free_sprite(t_game *game);
 
 /* utils/error.c */
 void	error_exit(char *msg);

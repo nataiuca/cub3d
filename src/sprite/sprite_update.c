@@ -6,11 +6,20 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 11:04:35 by root              #+#    #+#             */
-/*   Updated: 2025/10/13 19:22:10 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 11:14:01 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+/**
+ * @brief	Returns the current system time in seconds
+ * 			- Uses gettimeofday() to retrieve the current wall-clock time
+ * 			- Converts it to a double-precision floating-point value 
+ * 			representing seconds since the Unix epoch
+ * 
+ * @return	Current time in seconds as a double
+ */
 
 static double	get_time(void)
 {
@@ -19,8 +28,17 @@ static double	get_time(void)
 	gettimeofday(&tv, NULL);
 	return ((double)tv.tv_sec + (double)tv.tv_usec / 1e6);
 }
-//actualizar sprite
-//solo puedo usar gettimeofday
+
+/**
+ * @brief	Updates the animation frame of a sprite based on elapsed time.
+ * 			- Uses the current time (via get_time()) to determine whether 
+ * 			enough time has passed since the last frame change
+ * 			- If elapsed time exceeds sprite->frame_time, the sprite
+ * 			advances to the next frame in its animation cycle
+ * 			- Loops back to the first frame once the end is reached
+ * 
+ * @param sprite	Pointer to the sprite to be updated
+ */
 
 void	update_sprite(t_sprite *sprite)
 {
@@ -28,59 +46,44 @@ void	update_sprite(t_sprite *sprite)
 
 	now = get_time();
 	if (now - sprite->last_update >= sprite->frame_time)
-    {
+	{
 		sprite->curr_frame = (sprite->curr_frame + 1) % sprite->frame_count;
 		sprite->last_update = now;
 	}
 }
 
 /**
- * @brief	TRANSFORMA COORDENADAS DE SPRITE A COORDENADAS RELATIVAS A
- * 			CÁMARA
- * 			Projects a world-space sprite into camera (view) space and computes
- * 			its screen X.
+ * @brief	Projects a world-space sprite into camera (view).
  * 			Transforms the sprite's world coordinates into the camera 
- * 			coordinate system used for rendering, computes whether the sprite is
- * 			in front of the camera, and calculates the horizontal screen
- * 			position where the sprite should be drawn.
+ * 			coordinate system used for rendering, then computes the screen
+ * 			X position where the sprite should be drawn.
  * 
- * 					⚠️ QUÉ SON WORLD COORDINATES??? REVISAR EXPLICACIÓN Y ENTENDER BIEN
- * 					NECESITO DIBUJO EXPLICATIVO DE ESTO !!!
  * 			- Compute the vector from the player to the sprite in world
  * 			coordinates:
- * 				sprite_x = sprite->x - player->pos_x
- * 				sprite_y = sprite->y - player->pos_y
+ * 				* sprite_x = sprite->x - player->pos_x
+ * 				* sprite_y = sprite->y - player->pos_y
  *			- Compute the 2+2 determinant (det) of the camera transformation
  *			matrix. This det is used to invert the matrix [dir_x plane_x; dir_y
  *			plane_y]. If det is nearly 0, the camera bases vectors are 	
  *			degenerate and the projection cannot be performed realiably. 
  *			- Invert the det (inv_det) to obtain the matrix inverse scalar 
  *			- Transform the sprite vector into camera coordinates:
- * 				cam_x: horizontal pos in camera space (positive = to the right
- * 				of the camera)
- * 				cam_y: depth / distance from the camera along the view direction
- * 				(positive = in front)
- * 			- If cam_y <= 0.0 the sprite lies behind the camera, the function
- * 			returns 0 (not visible)
+ * 				* cam_x: represents horizontal offset from camera center
+ * 				(positive = to the right of the camera)
+ * 				* cam_y: represents depth, distance in front of camera 
+ * 				(positive = in front of the camera; <= 0.0 behind the camera, 
+ * 				the function returns 0 - not visible)
  * 			- Compute the horizontal screen coordinate (screen_x) where the
- * 			sprite's center should appear. Thismaps camera-space X normalized
+ * 			sprite's center should appear. This maps camera-space X normalized
  * 			by depth into pixel coordinates:
- * 				- when cam_x == 0 the sprite is centered and 
+ * 				* when cam_x == 0 the sprite is centered and 
  * 				screen_x == WIN_WIDTH / 2
- * 				- the formula applies the common perspective divisio (x/z) and
- * 				shifts/scales to the screen pixel range [0, WIN_WIDTH]
+ * 				* the formula applies the common perspective divisio (x/z) and
+ * 				maps it to pixel space [0, WIN_WIDTH]
  * 
  * @param game	Pointer to the main game structure
- * @param sprite	Pointer to the sprite structure. On succes, the function 
- * 					sets:
- * 					- cam_x/y: sprite X and Y in camera space (relative
- * 					horizontal and depth)
- * 					- screen_x: horizontal pixel coordinate on the screen
- * @param player	Pointer to the player / camera structure
- * 					- pos_x/y: player world position
- * 					- dir_x/y: normalized view vector
- * 					- plane_x/y: camera plane (perpendicular to dir) used to 
- * 					build the camera coordinate basis
+ * @param sprite	Pointer to the sprite structure. 
+ * @param player	Pointer to the player (camera) structure
  * @return	1 on succes and if the sprite is in front of the camera, 0 if the
  * 			projection cannot be computed (near-zero determinant) or if the 
  * 			sprite is behind the camera

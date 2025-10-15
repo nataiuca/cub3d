@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 17:22:19 by root              #+#    #+#             */
-/*   Updated: 2025/10/13 19:23:07 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 11:32:58 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@
  * 			(py >= 0 && py < WIN_HEIGHT) and that the sprite is in front of
  * 			the wall at this screen column (sprite->cam_y z game->rays[px].dist)
  * 				- If both conditions are true, proceed to draw the pixel
- * 			- Compute the corresonding Y coordinate in the sprite texture (tex_y) 
- * 			by proportional mapping
- * 			⚠️ NO SE SI ES NECESARIO LO DE LONG LONG, CHECKEAR TYPE DE MLX_IMAGE_T->HEIGHT
+ * 			- Compute the corresonding Y coordinate in the sprite texture 
+ * 			(tex_y) by proportional mapping
  * 				- Clamp tex_y to [0, frame->height - 1] to avoid out-of-bound
  * 				access
  * 			- Gets the color of the sprite texture at (tex_x, tex_y)
@@ -57,7 +56,7 @@ static void	draw_sprite_col(t_game *game, t_sprite *sprite, int px, int tex_x)
 		py = sprite->draw_y + j;
 		if (py >= 0 && py < WIN_HEIGHT && sprite->cam_y < game->rays[px].dist)
 		{
-			tex_y = (int)((long long)j * frame->height / sprite->height);
+			tex_y = (int)(j * frame->height / sprite->height);
 			if (tex_y < 0)
 				tex_y = 0;
 			if ((uint32_t)tex_y >= frame->height)
@@ -138,6 +137,7 @@ static void	blit_sprite_scaled(t_game *game, t_sprite *sprite)
  * @param sprite	Pointer to the sprite to update
  * @param frame		Pointer to the current sprite texture frame
  */
+
 static void	calc_sprite_size(t_sprite *sprite, mlx_image_t *frame)
 {
 	double	aspect_ratio;
@@ -154,7 +154,8 @@ static void	calc_sprite_size(t_sprite *sprite, mlx_image_t *frame)
 	if (sprite->width > WIN_WIDTH * 4)
 		sprite->width = WIN_WIDTH * 4;
 	sprite->draw_x = (int)(sprite->screen_x - sprite->width / 2);
-	sprite->draw_y = (WIN_HEIGHT / 2) * (1 + 1 / sprite->cam_y) - (sprite->height);
+	sprite->draw_y = (WIN_HEIGHT / 2) * (1 + 1 / sprite->cam_y)
+		- (sprite->height);
 }
 
 /**
@@ -175,13 +176,13 @@ static void	calc_sprite_size(t_sprite *sprite, mlx_image_t *frame)
  * @param sprite	Pointer to the sprite to draw
  */
 
-void	draw_sprite(t_game *game, t_sprite *sprite)
+static void	draw_sprite(t_game *game, t_sprite *sprite)
 {
 	mlx_image_t	*frame;
 
-	if (sprite->x == 0) //significa que no hay sprite
-		return ; //siempre va a haber sprite xk inicializo desde el ppio --> REPASAR ESO! HE CAMBIADO INICIALIZACIONES DE SITIO
-	update_sprite(sprite); //actualiza el frame en el que estamos
+	if (sprite->x == 0)
+		return ;
+	update_sprite(sprite);
 	frame = sprite->frames[sprite->curr_frame];
 	if (!frame)
 		return ;
@@ -202,6 +203,7 @@ void	draw_sprite(t_game *game, t_sprite *sprite)
  * 
  * @param game	Pointer to the game structure
  */
+
 void	draw_all_sprites(t_game *game)
 {
 	int	i;
