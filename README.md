@@ -38,10 +38,10 @@ parsing:
 - map_validator.c
 - parser_utils.c
 sprite:
-- init_sprite.c
-- sprite_load.c
-- sprite_draw.c
-- sprite_update.c
+- init_sprite.c ✅
+- sprite_load.c ✅
+- sprite_draw.c ✅
+- sprite_update.c ✅
 utils:
 - errors.c
 
