@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_validator.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 19:37:05 by root              #+#    #+#             */
-/*   Updated: 2025/10/14 16:29:40 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/15 16:12:05 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ int	measure_map(t_info *info, t_map *map)
  * 				* Sets player's position and direction and initializes players
  * 				orientation
  * 			- Copies the processed line into map->grid[row]
- * 
- * AÑADIR COSAS!!
  * 
  * @param map	Pointer to the t_map structure
  * @param player	Pointer to the t_player structure

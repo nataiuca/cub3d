@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 16:45:08 by root              #+#    #+#             */
-/*   Updated: 2025/10/15 15:45:16 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 15:59:07 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void	print_parsed_input(t_game *game)
  * @return 1 if parsing and validation succeed, 0 otherwise
  */
 
-int	parse_validate_input(t_game *game)
+static int	parse_validate_input(t_game *game)
 {
 	if (!parse_config(game, game->info))
 		return (0);
@@ -75,7 +75,7 @@ int	parse_validate_input(t_game *game)
  * @param param	Pointer to the main game structure (passed as void*)
  */
 
-void	update_game(void *param)
+static void	update_game(void *param)
 {
 	t_game	*game;
 
@@ -95,7 +95,7 @@ void	update_game(void *param)
  * @return	1 if arguments are valid, 0 otherwise
  */
 
-int	validate_args(int argc, char **argv)
+static int	validate_args(int argc, char **argv)
 {
 	char	*ext;
 

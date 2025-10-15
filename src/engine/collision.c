@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 15:04:08 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/10 09:32:36 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 16:02:18 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ static int	check_corners(t_game *game, double x, double y, double margin)
  *
  * @return	1 if the position is valid and not obstructed, 0 otherwise.
  */
+
 int	is_valid_pos(t_game *game, double x, double y)
 {
 	int		map_x;

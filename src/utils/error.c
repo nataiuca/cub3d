@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/15 16:16:36 by root              #+#    #+#             */
+/*   Updated: 2025/10/15 16:16:37 by root             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 /**
@@ -39,17 +51,6 @@ int	error_msg(char *msg, char *arg, int exit_code)
 	}
 	return (exit_code);
 }
-
-/*
-** Función para mostrar error y salir del programa
-** - Muestra "Error\n" seguido del mensaje personalizado
-** - Sale del programa con código de error 1
-*/
-/*void	error_exit(char *msg)
-{
-	error_msg(msg, NULL, 0);
-	exit(EXIT_FAILURE);
-}*/
 
 /**
  * @brief	Prints an error message, cleans up all resources, and exits.

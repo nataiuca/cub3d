@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 11:13:09 by root              #+#    #+#             */
-/*   Updated: 2025/10/12 13:12:27 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 16:11:52 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
  * 				the map_raw string array to store the map lines
  * @result	1 on succes, 0 on allocation or read error
  */
+
 int	parse_map(t_info *info)
 {
 	int		rows;

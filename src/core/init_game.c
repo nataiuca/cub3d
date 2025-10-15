@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_game.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/15 13:26:39 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:57:49 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,6 @@ static void	init_map(t_map *map)
  * 			Sets initial position, direction, and movement flags to neutral
  * 			values. Default movement and rotation speeds are assigned here.
  * 
- * 			⚠️ AQUÍ NO SÉ SI DEBERÍAMOS INICIALIZAR A NÚMEROS NEGATIVOS (-1)
- *  PARA QUE SI SE ASIGNA MAL EN ALGÚN LADO SALTE ERROR
- * 			TAMBIÉN HAY QUE REPASAR SI SE USAN TODAS ESAS VARIABLES Y DEFINIRLAS 
- MEJOR, 
- * ES CONFUSO
- * 
  * @param player	Pointer to the t_player structure.
  */
 
@@ -89,10 +83,6 @@ static void	init_player(t_player *player)
 	player->turn_left = false;
 }
 
-/* ⚠️ DEBERIAMOS INICIALIZAR EN DEFAULT TB T_RAY??
-por ahora t_ray se inicializa en raycasting.c y en minimap_rays... en cada lado
-se tocan solo las variables que se usan... */
-
 /**
  * @brief	Allocates memory for the primary componentes of the game, including
  * 			map information, parsed map data, minimap, player, and ray array.
@@ -100,8 +90,6 @@ se tocan solo las variables que se usan... */
  * @param game	Pointer to the main t_game structure
  * @return 1 on sucessfully allocation, 0 on any memory allocation failure
  */
-
-//⚠️ IGUAL CAMBIAR DE NOMBRE? alloc_structs()?
 
 static int	init_structs(t_game *game)
 {

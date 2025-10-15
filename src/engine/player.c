@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 09:18:39 by marvin            #+#    #+#             */
-/*   Updated: 2025/10/15 15:12:27 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 16:06:03 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,9 @@
  * 				* S -> dir_x = 0, dir_y = 1
  * 				* E -> dir_x = 1, dir_y = 0
  * 				* W -> dir_x = -1, dir_y = 0
- * 			- plane_x, plane_y: plano de la cámara, define el campo de visión
- * 			del player y es perpendicular al vector de dirección.
- * 			Si el jugador mira hacia el norte, con vector de dirección (0, .1),
- * 			la cámara debe extenderse perpendicular a esto para cubrir la
- * 			pantalla horizontalmente, así que plane_x = 0.66 y plane_y = 0.
- * 			0.66 es el ángulo de visión. Es decir, está viendo 0.66 grados en
- * 			x y nada en y
- * 				⚠️ HACER DIBUJO PARA ENTENDER BIEN ESTO!
- * 			Como las direcciones y los planos se han inicialziado en 0, podemos
- * 			ahorrarnos esas líneas
- *
- * 			0.66 de plane_x/y está relacionado con FOV=66º, estándar Wolfenstein
+ * 			- plane_x/y: camera plane, defines the field of view (FOV) and is
+ * 			perpendicular to the direction vector. Its length (0.66)
+ * 			correspondos approximately to a 66º horizontal FOV
  *
  * @param player	Pointer to the player structure to initialize
  */

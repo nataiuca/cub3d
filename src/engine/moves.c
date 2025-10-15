@@ -6,11 +6,11 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 00:00:00 by natferna          #+#    #+#             */
-/*   Updated: 2025/10/10 12:46:11 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 16:02:44 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/cub3d.h"
+#include "cub3d.h"
 
 /**
  * @brief	Moves the player forward (W key). 

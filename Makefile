@@ -21,8 +21,7 @@ INCDIR		= inc
 SOURCES		= main.c \
 			  core/init_game.c \
 			  core/init_graphics.c \
-			  core/cleanup_info.c \
-			  core/cleanup_sprites.c \
+			  core/cleanup_utils.c \
 			  core/cleanup_game.c \
 			  parsing/read_file.c \
 			  parsing/config_parser.c \

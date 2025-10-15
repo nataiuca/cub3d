@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:02:07 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/15 15:08:20 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 16:34:19 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@
 
 # define ERR_EMPTY_FILE ": Empty file"
 # define ERR_KEY ": Unexpected configuration key in file: "
-# define ERR_MISSING_CONF_KEYS ": Missing configuration keys (NO, SO, EA, WE, C, F)"
+# define ERR_MISSING_CONF_KEYS ": Missing config keys (NO, SO, EA, WE, C, F)"
 
 # define ERR_TEXTURE_MISSING ": Texture path is missing"
 # define ERR_TEXTURE_FORMAT ": Invalid texture path format: "
@@ -96,7 +96,7 @@
 
 /**
  * @enum	t_tex_index
- * 			LOS ENUM SE SUELEN LLAMAR CON T AL PRINCIPIO??	
+ * @brief	Enum representing the wall tecture indices.
  */
 
 typedef enum e_tex_index
@@ -108,25 +108,18 @@ typedef enum e_tex_index
 }	t_tex_index;
 
 /**
- * @struct	t_player ⚠️ --> HACER DIBUJOS/ESQUEMAS PARA EXPLICAR BIEN CADA VARIABLE
- * 			- pos_x/y: coordenadas x,y del jugador, en el centro de la celda; 
- * 			corresponde al valor de línea y de posición de char dentro de
- * 			esa línea (en el grid del map) + 0.5 para ubicarlo en el centro.
- * 			Su valor se asigna en map_validator->proces_map_line() y se actualiza
- * 			con los movimientos del player
- * 			- px/y: coordenadas en píxeles para minimap. Su valor es pos_x/y
- * 			* minimap->cell_size y se asigna en draw_minimap->draw_player()
- * 			- dir: dirección en integer. Es el character que indica la posición
- * 			y orientación del player en el input ('N', 'S', 'E', 'W')
- * 			- dir_x/y: valores x,y del vector de dirección del player.
- * 			Su valor se asigna en init_player_orientation deacuerdo al valor de
- * 			dir y cambia se actualiza con los rotates del player.
- * 			- plane_x/y: plano de la cámara, define el campo de visión
- * 			del player y es perpendicular al vector de dirección. Se asigna
- * 			en init_player_orientation() y se actualiza en los rotates del player
- * 			- move_speed;
- * 			- rot_speed:
- * 			- flags para controlar si el player debe moverse o girar
+ * @struct	t_player
+ * @brief	Structure representing the player in the game world.
+ * 			- pos_x/y: player's x,y coordinates in world units
+ * 			- px/y: player's coordinates in pixels for minimap rendering
+ * 			- dir: initial orientation character ('N', 'S', 'E', 'W') from 
+ * 			input map
+ * 			- dir_x/y: direction vector
+ * 			- plane_x/y: camera plane vector (perpendicular to direction,
+ * 			determines FOV)
+ * 			- move_speed: movement speed for the player
+ * 			- rot_speed: rotation speed for the player
+ * 			- flags to control if the player should move or rotate
  */
 
 typedef struct s_player
@@ -211,19 +204,28 @@ typedef struct s_ray
 	double		x_inc;
 	double		y_inc;
 	int			tex_x;
-	int			tex_y; 
+	int			tex_y;
 }	t_ray;
 
-/* Estructura del mapa */
+/**
+ * @struct	t_map
+ * @brief	Stores the map data
+ * 			- grid: 2D array of map chars, represents the world map
+ * 			- width: width of the map in cells (number of columns)
+ * 			- height: height of the map in cells (number of rows)
+ * 			- file paths for the wall textures
+ * 			- floor and ceiling colors in 0xRRGGBBAA format
+ */
+
 typedef struct s_map
 {
-	char	**grid;
-	int		width;
-	int		height;
-	char	*no_texture;
-	char	*so_texture;
-	char	*ea_texture;
-	char	*we_texture;
+	char		**grid;
+	int			width;
+	int			height;
+	char		*no_texture;
+	char		*so_texture;
+	char		*ea_texture;
+	char		*we_texture;
 	uint32_t	floor_color;
 	uint32_t	ceiling_color;
 }	t_map;
@@ -277,7 +279,7 @@ typedef struct s_minimap
  * 			sprite's center should appear after projection
  * 			- draw_x/y: top left X,Y coordinates of the sprite's drawing
  * 			area on screen
- * 			- width/height: sclaed sprite size in pixels when rendered on
+ * 			- width/height: scaled sprite size in pixels when rendered on
  * 			screen, depending on its distance from the player 
  */
 
@@ -299,8 +301,18 @@ typedef struct s_sprite
 	int			height;
 }	t_sprite;
 
+/**
+ * @struct	t_info
+ * @brief	Stores information used during map parsing and validation
+ * 			- fd: file descriptor for the input file
+ * 			- file_raw_data: array of raw lines read from the file
+ * 			- cursor: pointer used to iterate through file_raw_data
+ * 			- raw string dor colors
+ * 			- flags for indicate if the colors are setted
+ * 			- map_raw: array of raw map lines read from the file
+ */
 
-typedef struct	s_info
+typedef struct s_info
 {
 	int		fd;
 	char	**file_raw_data;
@@ -312,7 +324,23 @@ typedef struct	s_info
 	char	**map_raw;
 }	t_info;
 
-/* Estructura principal del juego */
+/**
+ * @struct	t_game
+ * @brief	Main game structure
+ * 			- mlx: pointer to the MLX instance
+ * 			- img: main image buffer for 3D rendering
+ * 			- textures: array of wall textures
+ * 			- map: pointer to the map structure
+ * 			- minimap: pointer to the minimap structure
+ * 			- player: pointer to the player structure
+ * 			- ray: array of rays for the current frame (used for 3D rendering)
+ * 			- info: pointer to the info structure
+ * 			- sprite: array of pointer to all sprites in the game
+ * 			- sprite_count: number of sprites in the game
+ * 			- mouse_rotation_enabled: flag to enable or disable mouse-controlled
+ * 			rotation
+ */
+
 typedef struct s_game
 {
 	void			*mlx;
@@ -328,128 +356,110 @@ typedef struct s_game
 	bool			mouse_rotation_enabled;
 }	t_game;
 
-typedef struct s_tex_calc
-{
-    t_ray       *ray;
-    t_player    *player;
-    mlx_image_t *tex;
-    double      wall_x;
-    int         tex_x;
-}   t_tex_calc;
-
 /* main.c */
-int		main(int argc, char **argv);
+int			main(int argc, char **argv);
 
-/* init_structs.c */
-int		init_game(t_game *game);
+/* core/cleanup_game.c */
+void		cleanup_game(t_game *game);
+
+/* core/leanup_utils.c */
+void		ft_free_str_array(char **array);
+void		free_textures(t_game *game);
+void		free_sprite_frames(t_game *game, t_sprite *sprite);
+
+/* core/init_game.c */
+int			init_game(t_game *game);
+
+/* core/init_graphics.c */
+int			init_graphics(t_game *game);
 
 /* parsing/read_file.c */
-int		load_info(char *file, t_info *info);
+int			load_info(char *file, t_info *info);
 
 /* parsing/config_parser.c */
-int		parse_config(t_game *game, t_info *info);
+int			parse_config(t_game *game, t_info *info);
 
 /* parsing/map_parser.c */
-int	parse_map(t_info *info);
+int			parse_map(t_info *info);
 
 /* parsing/config_validator.c */
-int	validate_config(t_game *game);
+int			validate_config(t_game *game);
 
 /* parsing/map_validator.c */
-int	validate_map(t_game *game, t_info *info, t_map *map);
+int			validate_map(t_game *game, t_info *info, t_map *map);
 
 /* parsing/parse_utils.c */
-int	skip_empty_lines(t_info *info);
-int	count_rows(char **array);
-int	is_map_start_line(const char *line);
+int			skip_empty_lines(t_info *info);
+int			count_rows(char **array);
+int			is_map_start_line(const char *line);
 
-/* engine/player */
-void	init_player_orientation(t_player *player);
-void	update_player(t_game *game, t_player *player);
+/* engine/player.c */
+void		init_player_orientation(t_player *player);
+void		update_player(t_game *game, t_player *player);
 
 /* engine/raycasting.c */
-void	cast_all_rays(t_game *game);
+void		cast_all_rays(t_game *game);
 
 /* engine/raycasting_utils.c */
-void	calc_step_dist(t_ray *ray, t_player *player);
-void	perform_dda(t_game *game, t_ray *ray);
-void	calc_wall_dist_height(t_ray *ray, t_player *player);
+void		calc_step_dist(t_ray *ray, t_player *player);
+void		perform_dda(t_game *game, t_ray *ray);
+void		calc_wall_dist_height(t_ray *ray, t_player *player);
 
-/* engines/collision.c */
-int		is_valid_pos(t_game *game, double x, double y);;
+/* engine/collision.c */
+int			is_valid_pos(t_game *game, double x, double y);
+
+/* engine/moves.c */
+void		move_forward(t_game *game, t_player *player);
+void		move_backward(t_game *game, t_player *player);
+void		move_left(t_game *game, t_player *player);
+void		move_right(t_game *game, t_player *player);
+void		rotate_player(t_player *player, int direction);
 
 /* graphics/draw.c */
-int	init_graphics(t_game *game);
-void	draw_3d_view(t_game *game);
+void		draw_3d_view(t_game *game);
 
 /* graphics/textures */
-int	get_tex_color(mlx_image_t *tex, int x, int y);
-int	get_texture_index(t_ray *ray);
-void	calc_texture_x(t_ray *ray, t_player *player, mlx_image_t *tex);
+int			get_tex_color(mlx_image_t *tex, int x, int y);
+int			get_texture_index(t_ray *ray);
+void		calc_texture_x(t_ray *ray, t_player *player, mlx_image_t *tex);
 mlx_image_t	*load_texture(void *mlx, char *path);
 
-
-/* controls/events.c - OPTIMIZADO */
-void	handle_keypress(mlx_key_data_t data, void *param);
-int		handle_close(t_game *game);
-
-/* controls/moves.c - OPTIMIZADO */
-void	move_forward(t_game *game, t_player *player);
-void	move_backward(t_game *game, t_player *player);
-void	move_left(t_game *game, t_player *player);
-void	move_right(t_game *game, t_player *player);
-void	rotate_player(t_player *player, int direction);
-void	handle_mouse_click(mouse_key_t button, action_t action, modifier_key_t mods, void *param);
-void	handle_mouse_movement(double xpos, double ypos, void *param);
+/* controls/events.c */
+int			handle_close(t_game *game);
+void		handle_keypress(mlx_key_data_t data, void *param);
+void		handle_mouse_movement(double xpos, double ypos, void *param);
 
 /* minimap/init_minimap.c */
-int		init_minimap(t_game *game, t_minimap *minimap);
+int			init_minimap(t_game *game, t_minimap *minimap);
 
 /* minimap/minimap_draw.c */
-void	draw_minimap(t_game *game);
+void		draw_minimap(t_game *game);
 
 /* minimap/minimap_rays.c */
-void	cast_all_rays_minimap(t_game *game, t_minimap *minimap);
+void		cast_all_rays_minimap(t_game *game, t_minimap *minimap);
 
 /* minimap/minimap_utils.c */
-void	draw_square(t_minimap *minimap, int x, int y, int color);
-void	draw_circle(t_minimap *minimap, int x, int y, int color);
-void	draw_line(t_minimap *minimap, t_ray ray, t_player *player);
-int		get_minimap_cell_color(char cell);
-void	clear_minimap(t_minimap *minimap);
+void		draw_square(t_minimap *minimap, int x, int y, int color);
+void		draw_circle(t_minimap *minimap, int x, int y, int color);
+void		draw_line(t_minimap *minimap, t_ray ray, t_player *player);
+int			get_minimap_cell_color(char cell);
+void		clear_minimap(t_minimap *minimap);
 
 /* sprite/init_sprite.c */
-int	init_sprites(t_game *game);
+int			init_sprites(t_game *game);
 
 /* sprite/sprite_load.c */
-int	load_all_sprites(t_game *game);
+int			load_all_sprites(t_game *game);
 
 /* sprite/sprite_draw.c*/
-void	draw_all_sprites(t_game *game);
+void		draw_all_sprites(t_game *game);
 
 /* sprite/sprite_update.c */
-void	update_sprite(t_sprite *sprite);
-int		project_sprite(t_sprite *sprite, t_player *player);
-
-/* core/cleanup_sprites.c */
-void	free_sprite_frames(t_game *game, t_sprite *sprite);
-void	free_sprite(t_game *game);
-
-
-void	ft_free_str_array(char **array);
-void	cleanup_game(t_game *game);
-void	free_info(t_game *game);
-void	free_map(t_game *game);
-void	free_sprite(t_game *game);
+void		update_sprite(t_sprite *sprite);
+int			project_sprite(t_sprite *sprite, t_player *player);
 
 /* utils/error.c */
-void	error_exit(char *msg);
-void	error_cleanup_exit(char *msg, t_game *game);
-int		error_msg(char *msg, char *arg, int exit_code);
-
-/* utils/principal.c */
-void	update_game(void *param);
-int	validate_args(int argc, char **argv);
-int	parse_validate_input(t_game *game);
+void		error_cleanup_exit(char *msg, t_game *game);
+int			error_msg(char *msg, char *arg, int exit_code);
 
 #endif

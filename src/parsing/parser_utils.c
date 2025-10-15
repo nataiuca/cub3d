@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: natferna <natferna@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 16:17:49 by root              #+#    #+#             */
-/*   Updated: 2025/10/14 16:32:33 by natferna         ###   ########.fr       */
+/*   Updated: 2025/10/15 16:14:36 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,14 @@ int	count_rows(char **array)
 }
 
 /**
- * @brief
+ * @brief	Checks if a given line is the start of the map.
+ * 			The function iterates through each character of the line.
+ * 			If all non-space chars belong to the valid map char set, the line
+ * 			is considered the start of the map. Otherwise, is not.
  *
- * @param
- * @return 0 si no es inicio de mapa,
-	1 si solo contiene caracteres de mapa e interpretamos como inicio de mapa
+ * @param line	Pointer to the input string to check
+ * @return	0 if the line does not represent the start of the map, 1 if the line
+ * 			contains only valid map chars	
  */
 
 int	is_map_start_line(const char *line)

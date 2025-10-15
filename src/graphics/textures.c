@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 17:25:16 by root              #+#    #+#             */
-/*   Updated: 2025/10/15 15:06:54 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 16:09:28 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,12 @@ int	get_tex_color(mlx_image_t *tex, int x, int y)
 /**
  * @brief	Selects the appropriate wall texture based on the ray collision.
  * 			Determines orientation (N/S/E/W) using ray direction and step.
- *			* side == 0 -> x-side wall, vertical wall -> EAST or WEST wall
- *				* side == 1 -> y-side wall, horizontal wall -> NORTH or SOUTH wall
+ *				* side == 0 -> x-side wall, vertical -> EAST or WEST texture
+ *				* side == 1 -> y-side wall, horizontal -> NORTH or SOUTH texture
  * 				* step_x > 0 -> right direction -> EAST wall
- * 				* step_x < 0 -> left direction
- * 				* step_y > 0 -> down direction -> 
- * 				* step_y < 0 -> up direction
+ * 				* step_x < 0 -> left direction -> WEST wall
+ * 				* step_y > 0 -> down direction -> SOUTH wall
+ * 				* step_y < 0 -> up direction -> NORTH wall
  * 							
  * @param ray	Pointer to the ray structure.
  *

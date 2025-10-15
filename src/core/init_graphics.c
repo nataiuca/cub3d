@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 11:17:02 by root              #+#    #+#             */
-/*   Updated: 2025/10/15 15:15:05 by root             ###   ########.fr       */
+/*   Updated: 2025/10/15 15:59:21 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
  * @return	1 on success, 0 on failure.
  */
 
-int	load_wall_textures(t_game *game)
+static int	load_wall_textures(t_game *game)
 {
 	game->textures[TEX_NO] = load_texture(game->mlx, game->map->no_texture);
 	if (!game->textures[0])
