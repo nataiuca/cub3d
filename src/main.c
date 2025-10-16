@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 16:45:08 by root              #+#    #+#             */
-/*   Updated: 2025/10/15 15:59:07 by root             ###   ########.fr       */
+/*   Updated: 2025/10/16 11:07:41 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,15 +111,22 @@ static int	validate_args(int argc, char **argv)
  * @brief	Program entry point.
  * 			- Validates the command-line arguments
  * 			- Initializes the game structures
- * 			- Loads the .cub file
+ * 			- Loads raww data from the .cub file
  * 			- Parses and validates map and configuration data
  * 			- Initializes grapgics and MLX42
- * 			- Registers input and loop hooks
- * 			- Starts the MLX42 main loop
+ * 			- Enabes mouse rotation for the player
+ * 			- Registers input hooks:
+ * 				- keyboard input handler
+ * 				- mouse movement handler
+ * 			- Sets the initial mouse position to the center of the window
+ * 			- Registers the game update loop (called every frame)
+ * 			- Starts the MLX42 main rendering loop
  * 			- Cleanups for exiting
  * 			- On any error, the program prints an appropriate message and exits
  * 
- * @param argc	
+ * @param argc	Argument count
+ * @param argv	Argument vector
+ * @return	Exit status code (0 for succes, 1 for failure)
  */
 
 int	main(int argc, char **argv)
@@ -127,7 +134,7 @@ int	main(int argc, char **argv)
 	t_game	game;
 
 	if (!validate_args(argc, argv))
-		return (EXIT_FAILURE);
+		return (1);
 	if (!init_game(&game))
 		error_cleanup_exit(ERR_INIT, &game);
 	if (!load_info(argv[1], game.info))

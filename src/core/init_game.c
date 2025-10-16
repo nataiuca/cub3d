@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_game.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: amacarul <amacarul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 15:56:19 by amacarul          #+#    #+#             */
-/*   Updated: 2025/10/15 15:57:49 by root             ###   ########.fr       */
+/*   Updated: 2025/10/16 10:42:51 by amacarul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,8 @@ int	init_game(t_game *game)
 	init_info(game->info);
 	init_map(game->map);
 	init_player(game->player);
+	game->minimap->img = NULL;
+	game->minimap->rays = NULL;
 	game->sprite = NULL;
 	game->sprite_count = 0;
 	return (1);
