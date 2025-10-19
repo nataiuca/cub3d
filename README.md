@@ -51,3 +51,22 @@ sprite:
 
 utils:
 - errors.c ✅
+
+## Debugging
+
+**Compile with flags:**
+
+    -g -fsanitize=address -fno-omit-frame-pointer
+
+**Execute:**
+
+    make
+    export ASAN_OPTIONS="verbosity=2:detect_leaks=1"
+    ./cub3D ...
+
+- detect_leaks=1: detecta fugas de memoria que quedan sin liberar al finalizar el programa
+- verbosity=2: imprime mensajes internos adicionales, cuando malloc/free son interceptados, cuando LSan realiza barrido, infor sobre memoria...
+
+IMPORTANTE! SI COMENTAMOS EL CLEANUP() DEL MAIN PARA PROBAR SI DETECTA LEAKS O NO, TENEMOS QUE CERRAR EL JUEGO CON LA CRUZ DE LA VENTANA, NO CON ESCAPE, PORQUE ESCAPE HACE SU PROPIO CLEANUP, NO DARÁ LEAKS
+
+  Errores con <unknown module> o sin rutas tipo /home/user/cub3D... significa que el leak no está en tu código compilado con símbolos de depuración, sino en una librería precompilada o sin símbolos
