@@ -4,7 +4,7 @@ NAME		= cub3D
 
 # Compiler and flags
 CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -g 
+CFLAGS		= -Wall -Wextra -Werror -g #-fsanitize=address -fno-omit-frame-pointer
 
 # MLX42
 MLX42_DIR= ./MLX42
