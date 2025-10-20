@@ -67,6 +67,20 @@ utils:
 - detect_leaks=1: detecta fugas de memoria que quedan sin liberar al finalizar el programa
 - verbosity=2: imprime mensajes internos adicionales, cuando malloc/free son interceptados, cuando LSan realiza barrido, infor sobre memoria...
 
-IMPORTANTE! SI COMENTAMOS EL CLEANUP() DEL MAIN PARA PROBAR SI DETECTA LEAKS O NO, TENEMOS QUE CERRAR EL JUEGO CON LA CRUZ DE LA VENTANA, NO CON ESCAPE, PORQUE ESCAPE HACE SU PROPIO CLEANUP, NO DARÁ LEAKS
+⚠️ IMPORTANTE! SI COMENTAMOS EL CLEANUP() DEL MAIN PARA PROBAR SI DETECTA LEAKS O NO, TENEMOS QUE CERRAR EL JUEGO CON LA CRUZ DE LA VENTANA, NO CON ESCAPE, PORQUE ESCAPE HACE SU PROPIO CLEANUP, NO DARÁ LEAKS  
+
+⚠️ IMPORTANTE! NO USAR VALGRIND Y FSANITIZER A LA VEZ
+
+--> Cómo detectar fds abiertos sin valgrind? 
+- Ejecutar programa en segundo plano y capturar PID
+
+     ./cub3D ... &
+     echo $!
+
+- Ver qué archivos tiene abiertos el proceso (mientras está runeando, ejecutar en otra terminal):
+
+      ls -l /proc/<pid>/fd
+
+Pero esto no te dice cuáles quedan abiertos una vez termina el programa... hay que hacer cosas en el main
 
   Errores con <unknown module> o sin rutas tipo /home/user/cub3D... significa que el leak no está en tu código compilado con símbolos de depuración, sino en una librería precompilada o sin símbolos
