@@ -84,3 +84,72 @@ utils:
 Pero esto no te dice cuáles quedan abiertos una vez termina el programa... hay que hacer cosas en el main
 
   Errores con <unknown module> o sin rutas tipo /home/user/cub3D... significa que el leak no está en tu código compilado con símbolos de depuración, sino en una librería precompilada o sin símbolos
+
+  CUB3D
+
+Unleash Immersive Worlds Through Cutting-Edge Rendering
+
+last-commit repo-top-language repo-language-count
+Built with the tools and technologies:
+
+Markdown JavaScript GNU%20Bash OpenGL CMake Python C bat
+
+Table of Contents
+
+Overview
+Getting Started
+Prerequisites
+Installation
+Usage
+Testing
+Overview
+
+cub3d is an open-source 3D raycasting engine that enables developers to create immersive first-person environments with ease. It combines map parsing, validation, and rendering setup into a cohesive architecture, supporting both native and web platforms.
+
+Why cub3d?
+
+This project empowers you to build interactive 3D scenes with a focus on performance and modularity. The core features include:
+
+🧩 🔧 Modular Architecture: Organized core structures, constants, and function prototypes for scalable development.
+🎨 🖼️ Texture & Graphics Management: Efficient handling of PNG textures and real-time rendering with MiniLibX.
+🚶‍♂️ 🕹️ Player Interaction: Smooth movement, camera rotation, and minimap visualization for an engaging experience.
+⚙️ 🛠️ Robust Error Handling: Memory management, validation, and cleanup routines ensure stability.
+🌐 🚀 Cross-Platform & Web Support: Compatibility with native and WebAssembly environments for versatile deployment.
+Getting Started
+
+Prerequisites
+
+This project requires the following dependencies:
+
+Programming Language: C
+Package Manager: Cmake
+Installation
+
+Build cub3d from the source and install dependencies:
+
+Clone the repository:
+
+❯ git clone https://github.com/nataiuca/cub3d
+Navigate to the project directory:
+
+❯ cd cub3d
+Install the dependencies:
+
+Using cmake:
+
+❯ cmake . && make
+Usage
+
+Run the project with:
+
+Using cmake:
+
+./cub3d
+Testing
+
+Cub3d uses the {test_framework} test framework. Run the test suite with:
+
+Using cmake:
+
+ctest
+⬆ Return
