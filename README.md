@@ -85,6 +85,10 @@ Pero esto no te dice cuáles quedan abiertos una vez termina el programa... hay 
 
   Errores con <unknown module> o sin rutas tipo /home/user/cub3D... significa que el leak no está en tu código compilado con símbolos de depuración, sino en una librería precompilada o sin símbolos
 
+
+
+
+
   CUB3D
 
 Unleash Immersive Worlds Through Cutting-Edge Rendering
@@ -92,7 +96,7 @@ Unleash Immersive Worlds Through Cutting-Edge Rendering
 last-commit repo-top-language repo-language-count
 Built with the tools and technologies:
 
-Markdown JavaScript GNU%20Bash OpenGL CMake Python C bat
+Markdown JavaScript GNU Bash OpenGL CMake Python C bat
 
 Table of Contents
 
@@ -115,6 +119,7 @@ This project empowers you to build interactive 3D scenes with a focus on perform
 🚶‍♂️ 🕹️ Player Interaction: Smooth movement, camera rotation, and minimap visualization for an engaging experience.
 ⚙️ 🛠️ Robust Error Handling: Memory management, validation, and cleanup routines ensure stability.
 🌐 🚀 Cross-Platform & Web Support: Compatibility with native and WebAssembly environments for versatile deployment.
+
 Getting Started
 
 Prerequisites
@@ -123,21 +128,26 @@ This project requires the following dependencies:
 
 Programming Language: C
 Package Manager: Cmake
+
 Installation
 
 Build cub3d from the source and install dependencies:
 
-Clone the repository:
+1.- Clone the repository:
 
 ❯ git clone https://github.com/nataiuca/cub3d
-Navigate to the project directory:
+
+2.- Navigate to the project directory:
 
 ❯ cd cub3d
-Install the dependencies:
+
+3.- Install the dependencies:
 
 Using cmake:
 
 ❯ cmake . && make
+
+
 Usage
 
 Run the project with:
@@ -145,6 +155,8 @@ Run the project with:
 Using cmake:
 
 ./cub3d
+
+
 Testing
 
 Cub3d uses the {test_framework} test framework. Run the test suite with:
@@ -152,4 +164,5 @@ Cub3d uses the {test_framework} test framework. Run the test suite with:
 Using cmake:
 
 ctest
+
 ⬆ Return
